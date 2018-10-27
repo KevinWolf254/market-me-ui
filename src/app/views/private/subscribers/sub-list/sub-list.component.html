@@ -1,0 +1,103 @@
+
+<div class="card border-top-0 shadow">
+  <div class="card-body">
+    <p class="bg-light p-2 rounded">
+      <b>Add Single Contact:</b>
+    </p>
+    <!-- Single Client Form -->
+    <form [formGroup]="form" (ngSubmit)="addContactToGroup(form.value)">
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text">
+            <i class="fa fa-group"></i>
+          </span>
+        </div>
+        <select class="form-control form-control-sm" formControlName="group">
+          <option value='0' selected>Choose Group...</option>
+          <option *ngFor="let group of groups" [value]="group.id">{{group.name}}</option>
+        </select>
+      </div>
+      <div class="input-group mb-2">
+        <div class="input-group-prepend">
+          <span class="input-group-text">
+            <i class="fa fa-phone fa-lg"></i>
+          </span>
+        </div>
+        <input type="number" class="form-control form-control-sm col-sm-3" formControlName="code" placeholder="Country Code">
+        <input type="number" class="form-control form-control-sm col-sm-9" formControlName="phone" placeholder="Phone Number">
+      </div>
+      <button type="submit" class="btn btn-primary btn-sm btn-block mb-2" [disabled]="!form.valid">
+        <div *ngIf="!isAddingClient">
+            Add contact to group
+          </div>
+          <div *ngIf="isAddingClient" class="sk-circle my-0 py-0">
+            <div class="sk-circle1 sk-child"></div>
+            <div class="sk-circle2 sk-child"></div>
+            <div class="sk-circle3 sk-child"></div>
+            <div class="sk-circle4 sk-child"></div>
+            <div class="sk-circle5 sk-child"></div>
+            <div class="sk-circle6 sk-child"></div>
+            <div class="sk-circle7 sk-child"></div>
+            <div class="sk-circle8 sk-child"></div>
+            <div class="sk-circle9 sk-child"></div>
+            <div class="sk-circle10 sk-child"></div>
+            <div class="sk-circle11 sk-child"></div>
+            <div class="sk-circle12 sk-child"></div>
+          </div>
+      </button>
+    </form>
+    <!-- Multiple Clients Form -->
+    <p class="bg-light p-2 mt-4 rounded">
+      <b>Add Multiple Contacts:</b>
+    </p> 
+    <form [formGroup]="fileForm" (ngSubmit)="addClientsToGroup(fileForm.value)">
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text">
+            <i class="fa fa-group"></i>
+          </span>
+        </div>
+        <select class="form-control form-control-sm" formControlName="group">
+          <option value='0' selected>Choose Group...</option>
+          <option *ngFor="let group of groups" [value]="group.id">{{group.name}}</option>
+        </select>
+      </div>
+    </form>
+    <small>
+      <p class=" p-1 mt-4 bg-light rounded">Import Contacts from File</p>
+    </small>
+
+    <div>
+      <input style="display: none" type="file" name="selectCsv" id="selectCsv" accept=".csv" #fileUpload (change)="uploadFile($event)">
+    </div>
+    <div class="input-group mb-0">
+      <input type="text" class="form-control form-control-sm" placeholder="Choose Csv file" aria-label="Choose Csv file" 
+        aria-describedby="basic-addon1"
+        [value]="fileName" readonly>
+      <div class="input-group-append">
+        <button class="btn btn-sm btn-outline-secondary" type="button" (click)="fileUpload.click()">
+          Browse...
+        </button>
+        <button type="button" class="btn btn-sm btn-primary" (click)="addContactssToGroup()" [disabled]="!contactsChoosen || !fileForm.valid">
+          <div *ngIf="!isAddingClients">
+            Upload Contacts
+          </div>
+          <div *ngIf="isAddingClients" class="sk-circle my-0 py-0">
+            <div class="sk-circle1 sk-child"></div>
+            <div class="sk-circle2 sk-child"></div>
+            <div class="sk-circle3 sk-child"></div>
+            <div class="sk-circle4 sk-child"></div>
+            <div class="sk-circle5 sk-child"></div>
+            <div class="sk-circle6 sk-child"></div>
+            <div class="sk-circle7 sk-child"></div>
+            <div class="sk-circle8 sk-child"></div>
+            <div class="sk-circle9 sk-child"></div>
+            <div class="sk-circle10 sk-child"></div>
+            <div class="sk-circle11 sk-child"></div>
+            <div class="sk-circle12 sk-child"></div>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

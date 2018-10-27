@@ -1,0 +1,145 @@
+<div class="row">
+  <div class="col">
+    <div class="d-flex pb-2 mb-2 border-bottom">
+      <h3>My Profile</h3>
+    </div>
+  </div>
+</div>
+<ngb-tabset>
+  <!-- User Profile Details -->
+  <ngb-tab title="Profile Details" id="profileTab">
+    <ng-template ngbTabContent>
+      <div class="card border-top-0 shadow">
+        <div class="card-body my-4">
+          <div class="row">
+            <div class="col-md-5">
+              <div class="card">
+                <div class="card-header text-center">
+                  Profile Picture
+                </div>
+                <div class="card-body text-center">  
+                  <img src="/assets/userPic.jpg" alt="Profile Pic" width="150" height="150">        
+                </div>
+              </div>
+            </div>
+            <div class="col-md-7">
+              <fieldset disabled>
+                <!-- User Names -->
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text bg-info text-white"><i class="fa fa-user fa-lg"></i></span>
+                  </div>
+                  <input type="text" class="form-control form-control-sm" [ngModel]="surname">
+                  <input type="text" class="form-control form-control-sm" [ngModel]="othernames">
+                </div>
+                <!-- organisation -->
+                <!-- <div class="input-group my-2">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text bg-info text-white"><i class="fa fa-home"></i></span>
+                  </div>
+                  <input type="text" class="form-control form-control-sm" [ngModel]="organisation">
+                </div> -->
+                <!-- Email --> 
+                <div class="input-group my-2">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text bg-info text-white"><i class="fa fa-envelope"></i></span>
+                  </div>
+                  <input type="text" class="form-control form-control-sm" [ngModel]="email">
+                </div>
+                <!-- Role -->
+                <div class="input-group my-2">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text bg-info text-white"><i class="fa fa-cog"></i></span>
+                  </div>
+                  <input type="text" class="form-control form-control-sm" [ngModel]="roles">
+                </div>
+                <!-- Last Sign In -->
+                <div class="input-group my-2">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text bg-info text-white"><i class="fa fa-calendar"></i></span>
+                  </div>
+                  <input type="text" class="form-control form-control-sm" [ngModel]="signInDate | date: 'MMM d, y, h:mm a'">
+                </div>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </ngb-tab>
+  <!-- Change password -->
+  <ngb-tab title="Change Password" id="changePassTab">
+    <ng-template ngbTabContent>
+      <div class="card border-top-0 shadow">
+        <div class="card-body ">
+          <form class="mt-3" [formGroup] = "form" (ngSubmit) = "changePassword(form.value)">
+            <!-- New Password -->
+            <div class="form-group row mb-0">
+              <label for="newPassword" class="col-sm-3 col-form-label">New Password:</label>
+              <div class="col-sm-9">
+                <input type="password" class="form-control form-control-sm" formControlName="password" id="newPassword" placeholder="New Password" aria-describedby="passwordHelp">
+                <small id="passwordHelp" class="form-text text-muted">
+                  Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters, or emoji.
+                </small>
+              </div>
+            </div>
+            <!-- new Password error msg -->
+            <div class=" d-flex flex-row-reverse mb-4" 
+            *ngIf="!form.controls['password'].valid && form.controls['password'].touched && !form.controls['password'].hasError('minlength')">
+              <span class="text text-danger mt-0 pt-0 pr-3" style="font-size:13px">
+                  Please enter the new password
+              </span>
+            </div>
+            <!-- new Password length error msg -->
+            <div class=" d-flex flex-row-reverse mb-4" 
+            *ngIf="form.controls['password'].hasError('minlength')">
+              <span class="text text-danger mt-0 pt-0 pr-3" style="font-size:13px">
+                  Please enter 8-20 characters
+              </span>
+            </div> 
+            <!-- Confirm Password -->
+            <div class="form-group row mt-3 mb-0 pb-0">
+              <label for="confirmPassword" class="col-sm-3 col-form-label">Confirm Password:</label>
+              <div class="col-sm-9">
+                <input type="password" class="form-control form-control-sm" formControlName="confirm" id="confirmPassword" placeholder="Confirm New Password">
+              </div>
+            </div>
+            <!-- Confirm Password error msg -->
+            <div class=" d-flex flex-row-reverse" 
+            *ngIf="!form.controls['confirm'].valid && form.controls['confirm'].touched && !form.controls['confirm'].hasError('notMatch')">
+              <span class="text text-danger mt-0 pt-0 pr-3" style="font-size:13px">
+                  Please confirm password
+              </span>
+            </div>
+            <!-- Confirm Password not equal error msg -->
+            <div class=" d-flex flex-row-reverse" 
+            *ngIf="form.controls['confirm'].hasError('notMatch')">
+              <span class="text text-danger mt-0 pt-0 pr-3" style="font-size:13px">
+                  Password does not match
+              </span>
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm btn-block mt-3" [disabled]="!form.valid">
+              <div *ngIf="!changingPass">
+                  Change Password
+                </div>
+                <div *ngIf="changingPass" class="sk-circle my-0 py-0">
+                  <div class="sk-circle1 sk-child"></div>
+                  <div class="sk-circle2 sk-child"></div>
+                  <div class="sk-circle3 sk-child"></div>
+                  <div class="sk-circle4 sk-child"></div>
+                  <div class="sk-circle5 sk-child"></div>
+                  <div class="sk-circle6 sk-child"></div>
+                  <div class="sk-circle7 sk-child"></div>
+                  <div class="sk-circle8 sk-child"></div>
+                  <div class="sk-circle9 sk-child"></div>
+                  <div class="sk-circle10 sk-child"></div>
+                  <div class="sk-circle11 sk-child"></div>
+                  <div class="sk-circle12 sk-child"></div>
+                </div>
+            </button>
+          </form>
+        </div>
+      </div>
+    </ng-template>
+  </ngb-tab>
+</ngb-tabset>

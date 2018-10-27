@@ -1,0 +1,163 @@
+
+<div class="container form-signup">
+    <div class="card text-center shadow mb-5 rounded">
+      <div class="card-body">
+        <h5 class="text-center mb-3">Sign up</h5>
+        <form class="mx-4 mb-3" [formGroup] = "signUpForm" (ngSubmit) = "signUp(signUpForm.value)">
+          <!-- Surname @ other names-->
+          <div class="input-group mt-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="surnameIcon"><i class="fa fa-user"></i></span>
+            </div>
+            <input type="text" class="form-control form-control-sm col-sm-4" formControlName="surname"
+             placeholder="Surname*" aria-label="Surname" aria-describedby="surnameIcon">
+             <input type="text" class="form-control form-control-sm col-sm-8" formControlName="otherNames"
+              placeholder="Other Names">
+          </div>
+          <!-- Surname validity -->
+          <div class="d-flex flex-row-reverse" 
+          *ngIf="!signUpForm.controls['surname'].valid && signUpForm.controls['surname'].touched">
+            <span class="text text-danger mt-0 pt-0 pr-3" style="font-size:13px">
+                Please enter your surname
+            </span> 
+          </div>
+          <!-- organisation  -->
+          <div class="input-group mt-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="organisationIcon"><i class="fa fa-home"></i></span>
+            </div>
+            <input type="text" class="form-control form-control-sm" formControlName="organisation"
+             placeholder="Your Organisation*" aria-label="organisation" aria-describedby="organisationIcon">
+          </div>
+          <!-- organisation validity -->
+          <div class="d-flex flex-row-reverse" 
+          *ngIf="!signUpForm.controls['organisation'].valid && signUpForm.controls['organisation'].touched">
+            <span class="text text-danger mt-0 pt-0 pr-3" style="font-size:13px">
+                Please enter your organization
+            </span>
+          </div>
+          <!-- Country  -->
+          <div class="input-group mt-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="countryIcon"><i class="fa fa-globe"></i></span>
+            </div>
+             <select class="form-control form-control-sm" formControlName="country">
+              <option value='4' selected>Country of residence*</option>
+              <option *ngFor="let country of countries" [value]="country.name">{{country.name}}</option>
+            </select>
+          </div>
+          <!-- Country validity -->
+          <div class="d-flex flex-row-reverse" 
+          *ngIf="!signUpForm.controls['country'].valid && signUpForm.controls['country'].touched">
+            <span class="text text-danger mt-0 pt-0 pr-3" style="font-size:13px">
+                Please enter country of residence
+            </span>
+          </div>
+          <!-- phone no -->
+          <div class="input-group mt-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="phoneIcon"><i class="fa fa-phone"></i></span>
+            </div>
+            <select class="form-control form-control-sm col-sm-4" formControlName="code">
+              <option value='4' selected>Code*</option>
+              <option *ngFor="let country of countries" [value]="country.callingCodes">+{{country.callingCodes}} {{country.name}}</option>
+            </select>
+            <input type="number" class="form-control form-control-sm col-sm-8" formControlName="phoneNo"
+              placeholder="Phone Number*" aria-label="Phone number" aria-describedby="phoneIcon">
+          </div>
+          <!-- code validity -->
+          <div class="d-flex flex-row-reverse" 
+          *ngIf="!signUpForm.controls['code'].valid && signUpForm.controls['code'].touched">
+            <span class="text text-danger mt-0 pt-0 pr-3" style="font-size:13px">
+                Please select country code
+            </span>
+          </div>
+          <!-- code validity -->
+          <div class="d-flex flex-row-reverse" 
+          *ngIf="!signUpForm.controls['phoneNo'].valid && signUpForm.controls['phoneNo'].touched">
+            <span class="text text-danger mt-0 pt-0 pr-3" style="font-size:13px">
+                Please enter your phone number
+            </span>
+          </div>
+          <!-- email -->
+          <div class="input-group mt-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="emailIcon"><i class="fa fa-envelope"></i></span>
+            </div>
+            <input type="email" class="form-control form-control-sm" formControlName="email"
+             placeholder="Email Address*" aria-label="Surname" aria-describedby="emailIcon">
+          </div>
+          <!-- email validity -->
+          <div class="d-flex flex-row-reverse" 
+          *ngIf="!signUpForm.controls['email'].valid && signUpForm.controls['email'].touched">
+            <span class="text text-danger mt-0 pt-0 pr-3" style="font-size:13px">
+                Please enter a valid email
+            </span>
+          </div>
+          <!-- password -->
+          <div class="input-group mt-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="passwordIcon"><i class="fa fa-lock fa-lg"></i></span>
+            </div>
+            <input type="password" class="form-control form-control-sm" formControlName="newPass"
+             placeholder="Password*" aria-label="Password" aria-describedby="passwordIcon">
+          </div> 
+          <!-- password validity -->
+          <div class="d-flex flex-row-reverse" 
+          *ngIf="!signUpForm.controls['newPass'].valid && signUpForm.controls['newPass'].touched">
+            <span class="text text-danger mt-0 pt-0 pr-3" style="font-size:13px">
+                Please enter a valid password
+            </span>
+          </div>  
+          <!-- confirm password -->
+          <div class="input-group mt-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="cpasswordIcon"><i class="fa fa-lock fa-lg"></i></span>
+            </div>
+            <input type="password" class="form-control form-control-sm" formControlName="confirm_password"
+             placeholder="Confirm Password*" aria-label="Confirm Password" aria-describedby="cpasswordIcon">
+          </div> 
+          <!-- confirm password validity -->
+          <div class="d-flex flex-row-reverse" 
+          *ngIf="!signUpForm.controls['confirm_password'].valid && 
+          signUpForm.controls['confirm_password'].touched">
+            <span class="text text-danger mt-0 pt-0 pr-3" style="font-size:13px">
+                Passwords do not match
+            </span>
+          </div>  
+          <!-- captcha -->
+          <div class="mt-3">
+            <re-captcha formControlName="recaptchaReactive"></re-captcha>
+          </div>      
+          <button class="btn btn-primary btn-sm btn-block mt-3" type="submit" [disabled]="!signUpForm.valid">
+            <div *ngIf="!isSigningUp">
+                Register
+            </div>
+            <div *ngIf="isSigningUp" class="sk-circle my-0 py-0">
+              <div class="sk-circle1 sk-child"></div>
+              <div class="sk-circle2 sk-child"></div>
+              <div class="sk-circle3 sk-child"></div>
+              <div class="sk-circle4 sk-child"></div>
+              <div class="sk-circle5 sk-child"></div>
+              <div class="sk-circle6 sk-child"></div>
+              <div class="sk-circle7 sk-child"></div>
+              <div class="sk-circle8 sk-child"></div>
+              <div class="sk-circle9 sk-child"></div>
+              <div class="sk-circle10 sk-child"></div>
+              <div class="sk-circle11 sk-child"></div>
+              <div class="sk-circle12 sk-child"></div>
+            </div>
+          </button>
+        </form>
+        <div class="text-center">Already registered? 
+          <a routerLink="/signIn">
+            Go back to Sign in
+          </a>
+        </div>
+      </div>
+      <div class="card-footer text-muted">
+        © 2018-2019
+      </div>
+    </div>  
+  </div>
+  

@@ -1,0 +1,235 @@
+
+<div class="card border-top-0 mb-5 shadow">
+    <div class="card-body">
+      <h6 class="mb-4 bg-light p-2 rounded">Create Campaign:</h6>
+      <form [formGroup] = "form" (ngSubmit) = "sendScheduledSms(form.value)">
+        <div class="form-group">
+          <!-- Campaign name -->
+          <div class="input-group">
+            <input type="text" class="form-control form-control-sm" formControlName="campaignName" id="campaignName" 
+            placeholder="Campaign name">
+            <div class="input-group-append">
+              <button class="btn btn-info btn-sm" [class.bg-success]="nameIsAvailable && form.controls['campaignName'].valid && 
+              checked" [class.bg-danger]="!nameIsAvailable && form.controls['campaignName'].valid && checked"
+              type="button" (click)="checkName()" 
+              [disabled]="!form.controls['campaignName'].valid">
+                <div *ngIf="!isChecking">                 
+                  Available
+                  <span *ngIf="nameIsAvailable && form.controls['campaignName'].valid && checked">
+                      <i class="fa fa-check"></i>
+                  </span>
+                  <span *ngIf="!nameIsAvailable && form.controls['campaignName'].valid && checked">
+                      <i class="fa fa-times"></i>
+                  </span>
+                </div>
+                <div *ngIf="isChecking" class="sk-circle my-0 py-0">
+                  <div class="sk-circle1 sk-child"></div>
+                  <div class="sk-circle2 sk-child"></div>
+                  <div class="sk-circle3 sk-child"></div>
+                  <div class="sk-circle4 sk-child"></div>
+                  <div class="sk-circle5 sk-child"></div>
+                  <div class="sk-circle6 sk-child"></div>
+                  <div class="sk-circle7 sk-child"></div>
+                  <div class="sk-circle8 sk-child"></div>
+                  <div class="sk-circle9 sk-child"></div>
+                  <div class="sk-circle10 sk-child"></div>
+                  <div class="sk-circle11 sk-child"></div>
+                  <div class="sk-circle12 sk-child"></div>
+                </div>
+              </button>
+            </div>
+          </div> 
+        </div>
+        <div class="row mb-0 bg-light p-2 rounded mx-1">
+          <div class="col-sm-4 mx-0 px-0">
+              <h6>Type of campaign:</h6>
+          </div>
+          <div class="col-sm-4 border rounded">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" formControlName="campaignType" id="oneOff" value="oneOff">
+              <label class="form-check-label" for="oneOff">One off</label> 
+            </div>
+            </div>
+            <div class="col-sm-4 border rounded">
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" formControlName="campaignType" id="recurring" value="recurring">
+                <label class="form-check-label" for="recurring">Recurring</label>
+              </div>
+            </div>
+        </div>
+        <div class="card mx-0 my-0 border-top-0 mb-4">
+          <div class="card-body mt-0" *ngIf="form.value.campaignType == 'oneOff' || form.value.campaignType == 'recurring'">
+            <!-- One_Off Campaign -->
+            <div class="card my-0 shadow" *ngIf="form.value.campaignType == 'oneOff'">
+              <h6 class="card-header">Schedule</h6>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-sm-6 mt-3">
+                    Pick Date and Time:
+                    <div class="form-group">
+                      <div class="input-group">
+                        <input class="form-control" placeholder="YYYY-MM-DD" formControlName="oneOff_Date" 
+                        ngbDatepicker #oneOffDate="ngbDatepicker">
+                        <div class="input-group-append">
+                          <button class="btn btn-primary" (click)="oneOffDate.toggle()" type="button">
+                            <i class="fa fa-calendar"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                      <ngb-timepicker formControlName="oneOff_Time" [meridian]="meridian"></ngb-timepicker>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Scheduled Campaign -->
+            <div class="card my-0 shadow" *ngIf="form.value.campaignType == 'recurring'">
+              <h6 class="card-header">Schedule</h6>
+              <div class="card-body">
+                <h6 class="mb-0 bg-light p-2">Choose Type:</h6>
+                <!-- Schedule options -->
+                <div class="card border-top-0 mb-4">
+                  <div class="card-body">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" formControlName="recurring" id="daily" value="daily">
+                      <label class="form-check-label" for="daily">Daily</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" formControlName="recurring" id="weekly" value="weekly">
+                      <label class="form-check-label" for="weekly">Weekly</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" formControlName="recurring" id="monthly" value="monthly">
+                      <label class="form-check-label" for="monthly">Monthly</label>
+                    </div>
+                    <!-- Daily Schedule -->
+                    <div class="card mt-2" *ngIf="form.value.recurring == 'daily'">
+                      <div class="card-body">
+                        <p class="bg-light p-2"><b>Daily Schedule - Time:</b></p>
+                          <ngb-timepicker formControlName="dailyTime" [meridian]="meridian"></ngb-timepicker>
+                      </div>
+                    </div>
+                    <!-- Weekly Schedule -->
+                    <div class="card mt-2" *ngIf="form.value.recurring == 'weekly'">
+                      <div class="card-body">
+                          <p class="bg-light p-2"><b>Weekly Schedule:</b></p>
+                        <div class="row">
+                          <div class="col-sm-6 mt-2">
+                            <label for="selectDayOfWeek">Choose Day and time:</label>
+                            <select class="form-control" formControlName="dayOfWeek" id="selectDayOfWeek" aria-describedby="selectDayOfWeekHelp">
+                              <option value='0' selected>Choose Day of Week...</option>
+                              <option *ngFor="let day of week" [value]="day">{{day}}</option>                                
+                            </select>
+                            <small id="selectDayOfWeekHelp" class="form-text text-muted">
+                              Select the day of the week to send weekly Sms. 
+                            </small>
+                          </div> 
+                          <div class="col-sm-6">
+                            <ngb-timepicker formControlName="weeklyTime" [meridian]="meridian"></ngb-timepicker>                                        
+                          </div>    
+                        </div>
+                        
+                      </div>
+                    </div>
+                    <!-- Monthly Schedule -->
+                    <div class="card mt-2" *ngIf="form.value.recurring == 'monthly'">
+                      <div class="card-body">
+                        <p class="bg-light p-2"><b>Monthly Schedule:</b></p>
+                        <div class="row">
+                          <div class="col-sm-6 mt-3">
+                            Pick Date and Time:
+                            <div class="form-group">
+                              <div class="input-group">
+                                <input class="form-control" formControlName="monthlyDate" placeholder="yyyy-mm-dd" name="oneTimeDatePicker" ngbDatepicker #monthlyDate="ngbDatepicker">
+                                <div class="input-group-append">
+                                  <button class="btn btn-outline-secondary" (click)="monthlyDate.toggle()" type="button">
+                                    <i class="fa fa-calendar"></i>
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-sm-6">
+                            <ngb-timepicker formControlName="monthlyTime" [meridian]="meridian"></ngb-timepicker>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Compose message -->
+        <h6 class="mb-4 bg-light p-2 rounded">Compose message:</h6>
+        <div class="form-group">
+          <textarea class="form-control" formControlName="message" rows="5" placeholder="Sms Message" aria-describedby="messageHelp"></textarea>
+          <small id="messageHelp" class="form-text text-muted">
+            Compose an SMS message that is less than 160 characters long, otherwise additional charges apply.
+          </small>
+        </div>
+        <hr class="mb-0">
+        <div class="row">
+          <div  class="col my-0 pb-0" [class.text-warning]="isLong" [class.text-muted]="!isLong">
+            <div class="d-flex flex-row-reverse bd-highlight">
+              <div class="bd-highlight"> Characters </div>
+              <div class="bd-highlight px-2"> | </div>
+              <div class="bd-highlight"> {{messageLength}} </div>
+            </div>
+          </div>
+        </div>
+        <small *ngIf="isLong" class="d-flex text-warning bg-light rounded 
+        flex-row-reverse bd-highlight mt-0">
+          warning: additional charges will be applied
+        </small>
+        <h6 class="mb-4 mt-4 bg-light p-2">Groups to send to:</h6>
+        <div class="input-group mb-3">
+          <select class="form-control form-control-sm" id="groupSelect01" formControlName="group" 
+          aria-describedby="groupSelectHelp" [(ngModel)]="selected">
+            <option value='0' selected>Select Group</option>
+            <option *ngFor="let group of groups" [value]="group.id">{{group.name}}</option>
+          </select>
+          <div class="input-group-append">
+            <button class="btn btn-info btn-sm px-4" (click)="add()" [disabled]="!form.controls['group'].valid" type="button">
+              Add
+            </button>
+          </div> 
+        </div>
+        <small id="groupSelectHelp" class="form-text text-muted mb-4">
+          Select groups of clients that should receive the above message. 
+        </small>
+        <div *ngIf="selectedRecipients.length != 0">
+          <h6 class="mb-2 bg-light p-2">Selected Groups:</h6>
+          <span *ngFor="let group of selectedRecipients" class="badge badge-pill badge-info badge-sm px-2 m-1">
+            {{group.name}}
+            <span class="btn btn-sm btn-info" (click)="remove(group)">&times;</span>
+          </span>
+        </div>
+        <hr class="mb-4">
+        <button class="btn btn-primary btn-block btn-sm" type="submit" >
+        <!-- [disabled]="!form.controls['campaignName'].valid || !checked || selectedRecipients.length == 0 ||
+        !this.form.get('campaignType').valid"> -->
+        <div *ngIf="!isSendingSchedule">
+            Save Schedule
+        </div>
+        <div *ngIf="isSendingSchedule" class="sk-circle my-0 py-0">
+          <div class="sk-circle1 sk-child"></div>
+          <div class="sk-circle2 sk-child"></div>
+          <div class="sk-circle3 sk-child"></div>
+          <div class="sk-circle4 sk-child"></div>
+          <div class="sk-circle5 sk-child"></div>
+          <div class="sk-circle6 sk-child"></div>
+          <div class="sk-circle7 sk-child"></div>
+          <div class="sk-circle8 sk-child"></div>
+          <div class="sk-circle9 sk-child"></div>
+          <div class="sk-circle10 sk-child"></div>
+          <div class="sk-circle11 sk-child"></div>
+          <div class="sk-circle12 sk-child"></div>
+        </div>
+      </button>
+      </form>
+    </div>
+  </div>

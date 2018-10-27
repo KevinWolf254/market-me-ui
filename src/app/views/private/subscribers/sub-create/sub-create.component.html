@@ -1,0 +1,92 @@
+<div class="d-flex pb-2 mb-2 border-bottom">
+  <h3>Contacts</h3>
+</div>
+<ngb-tabset>
+  <!-- subscriber create -->
+  <ngb-tab title="Create Subscribers" id="subClientTab">
+    <ng-template ngbTabContent><div class="card border-top-0 shadow">
+        <div class="card-body">
+          <p class="bg-light p-2 rounded"><b>Add Contact:</b></p>
+          <form [formGroup] = "form" (ngSubmit) = "createClient(form.value)">
+            <div class="input-group mb-2">
+              <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fa fa-phone"></i></span>
+              </div> 
+              <input type="number" class="form-control form-control-sm col-sm-3" formControlName="code"
+                placeholder="Country Code">
+              <input type="number" class="form-control form-control-sm col-sm-9" formControlName="phone"
+                placeholder="Phone Number">
+            </div>
+            <small>Example - country code: 254 phone number: 720000000</small>
+            <button type="submit" class="btn btn-sm btn-primary btn-block mb-2" [disabled]="!form.valid">
+              <div *ngIf="!isCreating">
+                Save Contact
+              </div>
+              <div *ngIf="isCreating" class="sk-circle my-0 py-0">
+                <div class="sk-circle1 sk-child"></div>
+                <div class="sk-circle2 sk-child"></div>
+                <div class="sk-circle3 sk-child"></div>
+                <div class="sk-circle4 sk-child"></div>
+                <div class="sk-circle5 sk-child"></div>
+                <div class="sk-circle6 sk-child"></div>
+                <div class="sk-circle7 sk-child"></div>
+                <div class="sk-circle8 sk-child"></div>
+                <div class="sk-circle9 sk-child"></div>
+                <div class="sk-circle10 sk-child"></div>
+                <div class="sk-circle11 sk-child"></div>
+                <div class="sk-circle12 sk-child"></div>
+              </div>
+            </button>
+          </form>
+          <hr class="mb-4">
+          <p class="bg-light p-2 rounded"><b>Add Multiple Contacts:</b></p>
+            <div>
+              <input style="display: none" type="file" name="selectCsv" id="selectCsv" accept=".csv" #fileUpload 
+              (change)="uploadFile($event)">
+            </div>
+            <div class="input-group mb-0">
+              <!-- <div class="custom-file"> -->
+                <input type="text" class="form-control form-control-sm" placeholder="Choose Csv file" aria-label="" 
+                aria-describedby="basic-addon1" [value]="fileName" readonly>
+              <!-- </div> -->
+              <div class="input-group-append">
+                <button class="btn btn-sm btn-outline-secondary" type="button" (click)="fileUpload.click()">Browse...</button>
+                <button type="button" class="btn btn-sm btn-primary" (click)="saveContacts()" [disabled]="!contactsChoosen"> 
+                  <div *ngIf="!isCreatingClients">
+                    Upload Contacts
+                  </div>
+                  <div *ngIf="isCreatingClients" class="sk-circle my-0 py-0">
+                    <div class="sk-circle1 sk-child"></div>
+                    <div class="sk-circle2 sk-child"></div>
+                    <div class="sk-circle3 sk-child"></div>
+                    <div class="sk-circle4 sk-child"></div>
+                    <div class="sk-circle5 sk-child"></div>
+                    <div class="sk-circle6 sk-child"></div>
+                    <div class="sk-circle7 sk-child"></div>
+                    <div class="sk-circle8 sk-child"></div>
+                    <div class="sk-circle9 sk-child"></div>
+                    <div class="sk-circle10 sk-child"></div>
+                    <div class="sk-circle11 sk-child"></div>
+                    <div class="sk-circle12 sk-child"></div>
+                  </div>
+                </button>
+              </div>
+            </div>    
+          <small class="mt-0">Browse for file to upload/save the contacts</small>
+        </div>
+      </div>  
+    </ng-template>
+  </ngb-tab>
+  <!-- subscriber groups -->
+  <ngb-tab title="Create Groups" id="subGroupTab">
+    <ng-template ngbTabContent>
+      <app-sub-groups></app-sub-groups>
+    </ng-template>
+  </ngb-tab>
+  <!-- subscriber list -->
+  <ngb-tab title="List of Subscribers" id="subListTab">
+    <ng-template ngbTabContent>
+      <app-sub-list></app-sub-list>
+    </ng-template>
+  </ngb-tab>
+</ngb-tabset>

@@ -1,0 +1,134 @@
+<div class="card border-top-0 shadow">
+    <div class="card-body">
+      <p class="bg-light p-2 rounded"><b>Create Group:</b></p> 
+      <form [formGroup] = "createForm" (ngSubmit) = "createGroup(createForm.value)">
+          <div class="form-group">
+            <div class="input-group mb-3">
+              <input type="text" formControlName="name" class="form-control form-control-sm" placeholder="Group Name">
+              <div class="input-group-append">
+                <button type="submit" class="btn btn-sm btn-info px-4" [disabled]="!createForm.valid">
+                  <div *ngIf="!isCreatingGroup">
+                    Create
+                  </div>
+                  <div *ngIf="isCreatingGroup" class="sk-circle my-0 py-0">
+                    <div class="sk-circle1 sk-child"></div>
+                    <div class="sk-circle2 sk-child"></div>
+                    <div class="sk-circle3 sk-child"></div>
+                    <div class="sk-circle4 sk-child"></div>
+                    <div class="sk-circle5 sk-child"></div>
+                    <div class="sk-circle6 sk-child"></div>
+                    <div class="sk-circle7 sk-child"></div>
+                    <div class="sk-circle8 sk-child"></div>
+                    <div class="sk-circle9 sk-child"></div>
+                    <div class="sk-circle10 sk-child"></div>
+                    <div class="sk-circle11 sk-child"></div>
+                    <div class="sk-circle12 sk-child"></div>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+      </form>
+      <hr class="mb-4">
+      <p class="bg-light p-2 rounded"><b>Grouped Contacts:</b></p>    
+      <form [formGroup] = "deleteForm" (ngSubmit) = "deleteGroup(deleteForm.value)">
+        <div class="form-group ">
+          <div class="input-group mb-3">
+            <select class="form-control form-control-sm" id="selectGroup" formControlName="group" 
+            (change)="getContactsOfGroup($event)" [(ngModel)]="selectedGroupId"> 
+              <option value='0' selected>Choose Group...</option>
+              <option *ngFor="let group of groups" [value]="group.id">{{group.name}}</option> 
+            </select>
+            <div class="input-group-append">
+              <button class="btn btn-sm btn-danger px-4" type="submit" [disabled]="!deleteForm.valid">
+                <div *ngIf="!isDeletingGroup">
+                  Delete
+                </div>
+                <div *ngIf="isDeletingGroup" class="sk-circle my-0 py-0">
+                  <div class="sk-circle1 sk-child"></div>
+                  <div class="sk-circle2 sk-child"></div>
+                  <div class="sk-circle3 sk-child"></div>
+                  <div class="sk-circle4 sk-child"></div>
+                  <div class="sk-circle5 sk-child"></div>
+                  <div class="sk-circle6 sk-child"></div>
+                  <div class="sk-circle7 sk-child"></div>
+                  <div class="sk-circle8 sk-child"></div>
+                  <div class="sk-circle9 sk-child"></div>
+                  <div class="sk-circle10 sk-child"></div>
+                  <div class="sk-circle11 sk-child"></div>
+                  <div class="sk-circle12 sk-child"></div>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+      <!-- Members of group: Table -->
+      <div class="d-flex justify-content-between">
+        <!-- Per Page Entries -->
+        <div class="input-group col-sm-5">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Show</span>
+          </div>
+          <select class="custom-select" (change)="changeEntriesPerPage($event)">
+            <option *ngFor="let pageNo of perPageNos">{{pageNo}}</option>
+          </select>
+          <div class="input-group-append">
+            <span class="input-group-text">Entries</span>
+          </div>
+        </div>
+        <!-- Search -->
+        <div class="input-group col-sm-7">
+          <input type="text" class="form-control form-control-sm" placeholder="Search by phone no e.g. 720000000" 
+          (keyup)='searchContact($event)' aria-label="Search by Email" aria-describedby="search">
+          <div class="input-group-append">
+            <span class="input-group-text" id="search"><i class="fa fa-search"></i></span>
+          </div>
+        </div>
+      </div>
+      <!-- Grouped clients Table -->
+      <ngx-datatable class="bootstrap mt-3" [rows]="groupContacts" [limit]="entriesPerPage" [columnMode]="'force'"
+        [rowHeight]="55" [cssClasses]="customPagerIcons" [footerHeight]="40" [scrollbarH]="true">
+        <ngx-datatable-column name="id" [width]="40"></ngx-datatable-column>
+        <ngx-datatable-column name="Phone Number">
+          <ng-template ngx-datatable-cell-template let-row="row" let-rowIndex="rowIndex">
+            {{row.countryCode}} {{row.phoneNumber.slice(0,3)}} {{row.phoneNumber.slice(3,6)}} {{row.phoneNumber.slice(6,9)}}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="teleCom"></ngx-datatable-column>
+        <ngx-datatable-column name="actions">
+          <ng-template ngx-datatable-cell-template let-row="row" let-rowIndex="rowIndex">
+            <div class="btn-group" role="group" aria-label="actions">
+              <button (click)="openRemoveClientDialog(removeModal, row, rowIndex)" 
+              class="btn btn-sm btn-outline-danger" data-toggle="tooltip" data-placement="top" 
+              title="Remove client from group"><i class="fa fa-trash"></i> Remove</button>
+            </div>
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+    </div>
+  </div>
+  
+  <!-- Remove Client from group -->
+  <ng-template #removeModal let-c="close" let-d="dismiss">
+    <div class="modal-header bg-danger text-white">
+      <h5 class="modal-title"><i class="fa fa-warning fa-lg"></i> Confirm Deletion</h5>
+      <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      Are you sure you want to remove 
+      <span class="bg-light border rounded px-2"> 
+        <b>{{removeContact.countryCode}}</b>
+        <b>{{removeContact.phoneNumber}}</b>
+      </span>, 
+       from group <span class="bg-light border rounded px-2"> <b>{{selectedGroup.name}}</b></span> ? 
+      <hr>
+      <div class="d-flex justify-content-between">
+        <button type="button" class="btn btn-outline-danger" (click)="removeContactFromGroup()">Delete</button>
+        <button type="button" class="btn btn-info" (click)="c('Save click')">Dismiss</button>
+      </div>
+    </div>
+  </ng-template>
+  

@@ -1,0 +1,111 @@
+<div class="d-flex pb-2 mb-2 border-bottom">
+  <h3>Campaigns</h3>
+</div>
+<ngb-tabset> 
+  <ngb-tab title="Send Sms Campaign" id="allTab">
+    <ng-template ngbTabContent>
+      <div class="card border-top-0 shadow">
+        <div class="card-body">
+          <form [formGroup] = "form" (ngSubmit) = "sendSms(form.value)">
+            <!-- <h6 class="mb-4 bg-light p-2 rounded">Compose message</h6> -->
+            <div class="row mb-4 bg-light p-2 border rounded shadow-sm">
+              <div class="col-sm-4">
+                <h6 class="">Compose message</h6>
+              </div>
+              <div class="col-sm-8">
+                <small class="d-flex flex-row-reverse bd-highlight">
+                  <div class="bd-highlight text-success" [class.text-success]="canSend" [class.text-danger]="!canSend">
+                    <!-- {{report.credit.currency}} {{totalCharges}}  -->
+                    kes 0.0
+                  </div>
+                  <div class="bd-highlight pr-2">Charges: </div>
+                  <div class="bd-highlight px-2"> | </div>
+                  <div class="bd-highlight"> {{totalSubscribers}} </div>
+                  <div class="bd-highlight pr-2">Contacts: </div>
+                </small>
+              </div>
+            </div>
+            <h6 class="mb-4 mt-3 bg-light p-2 rounded">Groups to send to</h6>
+            <div class="input-group mb-3"> 
+              <select class="form-control form-control-sm" formControlName="group" 
+              aria-describedby="groupSelectHelp" [(ngModel)]="selected">
+                <option value='0' selected>Select Group</option>
+                <option *ngFor="let group of groups" [value]="group.id">{{group.name}}</option>
+              </select>
+              <div class="input-group-append">
+                <button class="btn btn-sm btn-info px-4" (click)="addGroup()" [disabled]="!form.controls['group'].valid" type="button">
+                  Add
+                </button>
+              </div> 
+            </div>
+            <small id="groupSelectHelp" class="form-text text-muted mb-4">
+              Select groups of clients that should receive the above message. 
+            </small>
+            <div *ngIf="selectedRecipients.length != 0">
+              <h6 class="mb-2 bg-light p-2 rounded">Selected Groups:</h6>
+              <span *ngFor="let group of selectedRecipients" class="badge badge-pill badge-info px-2 m-1">
+                {{group.name}}
+                <span class="btn btn-sm btn-info" (click)="remove(group)">&times;</span>
+              </span>
+            </div>
+            <hr class="mb-4">
+            <small *ngIf="!canSend" class="alert alert-danger" role="alert">
+              Please top up units to send to {{noOfContacts}} contacts
+            </small>
+            <div class="form-group">
+              <textarea class="form-control form-control-sm shadow-sm" formControlName="message" rows="5" 
+              placeholder="Message" aria-describedby="messageHelp" maxlength="320"></textarea>
+              <small id="messageHelp" class="form-text text-muted">
+                Compose an SMS message that is less than 160 characters long, otherwise additional charges apply.
+              </small>
+            </div>
+            <hr class="mb-0">
+            <div class="row">
+              <div  class="col my-0 pb-0" [class.text-warning]="isLong" [class.text-muted]="!isLong">
+                <div class="d-flex flex-row-reverse bd-highlight">
+                  <div class="bd-highlight"> Characters </div>
+                  <div class="bd-highlight px-2"> | </div>
+                  <div class="bd-highlight"> {{messageLength}} </div>
+                </div>
+              </div>
+            </div>
+            <small *ngIf="isLong" class="d-flex text-warning bg-light rounded 
+            flex-row-reverse bd-highlight mt-0">
+              warning: additional charges will be applied
+            </small>
+            <button class="btn btn-primary btn-block btn-sm mt-4" type="submit" [disabled]="!form.get('message').valid || 
+            selectedRecipients.length == 0 || !canSend || messageLength == 0">
+            <div *ngIf="!isSendingSms">
+              Send Sms
+            </div>
+            <div *ngIf="isSendingSms" class="sk-circle my-0 py-0">
+              <div class="sk-circle1 sk-child"></div>
+              <div class="sk-circle2 sk-child"></div>
+              <div class="sk-circle3 sk-child"></div>
+              <div class="sk-circle4 sk-child"></div>
+              <div class="sk-circle5 sk-child"></div>
+              <div class="sk-circle6 sk-child"></div>
+              <div class="sk-circle7 sk-child"></div>
+              <div class="sk-circle8 sk-child"></div>
+              <div class="sk-circle9 sk-child"></div>
+              <div class="sk-circle10 sk-child"></div>
+              <div class="sk-circle11 sk-child"></div>
+              <div class="sk-circle12 sk-child"></div>
+            </div>
+            </button>
+          </form>
+        </div>
+      </div>           
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab title="Schedule Campaign" id="scheduleTab">
+    <ng-template ngbTabContent>
+      <app-campaign-schedule></app-campaign-schedule>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab title="List of Campaigns" id="manageTab">
+    <ng-template ngbTabContent>
+      <app-campaign-list></app-campaign-list>
+    </ng-template>
+  </ngb-tab>
+</ngb-tabset>

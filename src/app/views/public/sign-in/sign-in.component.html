@@ -1,0 +1,82 @@
+
+<div class="container form-signin">
+    <div class="card text-center shadow mb-5 rounded">
+      <h4 class="card-header">
+        BULK-SMS
+      </h4>
+      <div class="card-body">
+        <p class="text-center">
+          Send to multiple clients and its easy to use and manage.
+        </p>   
+        <ul class="text-left">
+          <li>Send to all your clients at once</li>
+          <li>Manage clients through groups</li>
+          <li>Create sms sales and marketing campaigns</li>
+          <li>Schedule sms's to be sent at particular dates</li>
+        </ul>  
+        <hr> 
+        <h5 class="text-center mb-3">Sign in</h5>
+        <form class="mx-4 mb-3" [formGroup] = "signInForm" (ngSubmit) = "authenticate(signInForm.value)">
+          <!-- Email -->
+          <div class="input-group mt-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="emailIcon"><i class="fa fa-envelope"></i></span>
+            </div>
+            <input type="email" class="form-control" formControlName="email"
+             placeholder="Email address" aria-label="Email address" aria-describedby="emailIcon">
+          </div>
+          <!-- Email validity -->
+          <div class=" d-flex flex-row-reverse" 
+          *ngIf="!signInForm.controls['email'].valid && signInForm.controls['email'].touched">
+            <span class="text text-danger mt-0 pt-0 pr-3" style="font-size:13px">
+                Please enter a valid email
+            </span>
+          </div>
+          <!-- Password -->
+          <div class="input-group mt-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="passwordIcon"><i class="fa fa-lock fa-lg"></i></span>
+              </div>
+              <input type="password" class="form-control" formControlName="password"
+                placeholder="Password" aria-label="Password" aria-describedby="passwordIcon">
+            </div>
+            <!-- Password validity -->
+            <div class=" d-flex flex-row-reverse" 
+            *ngIf="!signInForm.controls['password'].valid && signInForm.controls['password'].touched">
+              <span class="text text-danger mt-0 pt-0 pr-3" style="font-size:13px">
+                  Please enter a valid password
+              </span>
+            </div>
+            <!-- Sign in -->
+          <button class="btn btn-primary btn-block mt-3" type="submit" [disabled]="!signInForm.valid">
+            <div *ngIf="!isSigningIn">
+              Sign in
+            </div>
+            <div *ngIf="isSigningIn" class="sk-circle my-0 py-0">
+              <div class="sk-circle1 sk-child"></div>
+              <div class="sk-circle2 sk-child"></div>
+              <div class="sk-circle3 sk-child"></div>
+              <div class="sk-circle4 sk-child"></div>
+              <div class="sk-circle5 sk-child"></div>
+              <div class="sk-circle6 sk-child"></div>
+              <div class="sk-circle7 sk-child"></div>
+              <div class="sk-circle8 sk-child"></div>
+              <div class="sk-circle9 sk-child"></div>
+              <div class="sk-circle10 sk-child"></div>
+              <div class="sk-circle11 sk-child"></div>
+              <div class="sk-circle12 sk-child"></div>
+            </div>
+          </button>
+        </form>
+        <div class="text-center">Not registered? 
+          <a routerLink="/signUp">
+            Sign up
+          </a>
+        </div>
+      </div>
+      <div class="card-footer text-muted">
+        © 2018-2019
+      </div>
+    </div>  
+  </div>
+  
