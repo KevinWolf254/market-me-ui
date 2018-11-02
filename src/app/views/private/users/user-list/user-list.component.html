@@ -16,7 +16,7 @@
         </div>
         <!-- Search -->
         <div class="input-group col-sm-7">
-          <input type="text" class="form-control form-control-sm" placeholder="Search by Email" (keyup)='search($event)' 
+          <input type="text" class="form-control" placeholder="Search by Email" (keyup)='search($event)' 
           aria-label="Search by Email" aria-describedby="search">
           <div class="input-group-append">
             <span class="input-group-text" id="search"><i class="fa fa-search"></i></span>
@@ -129,16 +129,16 @@
     </div>
   </ng-template>
   
-  <!-- edit User -->
+  <!-- edit modal -->
   <ng-template #editModal let-c="close" let-d="dismiss">
-      <div class="modal-header bg-danger text-white">
-        <h5 class="modal-title"><i class="fa fa-warning fa-lg"></i> Edit user</h5>
-        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">Edit user</h5>
+        <button type="button" class="btn-sm close" aria-label="Close" (click)="d('Cross click')">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body"> 
-        <form [formGroup] = "form" (ngSubmit) = "confirm(form.value)">
+        <form [formGroup] = "form" (ngSubmit) = "update(form.value)">
           <div class="input-group mb-2">
               <div class="input-group-prepend">
                   <span class="input-group-text"><i class="fa fa-user fa-lg"></i></span>
@@ -146,26 +146,38 @@
               <input type="text" class="form-control form-control-sm" formControlName="surname" placeholder="Surname">
               <input type="text" class="form-control form-control-sm" formControlName="otherNames" placeholder="Other Names">
           </div>
+          <!-- Account status radio buttons -->
+          <div class="form-check form-check-inline">
+            <label class="form-check-label mr-2">Account Status:</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" id="enabled" formControlName="status" [value]="true">
+            <label class="form-check-label" for="enabled">enabled</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" id="disabled" formControlName="status" [value]="false">
+            <label class="form-check-label" for="disabled">disabled</label>
+          </div>
           <!-- email -->
-          <div class="input-group mb-0">
+          <div class="input-group mt-2">
               <div class="input-group-prepend">
                   <span class="input-group-text"><i class="fa fa-envelope"></i></span>
               </div>
-              <input type="text" class="form-control form-control-sm" formControlName="email" placeholder="Email">
+              <input type="text" class="form-control form-control-sm" formControlName="email" placeholder="Email" readonly>
           </div>
           <!-- role -->
           <div class="row">
             <div class="col-sm-6">
-              <div class="input-group mt-2 mb-0">
+              <div class="input-group mt-2">
                 <div class="input-group-prepend">
                     <span class="input-group-text"><i class="fa fa-cog"></i></span>
                 </div>
-                <select class="form-control form-control-sm">
-                    <option value="0" selected>Choose role</option>
-                    <option *ngFor="let role of allRoles" >{{role}}</option>
+                <select class="form-control form-control-sm" formControlName="role" (change)='selectedRole($event)'>
+                    <option value='' selected>Choose role</option>
+                    <option *ngFor="let role of allRoles" [value]="role">{{role}}</option>
                 </select>
                 <div class="input-group-append">
-                  <button class="btn btn-sm btn--outline-success" type="button" (click)='addRole(role)'>
+                  <button class="btn btn-sm btn-success" [disabled]='form.get("role").value == ""' type="button" (click)='addRole()'>
                     Add 
                     <i class="fa fa-plus"></i>
                   </button>

@@ -30,7 +30,7 @@
       <div class="clearfix">
         <ul class="nav navbar-nav">
           <li class="nav-item">
-            <a class="nav-link">Units: {{units}}</a>
+            <a class="nav-link">Units: {{units | number:'1.2-2'}}</a>
           </li>
           <li class="nav-item">
             <button type="button" class="btn btn-sm btn-outline-secondary mt-1" 
@@ -78,7 +78,7 @@
             <li class="nav-item">
               <a routerLink="/bulksms/campaigns" routerLinkActive="active" class="nav-link">
                 <i class="fa fa-comments-o fa-lg pr-2"></i>
-                Campaigns
+                Sms Marketing
               </a>
             </li>
             <li class="nav-item">
@@ -120,7 +120,7 @@
             </a>
             <a class="nav-item nav-link" routerLink="/bulksms/campaigns" routerLinkActive="active">
               <i class="fa fa-comments-o fa-lg pr-1"></i>
-              Campaigns
+              Sms Marketing
             </a>
             <a class="nav-item nav-link" routerLink="/bulksms/subscribers" routerLinkActive="active">
               <i class="fa fa-group fa-lg pr-1"></i>

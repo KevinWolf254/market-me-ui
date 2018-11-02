@@ -10,7 +10,8 @@ import { ToastrService } from 'ngx-toastr';
 export class UserService {
   private uri: string = "http://localhost:8083/mmcs";
   private header = {headers: new HttpHeaders({'Content-Type':'application/x-www-form-urlencoded', 'No-Auth':'true'})};
-  private authHeader = {headers: new HttpHeaders({'Content-Type':'application/x-www-form-urlencoded', 'Authorization':'Basic dGVzdDAxOnRlc3QwMQ==', 'No-Auth':'true'})};
+  private authBasicHeader = {headers: new HttpHeaders({'Content-Type':'application/x-www-form-urlencoded', 'Authorization':'Basic dGVzdDAxOnRlc3QwMQ==', 'No-Auth':'true'})};
+  private authBearerheader = {headers: new HttpHeaders({'Content-Type':'application/x-www-form-urlencoded'})};
 
   private expiresAtSource = new BehaviorSubject<number>(0);
   public expiresAtObserver = this.expiresAtSource.asObservable();
@@ -46,7 +47,7 @@ export class UserService {
   public authenticate(email: string, password: string): Observable<Token>{
     let authUri: string = this.uri+"/oauth/token";
     let oAuthData = "grant_type=password"+"&username="+email+"&password="+password;
-    return this._http.post<Token>(authUri, oAuthData, this.authHeader);  
+    return this._http.post<Token>(authUri, oAuthData, this.authBasicHeader);  
   }
 
   public signIn(): Observable<UserReport>{
@@ -57,16 +58,31 @@ export class UserService {
   public changePassword(newPass: string): Observable<any>{
     let passUri: string = this.uri+"/secure/credentials";
     let data = "NewPassword="+newPass;
-    return this._http.put<any>(passUri, data, this.authHeader);
+    return this._http.put<any>(passUri, data, this.authBearerheader);
   }
+
   public save(surname: string, otherNames: string, email: string, role: string, password: string){
     let userData = "surname="+surname+
     "&otherNames="+otherNames+
     "&email="+email+
     "&role="+role+
     "&password="+password;
-    return this._http.post<any>(this.uri + "/secure/user", userData, this.authHeader);
+    return this._http.post<any>(this.uri + "/secure/user", userData, this.authBearerheader);
   }
+
+  public update(surname: string, otherNames: string, status: boolean, email: string, roles: string[]){
+    let userData = "surname="+surname+
+    "&otherNames="+otherNames+
+    "&email="+email+
+    "&roles="+roles+
+    "&status="+status;
+    return this._http.put(this.uri + "/secure/user", userData, this.authBearerheader);
+  }
+
+  public delete(email: string){
+    return this._http.delete(this.uri + "/secure/user/" + email);
+  }
+
   public set token(token: string){
     this.tokenSource.next(token);
   }

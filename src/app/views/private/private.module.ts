@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { PrivateComponent } from './private/private.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
-import { NgbDropdownModule, NgbTabsetModule, NgbDate, NgbDatepicker, NgbDatepickerModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdownModule, NgbTabsetModule, NgbDatepickerModule, NgbModalModule, NgbButtonsModule } from '@ng-bootstrap/ng-bootstrap';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ProfileComponent } from './profile/profile.component';
 import { UsersModule } from './users/users.module';
@@ -37,6 +37,7 @@ const routes: Routes = [
     ReactiveFormsModule,
     NgbDropdownModule, 
     NgbDatepickerModule, 
+    NgbButtonsModule,
     NgbModalModule,
     NgbTabsetModule,
     RouterModule.forChild(routes),

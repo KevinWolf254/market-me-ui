@@ -3,7 +3,7 @@ import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { NgbModalRef, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from '../../../../providers/services/user.service';
-import { UserReport } from '../../../../models/models.model';
+import { UserReport, Report } from '../../../../models/models.model';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Role } from '../../../../models/enums.model';
 
@@ -15,8 +15,11 @@ import { Role } from '../../../../models/enums.model';
 export class UserListComponent implements OnInit {
   public form: FormGroup;
   public isEditing = false;
+
   public users: UserReport[] = [];
   public editRolesArray: string[] = [];
+  public selected = '';
+
   public deleteUser: UserReport;
   public deleteUserEmail: string = '';
   public deleteRow: number = null;
@@ -31,7 +34,7 @@ export class UserListComponent implements OnInit {
   @ViewChild(DatatableComponent) table: DatatableComponent;
 
   // Custom icons for ngx-datatable
-  customPagerIcons = {
+  public customPagerIcons = {
     sortAscending: 'fa fa-sort-asc', sortDescending: 'fa fa-sort-desc', pagerLeftArrow: 'fa fa-chevron-left',
     pagerRightArrow: 'fa fa-chevron-right', pagerPrevious: 'fa fa-step-backward', pagerNext: 'fa fa-step-forward'
   };
@@ -41,7 +44,9 @@ export class UserListComponent implements OnInit {
     this.form = _fb.group({
       'surname': [null, Validators.required],
       'otherNames': [null],
-      'email': new FormControl({disabled: true}),
+      'role': [''],
+      'status':[null, Validators.required],
+      'email': [null, Validators.required]
     });
   }
 
@@ -81,16 +86,20 @@ export class UserListComponent implements OnInit {
     })
     return my_roles;
   }
-  public acntStatus(details: UserReport) {
-    return details.credentials.enabled
+
+  public acntStatus(row: UserReport) {
+    return row.credentials.enabled
   }
+
   public edit(modal, details: UserReport) {
     this.form.get('surname').setValue(details.user.surname);
-    this.form.get('otherNames').setValue(details.user.surname);
+    this.form.get('otherNames').setValue(details.user.otherNames);
+    this.form.get('status').setValue(details.credentials.enabled);
     this.form.get('email').setValue(details.user.email);
     this.editRolesArray = this.rolesArray(details);
     this.modalRef = this.modalService.open(modal);
   }
+
   public delete(modal, details: UserReport, rowIndex) {
     this.deleteUser = details;
 
@@ -98,81 +107,62 @@ export class UserListComponent implements OnInit {
     this.deleteRow = rowIndex;
     this.modalRef = this.modalService.open(modal);
   }
-  addRole(role){
-    let exist = this.editRolesArray.find(myrole=> myrole == role)
-    console.log('Role: '+role);
-    console.log('exist: '+exist);
-    if(exist != null || exist != undefined)
-      this.editRolesArray.push(role);
+
+  public selectedRole(event){
+    this.selected = event.target.value
+  }
+
+  public addRole(){
+    let exist = this.editRolesArray.find(myrole=> myrole == this.selected)
+    if(exist == null || exist == undefined)
+      this.editRolesArray.push(this.selected);
     else
-      this.notify.error('User already has that role');
+      this.notify.warning('User already has that role');
+    this.form.get("role").setValue('');
   }
-  deleteRole(role: Role){
 
+  public deleteRole(role: Role){
+    if(this.editRolesArray.length == 1)
+      this.notify.warning('User must have at least one role ');
+    else
+      this.editRolesArray = this.editRolesArray.filter(myrole=> {return role != myrole});
   }
+
   public confirm() {
-    // this.userService.delete(this.deleteUserEmail).subscribe(
-    //   (response: Report) =>{             
-    //     this.modalRefDel.close();
-    //     this.users.splice(this.deleteRow, 1);
-    //     this.users = [...this.users];
-    //     this.notify.success(response.message);
-    //   },error=>{
-    //     if(error.status == 400)
-    //       this.notify.error(error.message);
-    //     else
-    //       this.notify.error("something went wrong. could not complete request");
-    //   }
-    // );
+    this.userService.delete(this.deleteUserEmail).subscribe(
+      (response: Report) =>{             
+        this.modalRef.close();
+        this.users.splice(this.deleteRow, 1);
+        this.users = [...this.users];
+        this.notify.success(response.message);
+      },error=>{
+        if(error.status == 400)
+          this.notify.error(error.message);
+        else
+          this.notify.error("something went wrong. could not complete request");
+      }
+    );
   }
-  // public setFName(event, rowIndex){
-  //   this.users[rowIndex].user.surname = event.target.value;
-  // }
 
-  // public setLName(event, rowIndex){
-  //   this.users[rowIndex].user.otherNames = event.target.value;
-  // }
-
-  // public setRole(event, rowIndex){
-  //   this.users[rowIndex].roles = event.target.value;
-  // }
-
-  // public role(index): string {
-  // let myRoles = '';
-  // let length = this.users[index].roles.length;
-  // let i = 1;
-  // this.users[index].roles.forEach(role=>{
-  //   myRoles = myRoles.concat(role.role).toLowerCase();
-  //   if(i != length)
-  //     myRoles = myRoles.concat(', ');
-  //   i++;
-  // });
-  // return myRoles;
-  // return '';
-  // }
-
-  // public update(rowIndex) {
-  // this.userService.update(this.users[rowIndex]).subscribe(
-  //   (response: UserDetails)=>{
-  //     this.users[rowIndex] = response;        
-  //     this.users = [...this.users];        
-  //     this.edit[rowIndex] = false;
-  //     this.notify.success(response.message);
-  //   },error=>{
-  //     if(error.status == 400){
-  //       this.notify.error(error.message);
-  //       this.getUsers();
-  //     }
-  //     else
-  //       this.notify.error("something went wrong. could not complete request");
-  //     this.edit[rowIndex] = false;
-  //   }
-  // );
-  // }
+  public update(form){
+    this.isEditing = true;
+    this.userService.update(form.surname, form.otherNames, form.status, form.email, this.editRolesArray).subscribe(
+      result=>{
+        this.getUsers();
+      },error =>{
+        if(error.status == 400)
+          this.notify.error(error.message);
+        else
+          this.notify.error("something went wrong. could not complete request");
+        this.isEditing = false;
+      }
+    );
+  }
 
   public set pageEntries(event) {
     this.perPage = event.target.value;
   }
+  
   public search(event) {
     let searchParam = event.target.value.toLowerCase();
     // filter our data

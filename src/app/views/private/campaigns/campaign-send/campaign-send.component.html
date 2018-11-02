@@ -1,39 +1,46 @@
 <div class="d-flex pb-2 mb-2 border-bottom">
   <h3>Campaigns</h3>
 </div>
-<ngb-tabset> 
+<ngb-tabset>  
   <ngb-tab title="Send Sms Campaign" id="allTab">
     <ng-template ngbTabContent>
       <div class="card border-top-0 shadow">
         <div class="card-body">
           <form [formGroup] = "form" (ngSubmit) = "sendSms(form.value)">
-            <!-- <h6 class="mb-4 bg-light p-2 rounded">Compose message</h6> -->
             <div class="row mb-4 bg-light p-2 border rounded shadow-sm">
               <div class="col-sm-4">
                 <h6 class="">Compose message</h6>
               </div>
               <div class="col-sm-8">
-                <small class="d-flex flex-row-reverse bd-highlight">
+                <div class="d-flex flex-row-reverse bd-highlight align-baseline">
+                  <div class="bd-highlight pl-2">
+                    <button type="button" class="btn btn-sm btn-primary px-3" [disabled]="!canCalculate" (click)="smsCharges()">
+                        <i class="fa fa-calculator"></i> Calculate
+                    </button>
+                  </div>
                   <div class="bd-highlight text-success" [class.text-success]="canSend" [class.text-danger]="!canSend">
-                    <!-- {{report.credit.currency}} {{totalCharges}}  -->
-                    kes 0.0
+                    {{currency}} {{chargeAmount | number:'1.2-2'}}
                   </div>
                   <div class="bd-highlight pr-2">Charges: </div>
                   <div class="bd-highlight px-2"> | </div>
-                  <div class="bd-highlight"> {{totalSubscribers}} </div>
+                  <div class="bd-highlight text-primary"> {{totalSubscribers | number:'1.0-0'}} </div>
                   <div class="bd-highlight pr-2">Contacts: </div>
-                </small>
+                </div>
               </div>
-            </div>
+            </div> 
+            <h6 class="mb-4 mt-3 bg-light p-2 rounded">Sender Id:</h6>
+            <select class="form-control form-control-sm" formControlName="senderId">
+              <option value='' selected>Choose Sender Id</option>
+              <option *ngFor="let senderId of senderIds" [value]="senderId.name">{{senderId.name}}</option>
+            </select>
             <h6 class="mb-4 mt-3 bg-light p-2 rounded">Groups to send to</h6>
             <div class="input-group mb-3"> 
-              <select class="form-control form-control-sm" formControlName="group" 
-              aria-describedby="groupSelectHelp" [(ngModel)]="selected">
+              <select class="form-control form-control-sm" formControlName="group">
                 <option value='0' selected>Select Group</option>
                 <option *ngFor="let group of groups" [value]="group.id">{{group.name}}</option>
               </select>
               <div class="input-group-append">
-                <button class="btn btn-sm btn-info px-4" (click)="addGroup()" [disabled]="!form.controls['group'].valid" type="button">
+                <button class="btn btn-sm btn-info px-4" (click)="add()" [disabled]="!isSelected" type="button">
                   Add
                 </button>
               </div> 
@@ -49,19 +56,16 @@
               </span>
             </div>
             <hr class="mb-4">
-            <small *ngIf="!canSend" class="alert alert-danger" role="alert">
-              Please top up units to send to {{noOfContacts}} contacts
-            </small>
             <div class="form-group">
               <textarea class="form-control form-control-sm shadow-sm" formControlName="message" rows="5" 
               placeholder="Message" aria-describedby="messageHelp" maxlength="320"></textarea>
               <small id="messageHelp" class="form-text text-muted">
-                Compose an SMS message that is less than 160 characters long, otherwise additional charges apply.
+                Additional charges apply for characters more than 160.
               </small>
             </div>
             <hr class="mb-0">
             <div class="row">
-              <div  class="col my-0 pb-0" [class.text-warning]="isLong" [class.text-muted]="!isLong">
+              <div  class="col my-0 pb-0" [class.text-warning]="max" [class.text-muted]="!max">
                 <div class="d-flex flex-row-reverse bd-highlight">
                   <div class="bd-highlight"> Characters </div>
                   <div class="bd-highlight px-2"> | </div>
@@ -69,12 +73,12 @@
                 </div>
               </div>
             </div>
-            <small *ngIf="isLong" class="d-flex text-warning bg-light rounded 
+            <small *ngIf="max" class="d-flex text-warning bg-light rounded 
             flex-row-reverse bd-highlight mt-0">
               warning: additional charges will be applied
             </small>
             <button class="btn btn-primary btn-block btn-sm mt-4" type="submit" [disabled]="!form.get('message').valid || 
-            selectedRecipients.length == 0 || !canSend || messageLength == 0">
+            selectedRecipients.length == 0 || messageLength == 0">
             <div *ngIf="!isSendingSms">
               Send Sms
             </div>
