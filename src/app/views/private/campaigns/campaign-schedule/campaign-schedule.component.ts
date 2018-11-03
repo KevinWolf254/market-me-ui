@@ -10,6 +10,9 @@ import { Time } from '@angular/common';
 })
 export class CampaignScheduleComponent implements OnInit {
 
+  public formArray;
+
+
   public messageLength: number = 0;
   public canSend: boolean = true;
   public isLong: boolean = false;
@@ -35,13 +38,22 @@ export class CampaignScheduleComponent implements OnInit {
       this.meridian = !this.meridian;
   }
 
-  constructor(private _fb: FormBuilder, private notify: ToastrService) { 
-    this.form = _fb.group({
+  constructor(private fb: FormBuilder, private notify: ToastrService) { 
+    this.form = fb.group({
+
+    });
+
+
+    this.form = fb.group({
       'campaignName': ['',Validators.required],
       'message': ['',Validators.compose([Validators.required, Validators.maxLength(320)])],
       'group': ['0'],
       'campaignType': ['', Validators.required]
     });
+
+    this.formArray = fb.array([
+
+    ]);
   }
 
   ngOnInit() {
@@ -76,15 +88,15 @@ export class CampaignScheduleComponent implements OnInit {
         if(campaignType == 'oneOff'){
           if(this.form.contains('recurring'))
             this.form.removeControl('recurring');
-          this.form.addControl('oneOff_Date', this._fb.control('', Validators.required));
-          this.form.addControl('oneOff_Time', this._fb.control(this.defaultTime, 
+          this.form.addControl('oneOff_Date', this.fb.control('', Validators.required));
+          this.form.addControl('oneOff_Time', this.fb.control(this.defaultTime, 
             Validators.required));
         }else if(campaignType == 'recurring'){
           if(this.form.contains('oneOff_Date')){
             this.form.removeControl('oneOff_Date');
             this.form.removeControl('oneOff_Time');
           }
-          this.form.addControl('recurring', this._fb.control('', Validators.required));
+          this.form.addControl('recurring', this.fb.control('', Validators.required));
           this.form.get('recurring').valueChanges.subscribe(
             recurring =>{
               if(recurring == 'daily'){
@@ -95,7 +107,7 @@ export class CampaignScheduleComponent implements OnInit {
                   this.form.removeControl('monthlyDate');
                   this.form.removeControl('monthlyTime');
                 }
-                this.form.addControl('dailyTime', this._fb.control(this.defaultTime, Validators.required));                
+                this.form.addControl('dailyTime', this.fb.control(this.defaultTime, Validators.required));                
               }else if(recurring == 'weekly'){
                 if(this.form.contains('dailyTime')){
                   this.form.removeControl('dailyTime');
@@ -103,8 +115,8 @@ export class CampaignScheduleComponent implements OnInit {
                   this.form.removeControl('monthlyDate');
                   this.form.removeControl('monthlyTime');
                 }
-                this.form.addControl('dayOfWeek', this._fb.control(0, ));//selectValidator)); 
-                this.form.addControl('weeklyTime', this._fb.control(this.defaultTime, Validators.required));               
+                this.form.addControl('dayOfWeek', this.fb.control(0, ));//selectValidator)); 
+                this.form.addControl('weeklyTime', this.fb.control(this.defaultTime, Validators.required));               
               }else if(recurring == 'monthly'){
                 if(this.form.contains('dailyTime')){
                   this.form.removeControl('dailyTime');
@@ -112,8 +124,8 @@ export class CampaignScheduleComponent implements OnInit {
                   this.form.removeControl('dayOfWeek');
                   this.form.removeControl('weeklyTime');
                 }
-                this.form.addControl('monthlyDate', this._fb.control('', Validators.required));
-                this.form.addControl('monthlyTime', this._fb.control(this.defaultTime, Validators.required));               
+                this.form.addControl('monthlyDate', this.fb.control('', Validators.required));
+                this.form.addControl('monthlyTime', this.fb.control(this.defaultTime, Validators.required));               
               }
             }
           );
