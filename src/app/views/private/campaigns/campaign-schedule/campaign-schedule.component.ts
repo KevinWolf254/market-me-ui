@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormControl, FormArray } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { Time } from '@angular/common';
+import { GroupService } from '../../../../providers/services/group.service';
+import { selectValidator, campaignNameValidator } from '../../../../providers/validators/validators';
+import { CampaignService } from '../../../../providers/services/campaign.service';
 
 @Component({
   selector: 'app-campaign-schedule',
@@ -9,9 +12,6 @@ import { Time } from '@angular/common';
   styleUrls: ['./campaign-schedule.component.scss']
 })
 export class CampaignScheduleComponent implements OnInit {
-
-  public formArray;
-
 
   public messageLength: number = 0;
   public canSend: boolean = true;
@@ -25,116 +25,81 @@ export class CampaignScheduleComponent implements OnInit {
   public selected: number = 0;
   public groups: any[] = [];
   public selectedRecipients: any[] = [];
-  public week: string[] = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", 
-                           "THURSDAY", "FRIDAY", "SATURDAY"];
+  public week: string[] = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY",
+    "THURSDAY", "FRIDAY", "SATURDAY"];
 
-  public recipientsIds: number[] = [];  
-  public form: FormGroup; 
+  public recipientsIds: number[] = [];
+  public form: FormGroup;
 
-  public defaultTime = {hour: 12, minute: 30};
+  public defaultTime = { hour: 12, minute: 30 };
   public meridian: boolean = true;
 
   toggleMeridian() {
-      this.meridian = !this.meridian;
+    this.meridian = !this.meridian;
   }
 
-  constructor(private fb: FormBuilder, private notify: ToastrService) { 
+  constructor(private fb: FormBuilder, private notify: ToastrService, private groupService: GroupService, 
+    private campaignService: CampaignService) {
     this.form = fb.group({
-
-    });
-
-
-    this.form = fb.group({
-      'campaignName': ['',Validators.required],
-      'message': ['',Validators.compose([Validators.required, Validators.maxLength(320)])],
+      'name': ['', Validators.required, campaignNameValidator(campaignService)],
+      'message': ['', Validators.compose([Validators.required, Validators.maxLength(320)])],
       'group': ['0'],
-      'campaignType': ['', Validators.required]
+      'schedule': ['', Validators.required],
+      'time': [this.defaultTime, Validators.required],
+      'details': this.fb.array([])
     });
-
-    this.formArray = fb.array([
-
-    ]);
   }
 
   ngOnInit() {
-    // retrieve groups for organisation from API
-    // this.groupService.getGroups().subscribe((groups: Group[]) =>{
-    //     this.groups = groups;
-    //   }
-    // );
+    // retrieve groups for organisation from API    
+    this.groupService.groupObserver.subscribe(groups => this.groups = groups);
 
     //check availability of campaign name
-    this.form.get('campaignName').valueChanges.subscribe(name => {
-      if(!this.form.get('campaignName').valid)
+    this.form.get('name').valueChanges.subscribe(name => {
+      if (this.form.get('name').valid && this.form.get('name'))
         this.nameIsAvailable = null;
-        this.checked = false;
+      this.checked = false;
     });
 
     //observes the changes in the message textfield
     this.form.get('message').valueChanges.subscribe(message => {
-        this.messageLength = message.length;
-        if (this.messageLength > 160) {
-          this.isLong = true;
-        }else if (this.messageLength > 0 && this.messageLength <= 160){
-          this.isLong = false;
-        }else{
-          this.isLong = false;
-        }
+      this.messageLength = message.length;
+      if (this.messageLength > 160) {
+        this.isLong = true;
+      } else if (this.messageLength > 0 && this.messageLength <= 160) {
+        this.isLong = false;
+      } else {
+        this.isLong = false;
       }
+    }
     );
 
-    this.form.get('campaignType').valueChanges.subscribe(
-      campaignType =>{
-        if(campaignType == 'oneOff'){
-          if(this.form.contains('recurring'))
-            this.form.removeControl('recurring');
-          this.form.addControl('oneOff_Date', this.fb.control('', Validators.required));
-          this.form.addControl('oneOff_Time', this.fb.control(this.defaultTime, 
-            Validators.required));
-        }else if(campaignType == 'recurring'){
-          if(this.form.contains('oneOff_Date')){
-            this.form.removeControl('oneOff_Date');
-            this.form.removeControl('oneOff_Time');
-          }
-          this.form.addControl('recurring', this.fb.control('', Validators.required));
-          this.form.get('recurring').valueChanges.subscribe(
-            recurring =>{
-              if(recurring == 'daily'){
-                if(this.form.contains('dayOfWeek')){
-                  this.form.removeControl('dayOfWeek');
-                  this.form.removeControl('weeklyTime');
-                }else if(this.form.contains('monthlyDate')){
-                  this.form.removeControl('monthlyDate');
-                  this.form.removeControl('monthlyTime');
-                }
-                this.form.addControl('dailyTime', this.fb.control(this.defaultTime, Validators.required));                
-              }else if(recurring == 'weekly'){
-                if(this.form.contains('dailyTime')){
-                  this.form.removeControl('dailyTime');
-                }else if(this.form.contains('monthlyDate')){
-                  this.form.removeControl('monthlyDate');
-                  this.form.removeControl('monthlyTime');
-                }
-                this.form.addControl('dayOfWeek', this.fb.control(0, ));//selectValidator)); 
-                this.form.addControl('weeklyTime', this.fb.control(this.defaultTime, Validators.required));               
-              }else if(recurring == 'monthly'){
-                if(this.form.contains('dailyTime')){
-                  this.form.removeControl('dailyTime');
-                }else if(this.form.contains('dayOfWeek')){
-                  this.form.removeControl('dayOfWeek');
-                  this.form.removeControl('weeklyTime');
-                }
-                this.form.addControl('monthlyDate', this.fb.control('', Validators.required));
-                this.form.addControl('monthlyTime', this.fb.control(this.defaultTime, Validators.required));               
-              }
-            }
-          );
-        }
-      }
-    );
+    this.form.get('schedule').valueChanges.subscribe(schedule => {
+      if (schedule == 'date' || schedule == 'monthly')
+        this.scheduleDetails = this.setDate();
+      else if (schedule == 'weekly')
+        this.scheduleDetails = this.setDay();
+    });
   }
 
-  public add(){
+  private set scheduleDetails(formGroup: FormGroup) {
+    if ((<FormArray>this.form.get('details')).length >= 0)
+      (<FormArray>this.form.get('details')).removeAt(0);
+    (<FormArray>this.form.get('details')).push(formGroup);
+  }
+
+  private setDate(): FormGroup {
+    return this.fb.group({
+      'date': ['', Validators.required]
+    });
+  }
+  private  setDay(): FormGroup {
+    return this.fb.group({
+      'day': ['0', selectValidator]
+    });
+  }
+
+  public add() {
     // //find group with selected id
     // let group: Group = this.groupService.findGroup(this.groups, this.selected);
     // //check if recipients has a group of recipients added to it
@@ -147,34 +112,34 @@ export class CampaignScheduleComponent implements OnInit {
     // this.form.get("group").setValue('0');
   }
 
-  public removeDuplicate(): any[]{
-    return this.selectedRecipients = this.selectedRecipients.filter((group: any)=>{
-        return group.id != this.selected;
+  public removeDuplicate(): any[] {
+    return this.selectedRecipients = this.selectedRecipients.filter((group: any) => {
+      return group.id != this.selected;
     });
   }
 
-  public removeIdsDuplicate(): number[]{
-    return this.recipientsIds = this.recipientsIds.filter((id: number)=>{
-        return id != this.selected;
+  public removeIdsDuplicate(): number[] {
+    return this.recipientsIds = this.recipientsIds.filter((id: number) => {
+      return id != this.selected;
     });
   }
 
   /**removes group from array of selected groups */
-  public remove(removeGroup: any){
-    this.selectedRecipients.forEach((group, index)=>{
-      if(group.id == removeGroup.id){
+  public remove(removeGroup: any) {
+    this.selectedRecipients.forEach((group, index) => {
+      if (group.id == removeGroup.id) {
         this.selectedRecipients.splice(index, 1);
       }
-    }); 
+    });
     //remove from recipientsIds/groupIds
-    this.recipientsIds.forEach((id, index)=>{
-      if(id == removeGroup.id){
+    this.recipientsIds.forEach((id, index) => {
+      if (id == removeGroup.id) {
         this.recipientsIds.splice(index, 1);
       }
     })
-  } 
+  }
 
-  public checkName(){
+  public checkName() {
     this.isChecking = true;
     let name: string = this.form.get('campaignName').value;
     // this.campaignService.checkCampaignNameAvailability(name).subscribe(
@@ -192,33 +157,33 @@ export class CampaignScheduleComponent implements OnInit {
     // );
   }
 
-  public sendScheduledSms(form){
+  public sendScheduledSms(form) {
     this.isSendingSchedule = true;
     let scheduledDate: Date = new Date();
-    let scheduledTime: Time = {hours: 0, minutes: 0};
+    let scheduledTime: Time = { hours: 0, minutes: 0 };
     // let sms: Sms = null;
-    if(form.campaignType == "oneOff"){
-    //   scheduledDate.setUTCFullYear(form.oneOff_Date.year, form.oneOff_Date.month - 1, 
-    //     form.oneOff_Date.day);  
-    //   scheduledTime.hours = form.oneOff_Time.hour;
-    //   scheduledTime.minutes = form.oneOff_Time.minute;
-    //   sms = new Sms(form.message, new ScheduleDate(form.campaignName, ScheduleType.DATE, scheduledDate, scheduledTime), this.recipientsIds);
+    if (form.campaignType == "oneOff") {
+      //   scheduledDate.setUTCFullYear(form.oneOff_Date.year, form.oneOff_Date.month - 1, 
+      //     form.oneOff_Date.day);  
+      //   scheduledTime.hours = form.oneOff_Time.hour;
+      //   scheduledTime.minutes = form.oneOff_Time.minute;
+      //   sms = new Sms(form.message, new ScheduleDate(form.campaignName, ScheduleType.DATE, scheduledDate, scheduledTime), this.recipientsIds);
     }
-    else if(form.campaignType == 'recurring'){
-      if(form.recurring == 'daily'){
-    //     scheduledTime.hours = form.dailyTime.hour;
-    //     scheduledTime.minutes = form.dailyTime.minute;
-    //     sms = new Sms(form.message, new ScheduleDaily(form.campaignName, ScheduleType.DAILY, scheduledTime), this.recipientsIds);
-      }else if(form.recurring == 'weekly'){
-    //     scheduledTime.hours = form.weeklyTime.hour;
-    //     scheduledTime.minutes = form.weeklyTime.minute;
-    //     sms = new Sms(form.message, new ScheduleWeekly(form.campaignName, ScheduleType.WEEKLY, scheduledTime, form.dayOfWeek), this.recipientsIds);
-      }else if(form.recurring == 'monthly'){
-    //     scheduledDate.setUTCFullYear(form.monthlyDate.year, form.monthlyDate.month - 1, 
-    //       form.monthlyDate.day);  
-    //     scheduledTime.hours = form.monthlyTime.hour;
-    //     scheduledTime.minutes = form.monthlyTime.minute;
-    //     sms = new Sms(form.message, new ScheduleMonthly(form.campaignName, ScheduleType.MONTHLY, scheduledDate, scheduledTime, form.monthlyDate.day), this.recipientsIds);
+    else if (form.campaignType == 'recurring') {
+      if (form.recurring == 'daily') {
+        //     scheduledTime.hours = form.dailyTime.hour;
+        //     scheduledTime.minutes = form.dailyTime.minute;
+        //     sms = new Sms(form.message, new ScheduleDaily(form.campaignName, ScheduleType.DAILY, scheduledTime), this.recipientsIds);
+      } else if (form.recurring == 'weekly') {
+        //     scheduledTime.hours = form.weeklyTime.hour;
+        //     scheduledTime.minutes = form.weeklyTime.minute;
+        //     sms = new Sms(form.message, new ScheduleWeekly(form.campaignName, ScheduleType.WEEKLY, scheduledTime, form.dayOfWeek), this.recipientsIds);
+      } else if (form.recurring == 'monthly') {
+        //     scheduledDate.setUTCFullYear(form.monthlyDate.year, form.monthlyDate.month - 1, 
+        //       form.monthlyDate.day);  
+        //     scheduledTime.hours = form.monthlyTime.hour;
+        //     scheduledTime.minutes = form.monthlyTime.minute;
+        //     sms = new Sms(form.message, new ScheduleMonthly(form.campaignName, ScheduleType.MONTHLY, scheduledDate, scheduledTime, form.monthlyDate.day), this.recipientsIds);
       }
     }
     // console.log("Sms: "+JSON.stringify(sms));
@@ -234,16 +199,16 @@ export class CampaignScheduleComponent implements OnInit {
     //     this.notify.error(error.error.error_description, error.error.error);
     //   }
     // );
-  }  
-   
-  resetForm(){
+  }
+
+  resetForm() {
     this.form.get("campaignName").setValue('');
     this.form.get("campaignType").reset();
     this.form.get("message").setValue('');
     this.form.get("group").setValue('0');
   }
 
-  resetDataValues(){
+  resetDataValues() {
     this.selectedRecipients = [];
     this.recipientsIds = [];
   }

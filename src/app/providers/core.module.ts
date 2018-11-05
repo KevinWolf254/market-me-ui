@@ -6,6 +6,7 @@ import { SubscriberService } from './services/subscriber.service';
 import { GroupService } from './services/group.service';
 import { SmsService } from './services/sms.service';
 import { SenderIdService } from './services/sender-id.service';
+import { CampaignService } from './services/campaign.service';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './services/auth-interceptor';
 import { AuthGuard } from './guards/auth.guard';
@@ -19,12 +20,13 @@ import { AuthGuard } from './guards/auth.guard';
     GroupService,
     SmsService,
     SenderIdService,
+    CampaignService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true
     },
-    AuthGuard
+    AuthGuard,
   ]
 })
 export class CoreModule { }

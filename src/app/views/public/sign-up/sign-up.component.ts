@@ -5,8 +5,7 @@ import { Router } from '@angular/router';
 import { CountryService } from '../../../providers/services/country.service';
 import { Country } from '../../../models/models.model';
 import { UserService } from '../../../providers/services/user.service';
-import { confirmPasswordValidator } from '../../../providers/validators/confirm-password-validator';
-import { countryValidator } from '../../../providers/validators/select-validator';
+import { countryValidator, confirmPasswordValidator } from '../../../providers/validators/validators';
 
 @Component({
   selector: 'app-sing-up',

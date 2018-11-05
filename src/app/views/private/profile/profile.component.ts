@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { confirmPasswordValidator } from '../../../providers/validators/confirm-password-validator';
 import { UserService } from '../../../providers/services/user.service';
 import { UserReport } from '../../../models/models.model';
 import { ToastrService } from 'ngx-toastr';
+import { confirmPasswordValidator } from '../../../providers/validators/validators';
 
 @Component({
   selector: 'app-profile',

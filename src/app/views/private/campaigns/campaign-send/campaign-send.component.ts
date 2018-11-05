@@ -117,7 +117,6 @@ export class CampaignSendComponent implements OnInit {
     return true;
   }
   public get canSend() {
-    console.log(this.units >= this.chargeAmount);
     if (this.units >= this.chargeAmount)
       return true;
     return false;
