@@ -6,11 +6,11 @@
       <div class="form-group">
         <label for="name" class="control-label">Name</label>
         <input type="text" class="form-control form-control-sm" formControlName="name" id="name" placeholder="Campaign name"
-          [class.is-invalid]="isInValid('name', 'required') && isTouched('name')">
+          [class.is-invalid]="isNameInvalid">
         <!-- Error -->
         <small class="form-text text-danger" *ngIf="isTouched('name')">
           <div *ngIf="isInValid('name', 'required')">Please provide a Campaign name.</div>
-          <div *ngIf="isInValid('name', 'campaignNameValidator')">Campaign name already exists.</div>
+          <div *ngIf="isInValid('name', 'exists')">Campaign name already exists.</div>
         </small>
       </div>
       <!-- sender id -->

@@ -4,10 +4,11 @@ import { ToastrService } from 'ngx-toastr';
 import { GroupService } from '../../../../providers/services/group.service';
 import { selectValidator, campaignNameValidator } from '../../../../providers/validators/validators';
 import { CampaignService } from '../../../../providers/services/campaign.service';
-import { UserReport, SenderId, Group } from '../../../../models/models.model';
+import { UserReport, SenderId, Group, Sms, Schedule, ScheduleBuilder } from '../../../../models/models.model';
 import { UserService } from '../../../../providers/services/user.service';
 import { SenderIdService } from '../../../../providers/services/sender-id.service';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { ScheduleType } from '../../../../models/enums.model';
 
 @Component({
   selector: 'app-campaign-schedule',
@@ -21,7 +22,7 @@ export class CampaignScheduleComponent implements OnInit {
   public groups: any[] = [];
   public profile: UserReport;
   public senderIds: SenderId[] = [];
-  public selectedRecipients: any[] = [];
+  public selectedRecipients: Group[] = [];
   private today = new Date();
   public todayDate: NgbDateStruct;
   public week: string[] = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY",
@@ -32,7 +33,6 @@ export class CampaignScheduleComponent implements OnInit {
   public toggleMeridian() {
     this.meridian = !this.meridian;
   }
-
   public isSending: boolean = false;
 
   constructor(private fb: FormBuilder, private notify: ToastrService, private groupService: GroupService,
@@ -105,6 +105,9 @@ export class CampaignScheduleComponent implements OnInit {
   public isArrayTouched(input: string): boolean {
     return (<FormGroup>(<FormArray>this.form.get('details')).controls[0]).controls[input].touched;
   }
+  public get isNameInvalid(): boolean{
+    return (this.isInValid('name', 'required') || this.isInValid('name', 'exists')) && this.isTouched('name')
+  }
   public get isSelectedValid(): boolean {
     if (this.getFormValue('group') == 0)
       return false;
@@ -175,63 +178,86 @@ export class CampaignScheduleComponent implements OnInit {
     return (this.isTouched('message') && this.isInValid('message', 'required'));
   }
   public get isFormInvalid(): boolean {
-    return (this.form.invalid && this.selectedRecipients.length == 0)
+    return (this.form.invalid || this.selectedRecipients.length == 0)
   }
-  send(form) {
+  private get selectedDateSchedule(): Date {
+    return new Date(this.selectedDate.getFullYear(), this.selectedDate.getDate(),
+      this.selectedDate.getDay(), this.selectedTime.getHours(), this.selectedTime.getMinutes());
+  }
+  private get basicSchedule(): ScheduleBuilder {
+    return new ScheduleBuilder()
+      .setName(this.getFormValue('name'))
+      .setSenderId(this.getFormValue('senderId'))
+      .setCreatedBy(this.profile.user.email);
+  }
+  private get dateSchedule(): Schedule {
+    return this.basicSchedule
+      .setType(ScheduleType.DATE)
+      .setDate(this.selectedDateSchedule)
+      .build();
+  }
+  private get dailySchedule(): Schedule {
+    return this.basicSchedule
+      .setType(ScheduleType.DAILY)
+      .setDate(this.selectedTime)
+      .build();
+  }
+  private get weeklySchedule(): Schedule {
+    return this.basicSchedule
+      .setType(ScheduleType.WEEKLY)
+      .setDayOfWeek(this.selectedDay)
+      .setDate(this.selectedDateSchedule)
+      .build();
+  }
+  private get monthlySchedule(): Schedule {
+    return this.basicSchedule
+      .setType(ScheduleType.MONTHLY)
+      .setDayOfMonth(this.selectedMonthDay)
+      .setDate(this.selectedTime)
+      .build();
+  }
+  private get selectedGroupIds(): number[] {
+    return this.selectedRecipients.map(group => group.id);
+  }
+  private getDateSms(form): Sms {
+    return new Sms(this.profile.user.email, form.senderId, form.message,
+      this.dateSchedule, this.selectedGroupIds);
+  }
+  private getDailySms(form): Sms {
+    return new Sms(this.profile.user.email, form.senderId, form.message,
+      this.dailySchedule, this.selectedGroupIds);
+  }
+  private getWeeklySms(form): Sms {
+    return new Sms(this.profile.user.email, form.senderId, form.message,
+      this.weeklySchedule, this.selectedGroupIds);
+  }
+  private getMonthlySms(form): Sms {
+    return new Sms(this.profile.user.email, form.senderId, form.message,
+      this.monthlySchedule, this.selectedGroupIds);
+  }
+  private getSms(form): Sms {
+    if (form.schedule == 'date')
+      return this.getDateSms(form);
+    if (form.schedule == 'daily')
+      return this.getDailySms(form);
+    if (form.schedule == 'weekly')
+      return this.getWeeklySms(form);
+    if (form.schedule == 'monthly')
+      return this.getMonthlySms(form);
+  }
+  public send(form) {
     this.isSending = true;
-    console.log(form);
+    this.campaignService.sendSms(this.getSms(form)).subscribe(
+      response => {
+        this.isSending = false;
+        this.notify.success("Created SMS campaign successfully");
+        //reset form and selectedGroups array
+        this.form.reset();
+        this.selectedRecipients = [];
+      }, error => {
+        this.isSending = false;
+        this.notify.error(error.error.error_description, error.error.error);
+      }
+    );
   }
-  // public sendScheduledSms(form) {
-  //   this.isSendingSchedule = true;
-  //   let scheduledDate: Date = new Date();
-  //   let scheduledTime: Time = { hours: 0, minutes: 0 };
-  // let sms: Sms = null;
-  // if (form.campaignType == "oneOff") {
-  //   scheduledDate.setUTCFullYear(form.oneOff_Date.year, form.oneOff_Date.month - 1, 
-  //     form.oneOff_Date.day);  
-  //   scheduledTime.hours = form.oneOff_Time.hour;
-  //   scheduledTime.minutes = form.oneOff_Time.minute;
-  //   sms = new Sms(form.message, new ScheduleDate(form.campaignName, ScheduleType.DATE, scheduledDate, scheduledTime), this.recipientsIds);
-  // }
-  // else if (form.campaignType == 'recurring') {
-  //   if (form.recurring == 'daily') {
-  //     scheduledTime.hours = form.dailyTime.hour;
-  //     scheduledTime.minutes = form.dailyTime.minute;
-  //     sms = new Sms(form.message, new ScheduleDaily(form.campaignName, ScheduleType.DAILY, scheduledTime), this.recipientsIds);
-  // } else if (form.recurring == 'weekly') {
-  //     scheduledTime.hours = form.weeklyTime.hour;
-  //     scheduledTime.minutes = form.weeklyTime.minute;
-  //     sms = new Sms(form.message, new ScheduleWeekly(form.campaignName, ScheduleType.WEEKLY, scheduledTime, form.dayOfWeek), this.recipientsIds);
-  // } else if (form.recurring == 'monthly') {
-  //     scheduledDate.setUTCFullYear(form.monthlyDate.year, form.monthlyDate.month - 1, 
-  //       form.monthlyDate.day);  
-  //     scheduledTime.hours = form.monthlyTime.hour;
-  //     scheduledTime.minutes = form.monthlyTime.minute;
-  //     sms = new Sms(form.message, new ScheduleMonthly(form.campaignName, ScheduleType.MONTHLY, scheduledDate, scheduledTime, form.monthlyDate.day), this.recipientsIds);
-  //   }
-  // }
-  // console.log("Sms: "+JSON.stringify(sms));
-  // this.campaignService.sendScheduled(sms).subscribe(
-  //   response=>{
-  //     this.isSendingSchedule = false;
-  //     this.notify.success(response.message, response.title);
-  //     //reset form and select_Groups array
-  //     this.resetDataValues();
-  //     this.resetForm();
-  //   }, error=>{
-  //     this.isSendingSchedule = false;
-  //     this.notify.error(error.error.error_description, error.error.error);
-  //   }
-  // );
-  // }
-  // resetForm() {
-  //   this.form.get("campaignName").setValue('');
-  //   this.form.get("campaignType").reset();
-  //   this.form.get("message").setValue('');
-  //   this.form.get("group").setValue('0');
-  // }
-  // resetDataValues() {
-  //   this.selectedRecipients = [];
-  //   this.recipientsIds = [];
-  // }
 }

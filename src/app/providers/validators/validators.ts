@@ -1,8 +1,7 @@
 import { AbstractControl, ValidationErrors, AsyncValidatorFn } from "@angular/forms";
 import { Observable } from "rxjs";
 import { CampaignService } from '../services/campaign.service';
-import { map } from 'rxjs/operators';
-import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
+import { map, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 export function selectValidator(control: AbstractControl) {
     if (control && (control.value != null || control.value != undefined)) {
@@ -42,18 +41,14 @@ export function confirmPasswordValidator(control: AbstractControl) {
         return null;
     }
 }
-
 export function campaignNameValidator(campaignService: CampaignService): AsyncValidatorFn {
     return (control: AbstractControl): Promise<ValidationErrors> | Observable<ValidationErrors> | null => {
-        return campaignService.checkName(control.value).pipe(
-            map((response: Response) => {
-                if (response.status == 200) {
-                    return {
-                        campaignNameValidator: true
-                    };
-                }
+        return campaignService.nameExists(control.value).pipe(
+            map(exists => {
+                if (exists)
+                    return { exists: true };
                 return null;
             })
-        );
+        )
     }
 }
