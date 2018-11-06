@@ -19,7 +19,7 @@ export class CampaignSendComponent implements OnInit {
   public totalSubscribers: number = 0;
   public messageLength: number = 0;
   public groups: Group[] = [];
-  public selectedRecipients: any[] = [];
+  public selectedRecipients: Group[] = [];
   public form: FormGroup;
   public isSendingSms: boolean = false;
   public enoughUnits = false;
@@ -28,8 +28,7 @@ export class CampaignSendComponent implements OnInit {
 
   constructor(private _fb: FormBuilder, private notify: ToastrService,
     private groupService: GroupService, private userService: UserService,
-    private subscriberService: SubscriberService, private senderIdService: SenderIdService,
-    private smsService: SmsService) {
+    private senderIdService: SenderIdService, private smsService: SmsService) {
 
     this.form = _fb.group({
       'senderId': [''],
@@ -39,34 +38,48 @@ export class CampaignSendComponent implements OnInit {
   }
 
   ngOnInit() {
-    // retrieve groups for organisation from API
+    // retrieve subscriber groups
     this.groupService.groups.subscribe(groups => this.groupService._groups = groups);
     this.groupService.groupObserver.subscribe(groups => this.groups = groups);
-
+    //obtain user profile
     this.userService.profileObserver.subscribe(profile => this.profile = profile);
     //retrieve senderIds
     this.senderIdService.senderIds(this.profile.client.id).subscribe(senderIds => this.senderIdService._senderIds = senderIds);
     this.senderIdService.senderIdsObserver.subscribe(senderIds => this.senderIds = senderIds);
-
     //observes the changes in the message textfield
     this.form.get('message').valueChanges.subscribe(message => {
       this.messageLength = message.length;
       this.resetCharges();
     });
   }
-  public add() {
+  public getFormValue(formAttribute: string){
+    return this.form.get(formAttribute).value
+  }
+  public isInValid(input: string, error: string): boolean {
+    return this.form.controls[input].hasError(error);
+  }
+  public isTouched(input: string): boolean {
+    return this.form.controls[input].touched;
+  }
+  public get isSelectedGroupsInValid(): boolean{
+    return this.selectedRecipients.length == 0 && this.isTouched('group');
+  }
+  public get isMessageInvalid(){
+    return (this.isTouched('message') && this.isInValid('message', 'required'));
+  }
+  public addSubscriberGroup() {
     let id = this.form.get('group').value;
     let group: Group = this.groupService.find(this.groups, id);    
     //check if recipients array has a group of recipients added to it
     if (this.selectedRecipients.length != 0) {
       //check and remove duplicates
-      this.selectedRecipients = this.removeDuplicate(id);
+      this.selectedRecipients = this.removeGroupDuplicates(id);
     }
     this.selectedRecipients.push(group);
     //reset select
     this.form.get('group').setValue('0');
   }
-  private removeDuplicate(groupId: number): any[] {
+  private removeGroupDuplicates(groupId: number): Group[] {
     return this.selectedRecipients = this.selectedRecipients.filter((group: any) => {
       return group.id != groupId;
     });
@@ -76,7 +89,7 @@ export class CampaignSendComponent implements OnInit {
     this.chargeAmount = 0;
     this.totalSubscribers = 0;
   }
-  /**removes group from array of selected groups */
+  //removes group from array of selected groups 
   public remove(removeGroup: Group) {
     this.resetCharges();
     this.selectedRecipients.forEach((group, index) => {
@@ -111,7 +124,7 @@ export class CampaignSendComponent implements OnInit {
     else
       return false;
   }
-  public get isSelected(){
+  public get isSelectedValid(){
     if(this.form.get('group').value == 0)
       return false;
     return true;

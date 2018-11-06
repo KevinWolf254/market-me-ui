@@ -1,60 +1,51 @@
 <div class="card border-top-0 mb-5 shadow">
   <div class="card-body">
     <h6 class="bg-light border p-2 mb-2">Create Campaign:</h6>
-    <form [formGroup]="form" (ngSubmit)="sendScheduledSms(form.value)">
+    <form [formGroup]="form" (ngSubmit)="send(form.value)">
       <!-- Campaign name -->
       <div class="form-group">
-        <label for="name">Name</label>
-        <div class="input-group">
-          <input type="text" class="form-control form-control-sm" formControlName="name" id="name"
-            placeholder="Campaign name">
-          <div class="input-group-append">
-            <button class="btn btn-sm btn-primary" [class.bg-success]="" [class.bg-danger]="" type="button"
-              (click)="checkName()" [disabled]="!form.controls['name'].valid">
-              <div *ngIf="!isChecking">
-                Available
-                <span *ngIf="">
-                  <i class="fa fa-check"></i>
-                </span>
-                <span *ngIf="">
-                  <i class="fa fa-times"></i>
-                </span>
-              </div>
-              <div *ngIf="isChecking" class="sk-circle my-0 py-0">
-                <div class="sk-circle1 sk-child"></div>
-                <div class="sk-circle2 sk-child"></div>
-                <div class="sk-circle3 sk-child"></div>
-                <div class="sk-circle4 sk-child"></div>
-                <div class="sk-circle5 sk-child"></div>
-                <div class="sk-circle6 sk-child"></div>
-                <div class="sk-circle7 sk-child"></div>
-                <div class="sk-circle8 sk-child"></div>
-                <div class="sk-circle9 sk-child"></div>
-                <div class="sk-circle10 sk-child"></div>
-                <div class="sk-circle11 sk-child"></div>
-                <div class="sk-circle12 sk-child"></div>
-              </div>
-            </button>
-          </div>
-        </div>
+        <label for="name" class="control-label">Name</label>
+        <input type="text" class="form-control form-control-sm" formControlName="name" id="name" placeholder="Campaign name"
+          [class.is-invalid]="isInValid('name', 'required') && isTouched('name')">
+        <!-- Error -->
+        <small class="form-text text-danger" *ngIf="isTouched('name')">
+          <div *ngIf="isInValid('name', 'required')">Please provide a Campaign name.</div>
+          <div *ngIf="isInValid('name', 'campaignNameValidator')">Campaign name already exists.</div>
+        </small>
       </div>
-      <!-- group select -->
+      <!-- sender id -->
+      <div class="form-group">
+        <label for="senderId">Sender Id</label>
+        <select class="form-control" formControlName="senderId" id="senderId">
+          <option value='' selected>Choose Sender Id</option>
+          <option *ngFor="let senderId of senderIds" [value]="senderId.name">{{senderId.name}}</option>
+        </select>
+        <small *ngIf="isTouched('senderId') && getFormValue('senderId') == ''" class="form-text text-warning bg-light rounded bd-highlight">
+          Warning: It is recommended to purchase a senderId if none is available to use for the desired destination
+          country
+        </small>
+      </div>
+      <!-- Select Groups -->
       <div class="form-group">
         <label for="groups">Subscriber groups</label>
         <div id="groups" class="input-group">
-          <select class="form-control form-control-sm" id="groups" formControlName="group">
+          <select class="form-control form-control-sm" formControlName="group" [class.is-invalid]="isSelectedGroupsInValid">
             <option value='0' selected>Select Group</option>
             <option *ngFor="let group of groups" [value]="group.id">{{group.name}}</option>
           </select>
           <div class="input-group-append">
-            <button class="btn btn-info btn-sm px-4" (click)="add()" [disabled]="!form.controls['group'].valid" type="button">
+            <button class="btn btn-info btn-sm px-4" (click)="addSubscriberGroup()" [disabled]="!isSelectedValid" type="button">
               <i class="fa fa-plus"></i> Add
             </button>
           </div>
         </div>
-        <small id="groupsHelp" class="form-text text-muted">Groups ensure easy management of subscribers</small>
+        <!-- Error -->
+        <small class="form-text text-danger" *ngIf="isSelectedGroupsInValid">
+          Please add subscriber groups.
+        </small>
+        <small class="form-text text-muted">Groups ensure easy management of subscribers</small>
       </div>
-      <!-- group list -->
+      <!-- List of Selected Groups -->
       <div *ngIf="selectedRecipients.length != 0">
         <h6 class="mb-2 bg-light p-2">Selected Groups:</h6>
         <span *ngFor="let group of selectedRecipients" class="badge badge-pill badge-info badge-sm px-2 m-1">
@@ -65,16 +56,22 @@
       <!-- Compose message -->
       <div class="form-group">
         <label for="message">Message</label>
-        <textarea id="message" class="form-control" formControlName="message" rows="5" placeholder="Compose Message"></textarea>
+        <textarea id="message" class="form-control shadow-sm" formControlName="message" rows="5" placeholder="Compose Message"
+          maxlength="320" [class.is-invalid]="isMessageInvalid"></textarea>
         <small id="messageHelp" class="form-text text-muted">
           Additional charges apply for characters more than 160.
         </small>
-        <small id="messageWarn" *ngIf="max" class="form-text d-flex text-warning bg-light rounded 
-        flex-row-reverse bd-highlight">
+        <!-- Error -->
+        <small class="form-text text-danger" *ngIf="isMessageInvalid">
+          Please provide a message.
+        </small>
+        <!-- Warning -->
+        <small *ngIf="isMaximum" class="form-text text-warning bg-light rounded bd-highlight">
           Warning: Maximum characters reached!
         </small>
       </div>
-      <div [class.text-warning]="max" [class.text-muted]="!max">
+      <!-- Character counter -->
+      <div [class.text-warning]="isMaximum" [class.text-muted]="!isMaximum">
         <div class="d-flex flex-row-reverse bd-highlight">
           <div class="bd-highlight"> Characters </div>
           <div class="bd-highlight px-2"> | </div>
@@ -84,6 +81,7 @@
       <hr>
       <!-- Scheduled Campaign -->
       <div class="card">
+        <!-- Select Schedule -->
         <h6 class="card-header">Schedule</h6>
         <div class="card-body">
           <div class="form-check form-check-inline">
@@ -102,7 +100,7 @@
             <label class="form-check-label p-2" for="monthly">Monthly</label>
             <input class="form-check-input p-2" type="radio" formControlName="schedule" id="monthly" value="monthly">
           </div>
-          <!-- Date -->
+          <!-- Schedule Types -->
           <div class="card mt-2" *ngIf="form.value.schedule != ''">
             <div class="card-body">
               <p class="bg-light p-2" *ngIf="form.value.schedule == 'date'"><b>Date Schedule:</b></p>
@@ -113,19 +111,24 @@
                 <div class="col-sm-6 mt-3">
                   <div formArrayName="details">
                     <div formGroupName="0">
-                      <!-- Date && Monthly-->
-                      <div *ngIf="form.value.schedule == 'date' || form.value.schedule == 'monthly'">
-                        Choose date:
+                      <!-- Date -->
+                      <div *ngIf="form.value.schedule == 'date'">
+                        Choose date and time:
                         <div class="form-group">
                           <div class="input-group">
                             <input class="form-control" placeholder="YYYY-MM-DD" formControlName="date" ngbDatepicker
-                              #date="ngbDatepicker">
+                              #date="ngbDatepicker" [class.is-invalid]="isDateInvalid" [minDate]="todayDate" readonly>
                             <div class="input-group-append">
                               <button class="btn btn-primary" (click)="date.toggle()" type="button">
                                 <i class="fa fa-calendar"></i>
                               </button>
                             </div>
                           </div>
+                          <!-- Display Selected Date or Error-->
+                          <small class="form-text" [class.text-primary]="!isDateInvalid" [class.text-danger]="isDateInvalid">
+                            <span *ngIf="!isDateInvalid">Selected: {{selectedDate | date: 'MMM d, y'}}</span>
+                            <span *ngIf="isDateInvalid">Schedule Date cannot be before today.</span>
+                          </small>
                         </div>
                       </div>
                       <!-- Daily -->
@@ -135,23 +138,43 @@
                       <!-- Weekly -->
                       <div *ngIf="form.value.schedule == 'weekly'">
                         Choose Day and time:
-                        <!-- <label for="weekly">Choose Day and time:</label> -->
                         <div class="form-group">
-                          <select id="weekly" class="form-control" formControlName="day" id="selectDayOfWeek"
-                            aria-describedby="weeklyHelp">
-                            <option value='0' selected>Choose Day of Week...</option>
-                            <option *ngFor="let day of week" [value]="day">{{day}}</option>
+                          <select id="weekly" class="form-control" formControlName="day" [class.is-invalid]="isDayInvalid">
+                            <option value='0' selected>Choose Day of Week</option>
+                            <option *ngFor="let dayWeek of week" [value]="dayWeek">{{dayWeek}}</option>
                           </select>
-                          <small id="weeklyHelp" class="form-text text-muted">
-                            Select day of the week.
+                          <!-- Display Selected Date or Error-->
+                          <small class="form-text" [class.text-primary]="!isDayInvalid" [class.text-danger]="isDayInvalid">
+                            <span *ngIf="!isDayInvalid && selectedDay != '0'">Selected: every {{selectedDay}}</span>
+                            <span *ngIf="isDayInvalid">Please select day of the week.</span>
+                          </small>
+                        </div>
+                      </div>
+                      <!-- Monthly -->
+                      <div *ngIf="form.value.schedule == 'monthly'">
+                        Choose Day and time:
+                        <div class="form-group">
+                          <select id="monthly" class="form-control" formControlName="month" [class.is-invalid]="isMonthInvalid">
+                            <option value='0' selected>Choose Day of Month</option>
+                            <option *ngFor="let dayMonth of days" [value]="dayMonth">{{dayMonth}}</option>
+                          </select>
+                          <!-- Display Selected Day or Error -->
+                          <small class="form-text" [class.text-primary]="!isMonthInvalid" [class.text-danger]="isMonthInvalid">
+                            <span *ngIf="!isMonthInvalid && selectedMonthDay != 0">Selected: {{selectedMonthDay}} of
+                              every month</span>
+                            <span *ngIf="isMonthInvalid">Please select day of month.</span>
                           </small>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
+                <!-- Time -->
                 <div class="col-sm-6">
                   <ngb-timepicker formControlName="time" [meridian]="meridian"></ngb-timepicker>
+                  <small class="form-text text-primary">
+                    Time: {{selectedTime | date:'shortTime'}}
+                  </small>
                 </div>
               </div>
             </div>
@@ -159,13 +182,10 @@
         </div>
       </div>
       <hr class="mb-4">
-      <button class="btn btn-primary btn-block btn-sm" type="submit">
-        <!-- [disabled]="!form.controls['campaignName'].valid || !checked || selectedRecipients.length == 0 ||
-        !this.form.get('campaignType').valid"> -->
-        <div *ngIf="!isSendingSchedule">
-          Save Schedule
-        </div>
-        <div *ngIf="isSendingSchedule" class="sk-circle my-0 py-0">
+      <!-- Submit Button -->
+      <button class="btn btn-primary btn-block btn-sm" type="submit" [disabled]="isFormInvalid">
+        <div *ngIf="!isSending">Save Schedule</div>
+        <div *ngIf="isSending" class="sk-circle my-0 py-0">
           <div class="sk-circle1 sk-child"></div>
           <div class="sk-circle2 sk-child"></div>
           <div class="sk-circle3 sk-child"></div>
