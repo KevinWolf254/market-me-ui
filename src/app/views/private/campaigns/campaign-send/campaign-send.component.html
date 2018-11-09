@@ -1,8 +1,8 @@
 <div class="d-flex pb-2 mb-2 border-bottom">
-  <h3>Sms Marketing</h3>
+  <h3>Marketing Campaigns</h3>
 </div>
 <ngb-tabset>
-  <ngb-tab title="Send Sms" id="allTab">
+  <ngb-tab title="Create Promotion" id="allTab">
     <ng-template ngbTabContent>
       <div class="card border-top-0 shadow">
         <div class="card-body">
@@ -10,10 +10,10 @@
             <!-- Charges -->
             <div class="bg-light border clearfix p-2 mb-2">
               <div class="bd-highlight float-left">
-                Compose SMS:
+                Compose Sms Promotion:
               </div>
               <div class="d-flex flex-row-reverse bd-highlight align-baseline float-right">
-                <div class="bd-highlight text-success" [class.text-success]="canSend" [class.text-danger]="!canSend">
+                <div [ngClass]="textType">
                   {{currency}} {{chargeAmount | number:'1.2-2'}}
                 </div>
                 <div class="bd-highlight pr-2">Charges: </div>
@@ -25,11 +25,11 @@
             <!-- Sender id -->
             <div class="form-group">
               <label for="senderId">Sender Id</label>
-              <select class="form-control" formControlName="senderId" id="senderId">
+              <select class="form-control form-control-sm" formControlName="senderId" id="senderId">
                 <option value='' selected>Choose Sender Id</option>
                 <option *ngFor="let senderId of senderIds" [value]="senderId.name">{{senderId.name}}</option>
               </select>
-              <small *ngIf="isTouched('senderId') && getFormValue('senderId') == ''" class="form-text text-warning bg-light rounded bd-highlight">
+              <small *ngIf="notSelectedSenderId" class="form-text text-warning bg-light rounded bd-highlight">
                 Warning: It is recommended to purchase a senderId if none is available to use for the destination
                 country
               </small>
@@ -38,12 +38,12 @@
             <div class="form-group">
               <label for="groups">Subscriber groups</label>
               <div id="groups" class="input-group">
-                <select class="form-control" formControlName="group" [class.is-invalid]="isSelectedGroupsInValid">
+                <select class="form-control form-control-sm" formControlName="group" [class.is-invalid]="isSelectedGroupsInValid">
                   <option value='0' selected>Select Group</option>
                   <option *ngFor="let group of groups" [value]="group.id">{{group.name}}</option>
                 </select>
                 <div class="input-group-append">
-                  <button class="btn btn-sm btn-primary px-4" (click)="addSubscriberGroup()" [disabled]="!isSelectedValid"
+                  <button class="btn btn-sm btn-outline-primary" (click)="addSubscriberGroup()" [disabled]="!isSelectedValid"
                     type="button">
                     <i class="fa fa-plus"></i> Add
                   </button>
@@ -66,7 +66,7 @@
             <!-- Compose message -->
             <div class="form-group">
               <label for="message">Message</label>
-              <textarea id="message" class="form-control shadow-sm" formControlName="message" rows="5" placeholder="Compose message"
+              <textarea id="message" class="form-control form-control-sm shadow-sm" formControlName="message" rows="5" placeholder="Compose message"
                 maxlength="320" [class.is-invalid]="isMessageInvalid"></textarea>
               <small id="messageHelp" class="form-text text-muted">
                 Additional charges apply for characters more than 160.
@@ -81,7 +81,7 @@
               </small>
             </div>
             <!-- Character counter -->
-            <div [class.text-warning]="max" [class.text-muted]="!max">
+            <div [ngClass]="charText">
               <div class="d-flex flex-row-reverse bd-highlight">
                 <div class="bd-highlight"> Characters </div>
                 <div class="bd-highlight px-2"> | </div>
@@ -91,7 +91,7 @@
             <hr>
             <div class="clearfix mt-2">
               <!-- Submit Button -->
-              <button type="button" class="btn btn-primary float-left px-5" type="submit" [disabled]="!form.get('message').valid || 
+              <button type="button" class="btn btn-sm btn-primary float-left px-5" type="submit" [disabled]="!form.get('message').valid || 
             selectedRecipients.length == 0 || messageLength == 0">
                 <div *ngIf="!isSendingSms">
                   <i class="fa fa-paper-plane"></i> Send Sms
@@ -112,7 +112,7 @@
                 </div>
               </button>
               <!-- Calculator Button -->
-              <button type="button" class="btn btn-primary float-right px-5" [disabled]="!canCalculate" (click)="smsCharges()">
+              <button type="button" class="btn btn-sm btn-primary float-right px-5" [disabled]="!canCalculate" (click)="smsCharges()">
                 <i class="fa fa-calculator"></i> Calculate Charges
               </button>
             </div>
@@ -121,7 +121,7 @@
       </div>
     </ng-template>
   </ngb-tab>
-  <ngb-tab title="Create Sms Campaign" id="scheduleTab">
+  <ngb-tab title="Create Campaign" id="scheduleTab">
     <ng-template ngbTabContent>
       <app-campaign-schedule></app-campaign-schedule>
     </ng-template>

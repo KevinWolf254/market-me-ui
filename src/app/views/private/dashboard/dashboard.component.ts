@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../../providers/services/user.service';
-import { UserReport, ServiceProviderReport } from '../../../models/models.model';
+import { UserReport } from '../../../models/models.model';
 import { NgbModal, NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ReportService } from '../../../providers/services/report.service';
 import { SubscriberService } from '../../../providers/services/subscriber.service';
 import { Chart } from 'chart.js';
+import { ServiceProviderReport } from '../../../models/interfaces.model';
 
 @Component({
   selector: 'app-dashboard',
@@ -39,11 +40,12 @@ export class DashboardComponent implements OnInit {
     });
     this.subscribers
   }
-
-  public get units(): string {
-    return this.profile.client.country.currency.toLowerCase() + ' ' + this.profile.client.creditAmount;
+  public get units() {
+    return this.profile.client.creditAmount;
   }
-
+  public get currency() {
+    return this.profile.client.country.currency.toLowerCase();
+  }
   public openPurchase(modal) {
     this.modalService.open(modal, { size: 'lg' });
   }

@@ -1,102 +1,15 @@
-import { Role, ScheduleType, Days } from "./enums.model";
+import { Role, ScheduleType, Days, Command } from "./enums.model";
+import { Disbursement, User, Organization, Credentials, Country_ } from "./interfaces.model";
 
 export class Models {
 }
-export class Token {
-    access_token: string;
-    token_type: string;
-    expires_in: number;
-    scope: string;
-}
-export class Country {
-    name: string;
-    topLevelDomain: any[];
-    alpha2Code: string;
-    alpha3Code: string;
-    callingCodes: any[];
-    capital: string;
-    altSpellings: any[];
-    region: string;
-    subregion: string;
-    population: any;
-    latlng: any[];
-    demonym: string;
-    area: any;
-    gini: any;
-    timezones: any[];
-    borders: any[];
-    nativeName: string;
-    numericCode: string;
-    currencies: any[];
-    languages: any[];
-    translations: any;
-    flag: string;
-    regionalBlocs: any[];
-    cioc: string;
-}
-export class Country_ {
-    id: number;
-    name: string;
-    code: string;
-    currency: string;
-}
-export class Report {
-    code: number;
-    title: string;
-    message: string;
-}
-export class Organization {
-    id: number;
-    name: string;
-    creditAmount: number;
-    enables: boolean;
-    createdOn: Date;
-    country: Country_;
-}
-export class User {
-    id: number;
-    surname: string;
-    otherNames: string;
-    email: string;
-}
-export class Credentials {
-    id: number;
-    enabled: boolean;
-    signIn: Date;
-}
-export class UserRole {
-    id: number;
-    role: Role;
-}
-export class UserReport extends Report {
-    user: User;
-    credentials: Credentials;
-    roles: UserRole[];
-    client: Organization;
-    disbursement: Disbursement;
-}
-export class Disbursement {
-    total: number;
-    list: any[];
-}
-export class ReportDates {
-    orgName: string;
-    from: Date;
-    to: Date;
-    constructor(orgName: string, from: Date, to: Date) {
-        this.orgName = orgName;
-        this.from = from;
-        this.to = to;
+export class CampaignRequest {
+	campaignName: string;
+    command: Command;
+    constructor(campaignName: string, command: Command){
+        this.campaignName = campaignName;
+        this.command = command;
     }
-}
-export class ServiceProvider {
-    id: number;
-    name: string;
-    country: Country;
-}
-export class ServiceProviderReport {
-    name: ServiceProvider;
-    totalSubscribers: number;
 }
 export class Group {
     id: number;
@@ -114,23 +27,29 @@ export class GroupedContactsRequest {
         this.groupIds = groupIds;
     }
 }
+export class Report {
+    code: number;
+    title: string;
+    message: string;
+}
+export class CampaignReport extends Report{
+    schedule: Schedule;
+    groups: Group[];
+    charges: ChargesReport;
+}
 export class ChargesReport extends Report {
     currency: Country_;
     estimatedCost: number;
     totalContacts: number;
 }
-export class Sms {
-    email: string;
-    senderId: string;
-    message: string;
-    schedule: Schedule;
-    groupIds: number[];
-    constructor(email?: string, senderId?: string, message?: string, schedule?: Schedule, groupIds?: number[]) {
-        this.email = email;
-        this.senderId = senderId;
-        this.message = message;
-        this.schedule = schedule;
-        this.groupIds = groupIds;
+export class ReportDates {
+    orgName: string;
+    from: Date;
+    to: Date;
+    constructor(orgName: string, from: Date, to: Date) {
+        this.orgName = orgName;
+        this.from = from;
+        this.to = to;
     }
 }
 export class Schedule {
@@ -156,13 +75,13 @@ export class Schedule {
     }
 }
 export class ScheduleBuilder {
-    name: string;
-    senderId: string;
-    createdBy: string;
-    type: ScheduleType;
-    date: Date;
-    dayOfWeek: Days;
-    dayOfMonth: number;
+    private name: string;
+    private senderId: string;
+    private createdBy: string;
+    private type: ScheduleType;
+    private date: Date;
+    private dayOfWeek: Days;
+    private dayOfMonth: number;
 
     setName(name: string): ScheduleBuilder {
         this.name = name;
@@ -198,7 +117,7 @@ export class ScheduleBuilder {
         if (this.type == ScheduleType.DAILY)
             return this.dailyCronExpression
         if (this.type == ScheduleType.WEEKLY)
-            this.weeklyCronExpression
+            return this.weeklyCronExpression
         if (this.type == ScheduleType.MONTHLY)
             return this.monthlyCronExpression;
     }
@@ -206,13 +125,13 @@ export class ScheduleBuilder {
         return '';
     }
     private get dailyCronExpression(): string {
-        return "0 " + this.date.getMinutes + " " + this.date.getHours + " ? * *";
+        return "0 " + this.date.getMinutes() + " " + this.date.getHours() + " ? * 1/1 *";
     }
     private get weeklyCronExpression(): string {
-        return "0 " + this.date.getMinutes + " " + this.date.getHours + " ? * " + this.day + " *";
+        return "0 " + this.date.getMinutes() + " " + this.date.getHours() + " ? * " + this.day + " *";
     }
     private get monthlyCronExpression(): string {
-        return "0 " + this.date.getMinutes + " " + this.date.getHours + " " + this.dayOfMonth + " * ?";
+        return "0 " + this.date.getMinutes() + " " + this.date.getHours() + " " + this.dayOfMonth + " * ?";
     }
     private get day(): string {
         if (this.dayOfWeek == Days.SUNDAY)
@@ -235,7 +154,28 @@ export class ScheduleBuilder {
             this.date, this.dayOfWeek, this.dayOfMonth, this.cronExpression)
     }
 }
-export class SenderId {
+export class Sms {
+    email: string;
+    senderId: string;
+    message: string;
+    schedule: Schedule;
+    groupIds: number[];
+    constructor(email?: string, senderId?: string, message?: string, schedule?: Schedule, groupIds?: number[]) {
+        this.email = email;
+        this.senderId = senderId;
+        this.message = message;
+        this.schedule = schedule;
+        this.groupIds = groupIds;
+    }
+}
+export class UserReport extends Report {
+    user: User;
+    credentials: Credentials;
+    roles: UserRole[];
+    client: Organization;
+    disbursement: Disbursement;
+}
+export class UserRole {
     id: number;
-    name: string;
+    role: Role;
 }

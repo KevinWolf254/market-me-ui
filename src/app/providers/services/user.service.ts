@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Observable, of, BehaviorSubject } from 'rxjs';
-import { Token, UserReport, UserRole } from '../../models/models.model';
+import { UserReport, UserRole } from '../../models/models.model';
 import { ToastrService } from 'ngx-toastr';
+import { Token } from '../../models/interfaces.model';
 
 @Injectable({
   providedIn: 'root'

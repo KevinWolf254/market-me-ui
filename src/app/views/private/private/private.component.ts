@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../../providers/services/user.service';
-import { Organization, UserReport } from '../../../models/models.model';
+import { UserReport } from '../../../models/models.model';
 import { Role } from '../../../models/enums.model';
 
 @Component({
@@ -18,7 +18,7 @@ export class PrivateComponent implements OnInit {
   constructor(private userService: UserService){}
 
   ngOnInit() {
-    this.userService.profileObserver.subscribe(profile => {
+    this.userService.profileObserver.subscribe((profile: UserReport) => {
       this.profile = profile
       let admin = profile.roles.find(role=>{
         return role.role == Role.ADMIN;
@@ -29,16 +29,17 @@ export class PrivateComponent implements OnInit {
         this.isAdmin = true;
     });
   }
-
   toggleCollapse() {
     this.show = !this.show
   }  
   toggleCollapse2() {
     this.show2 = !this.show2
   }
-
-  public get units(): string{
-    return this.profile.client.country.currency+' '+this.profile.client.creditAmount;
+  public get units(): number{
+    return this.profile.client.creditAmount;
+  }
+  public get currency(): string{
+    return this.profile.client.country.currency.toLowerCase();
   }
   public get user(): string{
     return this.profile.user.otherNames+' '+this.profile.user.surname;

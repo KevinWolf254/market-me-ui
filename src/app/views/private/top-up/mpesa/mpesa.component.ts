@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { CountryService } from '../../../../providers/services/country.service';
-import { Country, UserReport } from '../../../../models/models.model';
+import { UserReport } from '../../../../models/models.model';
 import { UserService } from '../../../../providers/services/user.service';
+import { Country } from '../../../../models/interfaces.model';
 
 @Component({
   selector: 'app-mpesa',

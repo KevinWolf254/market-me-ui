@@ -16,7 +16,7 @@
       <!-- sender id -->
       <div class="form-group">
         <label for="senderId">Sender Id</label>
-        <select class="form-control" formControlName="senderId" id="senderId">
+        <select class="form-control form-control-sm" formControlName="senderId" id="senderId">
           <option value='' selected>Choose Sender Id</option>
           <option *ngFor="let senderId of senderIds" [value]="senderId.name">{{senderId.name}}</option>
         </select>
@@ -34,7 +34,7 @@
             <option *ngFor="let group of groups" [value]="group.id">{{group.name}}</option>
           </select>
           <div class="input-group-append">
-            <button class="btn btn-info btn-sm px-4" (click)="addSubscriberGroup()" [disabled]="!isSelectedValid" type="button">
+            <button class="btn btn-sm btn-outline-primary" (click)="addSubscriberGroup()" [disabled]="!isSelectedValid" type="button">
               <i class="fa fa-plus"></i> Add
             </button>
           </div>
@@ -56,7 +56,7 @@
       <!-- Compose message -->
       <div class="form-group">
         <label for="message">Message</label>
-        <textarea id="message" class="form-control shadow-sm" formControlName="message" rows="5" placeholder="Compose Message"
+        <textarea id="message" class="form-control form-control-sm shadow-sm" formControlName="message" rows="5" placeholder="Compose Message"
           maxlength="320" [class.is-invalid]="isMessageInvalid"></textarea>
         <small id="messageHelp" class="form-text text-muted">
           Additional charges apply for characters more than 160.
@@ -108,7 +108,16 @@
               <p class="bg-light p-2" *ngIf="form.value.schedule == 'weekly'"><b>Weekly Schedule:</b></p>
               <p class="bg-light p-2" *ngIf="form.value.schedule == 'monthly'"><b>Monthly Schedule:</b></p>
               <div class="row">
-                <div class="col-sm-6 mt-3">
+                <div class="col-sm-6 mt-3" *ngIf="form.value.schedule == 'daily'">
+                  <!-- Daily -->
+                  <div *ngIf="form.value.schedule == 'daily'">
+                    Choose time: 
+                    <div class="text-primary">
+                      Will start tomorrow: {{tomorrow | date: 'fullDate'}}
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6 mt-3" *ngIf="form.value.schedule != 'daily'">
                   <div formArrayName="details">
                     <div formGroupName="0">
                       <!-- Date -->
@@ -126,14 +135,10 @@
                           </div>
                           <!-- Display Selected Date or Error-->
                           <small class="form-text" [class.text-primary]="!isDateInvalid" [class.text-danger]="isDateInvalid">
-                            <span *ngIf="!isDateInvalid">Selected: {{selectedDate | date: 'MMM d, y'}}</span>
+                            <span *ngIf="!isDateInvalid">Selected: {{selectedDate | date: 'fullDate'}}</span>
                             <span *ngIf="isDateInvalid">Schedule Date cannot be before today.</span>
                           </small>
                         </div>
-                      </div>
-                      <!-- Daily -->
-                      <div *ngIf="form.value.schedule == 'daily'">
-                        Choose time:
                       </div>
                       <!-- Weekly -->
                       <div *ngIf="form.value.schedule == 'weekly'">

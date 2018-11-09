@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { User } from '../../../../models/models.model';
 import { Role } from '../../../../models/enums.model';
 import { UserService } from '../../../../providers/services/user.service';
 

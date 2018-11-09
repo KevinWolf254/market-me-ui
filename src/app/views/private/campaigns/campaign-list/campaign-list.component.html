@@ -1,168 +1,177 @@
 <div class="card border-top-0 mb-5 shadow">
-    <div class="card-body">
-      <h6 class="mb-4 bg-light p-2 rounded shadow-sm">Campaigns:</h6>
-      <div class="d-flex justify-content-between">
-        <!-- Per Page Entries -->
-        <div class="input-group col-sm-5">
-          <div class="input-group-prepend">
-            <span class="input-group-text">Show</span>
+  <div class="card-body">
+    <h6 class="mb-4 bg-light p-2 rounded shadow-sm">Campaigns:</h6>
+    <div class="row">
+      <!-- Per Page Entries -->
+      <div class="col-sm-6">
+        <form [formGroup]="perPageForm">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="perPage">List</label>
+            </div>
+            <select class="custom-select" id="perPage" formControlName="perPage">
+              <option *ngFor="let pageNo of perPageNos">{{pageNo}}</option>
+            </select>
           </div>
-          <select class="custom-select" (change)="changePageEntries($event)">
-            <option *ngFor="let pageNo of perPageNos">{{pageNo}}</option>
-          </select>
-          <div class="input-group-append">
-            <span class="input-group-text">Entries</span>
-          </div>
-        </div>
-        <!-- Search -->
-        <div class="input-group col-sm-7">
-          <input type="text" class="form-control" placeholder="Search by Name" (keyup)='search($event)' aria-label="Search by Email" aria-describedby="search">
-          <div class="input-group-append">
-            <span class="input-group-text" id="search"><i class="fa fa-search"></i></span>
-          </div>
-        </div>
+        </form>
       </div>
-      <!-- Scheduled Campaigns Table --> 
-      <ngx-datatable class="bootstrap mt-3" [rows]="schedules" [limit]="perPage" [columnMode]="'force'"
-        [rowHeight]="55" [cssClasses]="customPagerIcons" [footerHeight]="40" [scrollbarH]="true">
-        <ngx-datatable-column name="Name">
-        </ngx-datatable-column>
-        <ngx-datatable-column name="Type">
-          <ng-template ngx-datatable-cell-template let-row="row" let-rowIndex="rowIndex">
-            <button *ngIf='row.type == "DATE"' class="btn btn-sm btn-outline-info mx-1"  type="button"><i class="fa fa-chevron-circle-right"></i> Date</button> 
-            <button *ngIf='row.type == "DAILY"' class="btn btn-sm btn-outline-danger mx-1"  type="button"><i class="fa fa-chevron-circle-right"></i> Daily</button> 
-            <button *ngIf='row.type == "WEEKLY"' class="btn btn-sm btn-outline-warning mx-1"  type="button"><i class="fa fa-chevron-circle-right"></i> Weekly</button> 
-            <button *ngIf='row.type == "MONTHLY"' class="btn btn-sm btn-outline-info mx-1"  type="button"><i class="fa fa-chevron-circle-right"></i> Monthly</button> 
-          </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column name="Schedule">
-          <ng-template ngx-datatable-cell-template let-row="row" let-value="value" let-rowIndex="rowIndex">          
-            <div *ngIf='row.type == "DATE"'>
-              {{value | date: 'MMM d, y, h:mm a'}}
-            </div>          
-            <div *ngIf='row.type == "DAILY"'>
-              {{value | date: 'shortTime'}}
-            </div>          
-            <div *ngIf='row.type == "WEEKLY"'>
-              {{value | date: 'EEEE'}}, {{value | date: 'shortTime'}}
-            </div>          
-            <div *ngIf='row.type == "MONTHLY"'>
-              Date: {{value | date: 'dd'}}, {{value | date: 'shortTime'}}
+      <!-- Search -->
+      <div class="col-sm-6">
+        <form [formGroup]="searchForm">
+          <div class="input-group">
+            <input type="text" class="form-control" formControlName="search" placeholder="Search">
+            <div class="input-group-append">
+              <span class="input-group-text"><i class="fa fa-search"></i></span>
             </div>
-          </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column name="Last Fired">
-          <ng-template ngx-datatable-cell-template let-row="row" let-value="value" let-rowIndex="rowIndex">
-            <button class="btn btn-sm btn-warning mx-1"  type="button" *ngIf='value == ""' disabled>
-                <i class="fa fa-ban"></i> Never
+          </div>
+        </form>
+
+      </div>
+
+    </div>
+    <!-- Scheduled Campaigns Table -->
+    <ngx-datatable class="bootstrap mt-3" [rows]="campaigns" [limit]="perPage" [columnMode]="'force'" [rowHeight]="55"
+      [cssClasses]="customPagerIcons" [footerHeight]="40" [scrollbarH]="true">
+      <ngx-datatable-column name="Name">
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Type">
+        <ng-template ngx-datatable-cell-template let-row="row">
+          <button [ngClass]="getBtnType(row.type)" type="button">
+            <i class="fa fa-chevron-circle-right"></i>
+            {{getName(row)}}
+          </button>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Schedule">
+        <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+          <div *ngIf='row.type == "DATE"'>{{value | date: 'MMM d, y, h:mm a'}}</div>
+          <div *ngIf='row.type == "DAILY"'>{{value | date: 'shortTime'}}</div>
+          <div *ngIf='row.type == "WEEKLY"'>{{value | date: 'EEEE'}}, {{value | date: 'shortTime'}}</div>
+          <div *ngIf='row.type == "MONTHLY"'>Date: {{value | date: 'dd'}}, {{value | date: 'shortTime'}}</div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Last Fired">
+        <ng-template ngx-datatable-cell-template let-row="row" let-value="value" let-rowIndex="rowIndex">
+          <button class="btn btn-sm btn-warning mx-1" type="button" *ngIf='value == ""' disabled>
+            <i class="fa fa-ban"></i> Never
+          </button>
+          <div *ngIf='value != ""'>{{value | date: 'MMM d, y, h:mm a'}}</div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Next Fire">
+        <ng-template ngx-datatable-cell-template let-row="row" let-value="value" let-rowIndex="rowIndex">
+          <button class="btn btn-sm btn-success mx-1" type="button" *ngIf='value == ""' disabled>
+            <i class="fa fa-ban"></i> Never
+          </button>
+          <div *ngIf='value != ""'>{{value | date: 'MMM d, y, h:mm a'}}</div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Status">
+        <ng-template ngx-datatable-cell-template let-row="row" let-value="value" let-rowIndex="rowIndex">
+          <button [ngClass]="getBtnType(value)" type="button">
+            <i [ngClass]="getIcon(value)"></i>
+            {{getStatus(value)}}
+          </button>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Actions">
+        <ng-template ngx-datatable-cell-template let-row="row" let-rowIndex="rowIndex">
+          <div class="btn-group" role="group" aria-label="actions">
+            <button (click)="openRunDialog(runModal, row, rowIndex)" class="btn btn-sm btn-outline-success" *ngIf='row.status == "SCHEDULED"'
+              data-toggle="tooltip" data-placement="top" title="Send sms now"><i class="fa fa-play"></i>
             </button>
-            <div *ngIf='value != ""'>
-              {{value | date: 'MMM d, y, h:mm a'}}
-            </div> 
-            </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column name="Next Fire">
-          <ng-template ngx-datatable-cell-template let-row="row" let-value="value" let-rowIndex="rowIndex">
-            <button class="btn btn-sm btn-success mx-1"  type="button" *ngIf='value == ""' disabled>
-              <i class="fa fa-ban"></i> Never
+            <button (click)="openDeleteDialog(deleteModal, row, rowIndex)" class="btn btn-sm btn-outline-danger" data-toggle="tooltip"
+              data-placement="top" title="Delete campaign"><i class="fa fa-trash"></i>
             </button>
-            <div *ngIf='value != ""'>
-              {{value | date: 'MMM d, y, h:mm a'}}
-            </div>        
-          </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column name="Status">
-          <ng-template ngx-datatable-cell-template let-row="row" let-value="value" let-rowIndex="rowIndex"> 
-            <button *ngIf='value == "RUNNING"' class="btn btn-sm btn-success mx-1"  type="button" 
-              data-toggle="tooltip" data-placement="top" title="job schedule is currently running">
-              <i class="fa fa-ellipsis-h fa-lg"></i> 
-              Running
-            </button>
-             
-            <button *ngIf='value == "PAUSED"' class="btn btn-sm btn-warning mx-1"  type="button" 
-              data-toggle="tooltip" data-placement="top" title="job schedule is paused">
-              <i class="fa fa-circle"></i> 
-              Paused
-            </button>
-            
-            <button *ngIf='value == "BLOCKED"'
-              class="btn btn-sm btn-outline-danger mx-1"  type="button" data-toggle="tooltip" data-placement="top" 
-              title="job schedule was stopped"><i class="fa fa-square"></i> 
-              Stopped
-            </button>
-            
-            <button *ngIf='value == "SCHEDULED"' class="btn btn-sm btn-outline-primary mx-1" type="button" 
-            data-toggle="tooltip" data-placement="top" title="job schedule is to run in the future">
-            <i class="fa fa-play"></i> 
-              Scheduled
-            </button>
-            
-            <button *ngIf='value == "COMPLETE"' class="btn btn-sm btn-info mx-1"  type="button" data-toggle="tooltip" 
-              data-placement="top" title="job schedule is complete"><i class="fa fa-check"></i> 
-              Completed
-            </button>
-  
-            <button *ngIf='value == "ERROR"' class="btn btn-sm btn-danger mx-1"  type="button" data-toggle="tooltip" 
-              data-placement="top" title="job schedule has an error"><i class="fa fa-warning"></i> 
-              Error
-            </button>
-          </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column name="Actions">
-          <ng-template ngx-datatable-cell-template let-row="row" let-rowIndex="rowIndex">
-            <div class="btn-group" role="group" aria-label="actions">
-              
-              <!-- <button (click)="edit(editModal, row, rowIndex)" [disabled]='row.status == "COMPLETE"'
-                 class="btn btn-sm btn-outline-info" data-toggle="tooltip" data-placement="top" title="Edit schedule">
-                <i class="fa fa-pencil"></i>
-              </button> -->
-  
-              <button (click)="start(row, rowIndex)" class="btn btn-sm btn-outline-success" *ngIf='row.status == "SCHEDULED"'
-                data-toggle="tooltip" data-placement="top" title="Start schedule Now"><i class="fa fa-play"></i>
-                Start
-              </button>
-  
-              <button (click)="pause(row, rowIndex)" class="btn btn-sm btn-outline-warning" *ngIf='row.status == "RUNNING"'
-                data-toggle="tooltip" data-placement="top" title="Pause schedule"><i class="fa fa-trash"></i>
-                Pause
-              </button>
-  
-              <button (click)="resume(row, rowIndex)" class="btn btn-sm btn-outline-success" *ngIf='row.status == "PAUSED"'
-                data-toggle="tooltip" data-placement="top" title="Resume schedule"><i class="fa fa-trash"></i>
-                Resume
-              </button>
-  
-              <button (click)="stop(row, rowIndex)" class="btn btn-sm btn-outline-secondary" *ngIf='row.status == "RUNNING"'
-                data-toggle="tooltip" data-placement="top" title="Stop schedule"><i class="fa fa-square"></i>
-                Stop
-              </button>
-  
-              <button (click)="delete(deleteModal, row, rowIndex)" class="btn btn-sm btn-outline-danger" 
-               data-toggle="tooltip" data-placement="top" title="Delete schedule"><i class="fa fa-trash"></i>
-              </button>
-            
-            </div>
-          </ng-template>
-        </ngx-datatable-column>
-      </ngx-datatable>
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+  </div>
+</div>
+<!-- Run Now Modal -->
+<ng-template #runModal let-c="close" let-d="dismiss">
+  <div class="modal-header bg-info">
+    <h5 class="modal-title">Run Campaign </h5>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="m-2">
+      <strong><b>Campaign details:</b></strong>
+    </div>
+    <div class="table-responsive shadow-sm">
+      <!-- Selected Campaign Details table -->
+      <table class="table table-striped table-hover">
+        <thead class="thead-light text-info">
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">SenderId</th>
+            <th scope="col"># of Groups</th>
+            <th scope="col"># of Subscribers</th>
+            <th scope="col">Available Units</th>
+            <th scope="col">Required Units</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{campaignName}}</td>
+            <td>{{senderId}}</td>
+            <td>{{groupTotal | number:'1.0-0'}}</td>
+            <td>{{subscriberTotal | number:'1.0-0'}}</td>
+            <td [ngClass]="cellType">{{currency}} {{availableUnits | number:'1.2-2'}}</td>
+            <td [ngClass]="cellType">{{currency}} {{cost | number:'1.2-2'}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <!-- Invalid -->
+      <small *ngIf="unitsInsufficient" class="form-text text-danger bg-light rounded bd-highlight">
+        Insufficient funds. Top up with the <b>required units</b> to run campaign.
+      </small>
+      <small *ngIf="zeroUnits" class="form-text text-info bg-light rounded bd-highlight">
+        Top up with the <b>required units</b> to run campaign.
+      </small>
+
     </div>
   </div>
+  <div class="modal-footer d-flex justify-content-between">
+    <button type="button" class="btn btn-outline-secondary" (click)="d('cancel click')">Cancel</button>
+    <button type="button" [ngClass]="btnType" (click)="run()" [disabled]="unitsInsufficient || zeroUnits">
+      <i class="fa fa-play"></i>
+      Run
+    </button>
+  </div>
+</ng-template>
 
-  <!-- Delete Schedule -->
+<!-- Delete Schedule -->
 <ng-template #deleteModal let-c="close" let-d="dismiss">
-    <div class="modal-header bg-danger text-white">
-      <h5 class="modal-title"><i class="fa fa-warning fa-lg"></i> Confirm Deletion</h5>
-      <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    <div class="modal-body">
-      Are you sure you want to delete <span class="bg-light border rounded px-2"> <b>{{deleteSchedule.type}}</b></span> schedule, 
-      <span class="bg-light border rounded px-2"> <b>{{deleteSchedule.name}}</b></span>  ?    
+  <div class="modal-header">
+    <h5 class="modal-title">Campaign Deletion</h5>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p><strong>Are you sure you want to delete <span class="bg-light border rounded px-2">
+          <b>{{deleteSchedule.type}}, {{deleteSchedule.name}}</b></span> campaign?
+      </strong></p>
+    <p>All information about the campaign will be permanently deleted.
+      <span class="text-danger">This operation can not be undone.</span>
+    </p>
+  </div>
+  <div class="modal-footer d-flex justify-content-between">
+    <button type="button" class="btn btn-danger" (click)="delete()">Ok</button>
+    <button type="button" class="btn btn-outline-secondary" (click)="d('cancel click')">Cancel</button>
+  </div>
+  <!-- <div class="modal-body">
+    Are you sure you want to delete <span class="bg-light border rounded px-2"> <b>{{deleteSchedule.type}}</b></span>
+    schedule,
+    <span class="bg-light border rounded px-2"> <b>{{deleteSchedule.name}}</b></span> ?
     <hr>
     <div class="d-flex justify-content-between">
-        <button type="button" class="btn btn-outline-danger" (click)="deleteCampaign()">Delete</button>
-        <button type="button" class="btn btn-success" (click)="c('Save click')">Dismiss</button>
+      <button type="button" class="btn btn-outline-danger" (click)="deleteCampaign()">Delete</button>
+      <button type="button" class="btn btn-success" (click)="c('Save click')">Dismiss</button>
     </div>
-    </div>
-  </ng-template>
+  </div> -->
+</ng-template>

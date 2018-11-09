@@ -4,11 +4,12 @@ import { ToastrService } from 'ngx-toastr';
 import { GroupService } from '../../../../providers/services/group.service';
 import { selectValidator, campaignNameValidator } from '../../../../providers/validators/validators';
 import { CampaignService } from '../../../../providers/services/campaign.service';
-import { UserReport, SenderId, Group, Sms, Schedule, ScheduleBuilder } from '../../../../models/models.model';
+import { UserReport, Group, Sms, Schedule, ScheduleBuilder } from '../../../../models/models.model';
 import { UserService } from '../../../../providers/services/user.service';
 import { SenderIdService } from '../../../../providers/services/sender-id.service';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { ScheduleType } from '../../../../models/enums.model';
+import { SenderId } from '../../../../models/interfaces.model';
 
 @Component({
   selector: 'app-campaign-schedule',
@@ -25,6 +26,7 @@ export class CampaignScheduleComponent implements OnInit {
   public selectedRecipients: Group[] = [];
   private today = new Date();
   public todayDate: NgbDateStruct;
+  public tomorrow: Date;
   public week: string[] = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY",
     "THURSDAY", "FRIDAY", "SATURDAY"];
   public days: number[] = new Array(31);
@@ -48,6 +50,8 @@ export class CampaignScheduleComponent implements OnInit {
       'details': this.fb.array([])
     });
     this.todayDate = { year: this.today.getFullYear(), month: this.today.getMonth() + 1, day: this.today.getDate() };
+    //set up tomorrows date
+    this.tomorrow = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() + 1);
   }
 
   ngOnInit() {
@@ -74,6 +78,8 @@ export class CampaignScheduleComponent implements OnInit {
         this.scheduleDetails = this.setDay();
       else if (schedule == 'monthly')
         this.scheduleDetails = this.setMonthDay();
+      else if (schedule == 'daily')
+        (<FormArray>this.form.get('details')).removeAt(0);
     });
   }
   private set scheduleDetails(formGroup: FormGroup) {
@@ -105,7 +111,7 @@ export class CampaignScheduleComponent implements OnInit {
   public isArrayTouched(input: string): boolean {
     return (<FormGroup>(<FormArray>this.form.get('details')).controls[0]).controls[input].touched;
   }
-  public get isNameInvalid(): boolean{
+  public get isNameInvalid(): boolean {
     return (this.isInValid('name', 'required') || this.isInValid('name', 'exists')) && this.isTouched('name')
   }
   public get isSelectedValid(): boolean {
@@ -181,8 +187,8 @@ export class CampaignScheduleComponent implements OnInit {
     return (this.form.invalid || this.selectedRecipients.length == 0)
   }
   private get selectedDateSchedule(): Date {
-    return new Date(this.selectedDate.getFullYear(), this.selectedDate.getDate(),
-      this.selectedDate.getDay(), this.selectedTime.getHours(), this.selectedTime.getMinutes());
+    return new Date(this.selectedDate.getFullYear(), this.selectedDate.getMonth(),
+      this.selectedDate.getDate(), this.selectedTime.getHours(), this.selectedTime.getMinutes());
   }
   private get basicSchedule(): ScheduleBuilder {
     return new ScheduleBuilder()
@@ -206,7 +212,7 @@ export class CampaignScheduleComponent implements OnInit {
     return this.basicSchedule
       .setType(ScheduleType.WEEKLY)
       .setDayOfWeek(this.selectedDay)
-      .setDate(this.selectedDateSchedule)
+      .setDate(this.selectedTime)
       .build();
   }
   private get monthlySchedule(): Schedule {
@@ -247,17 +253,25 @@ export class CampaignScheduleComponent implements OnInit {
   }
   public send(form) {
     this.isSending = true;
-    this.campaignService.sendSms(this.getSms(form)).subscribe(
+    this.campaignService.sendScheduledSms(this.getSms(form)).subscribe(
       response => {
         this.isSending = false;
-        this.notify.success("Created SMS campaign successfully");
-        //reset form and selectedGroups array
-        this.form.reset();
-        this.selectedRecipients = [];
+        this.notify.success("Created campaign successfully.");
+        this.resetFormValues();
       }, error => {
         this.isSending = false;
         this.notify.error(error.error.error_description, error.error.error);
       }
     );
+  }
+  private resetFormValues() {
+    this.form.get('name').reset('');
+    this.form.get('senderId').reset('')
+    this.form.get('group').reset('0')
+    this.form.get('message').reset('')
+    this.form.get('schedule').reset('')
+    this.form.get('time').reset(this.defaultTime);
+    (<FormArray>this.form.get('details')).reset(this.fb.array([]));
+    this.selectedRecipients = [];
   }
 }

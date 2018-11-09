@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { GroupService } from '../../../../providers/services/group.service';
-import { Group, UserReport, SenderId, Sms, Schedule } from '../../../../models/models.model';
+import { Group, UserReport, Sms, Schedule } from '../../../../models/models.model';
 import { UserService } from '../../../../providers/services/user.service';
 import { SubscriberService } from '../../../../providers/services/subscriber.service';
 import { SenderIdService } from '../../../../providers/services/sender-id.service';
 import { SmsService } from '../../../../providers/services/sms.service';
+import { SenderId } from '../../../../models/interfaces.model';
 
 @Component({
   selector: 'app-campaign-send',
@@ -52,7 +53,7 @@ export class CampaignSendComponent implements OnInit {
       this.resetCharges();
     });
   }
-  public getFormValue(formAttribute: string){
+  public getFormValue(formAttribute: string) {
     return this.form.get(formAttribute).value
   }
   public isInValid(input: string, error: string): boolean {
@@ -61,15 +62,15 @@ export class CampaignSendComponent implements OnInit {
   public isTouched(input: string): boolean {
     return this.form.controls[input].touched;
   }
-  public get isSelectedGroupsInValid(): boolean{
+  public get isSelectedGroupsInValid(): boolean {
     return this.selectedRecipients.length == 0 && this.isTouched('group');
   }
-  public get isMessageInvalid(){
+  public get isMessageInvalid() {
     return (this.isTouched('message') && this.isInValid('message', 'required'));
   }
   public addSubscriberGroup() {
     let id = this.form.get('group').value;
-    let group: Group = this.groupService.find(this.groups, id);    
+    let group: Group = this.groupService.find(this.groups, id);
     //check if recipients array has a group of recipients added to it
     if (this.selectedRecipients.length != 0) {
       //check and remove duplicates
@@ -84,7 +85,7 @@ export class CampaignSendComponent implements OnInit {
       return group.id != groupId;
     });
   }
-  public resetCharges(){
+  public resetCharges() {
     //reset charge amount and subscribers
     this.chargeAmount = 0;
     this.totalSubscribers = 0;
@@ -104,6 +105,21 @@ export class CampaignSendComponent implements OnInit {
   public get units() {
     return this.profile.client.creditAmount;
   }
+  get textType() {
+    if (this.canSend)
+      return {
+        'text-success': true,
+        'bd-highlight': true
+      }
+    else
+      return {
+        'text-danger': true,
+        'bd-highlight': true
+      }
+  }
+  get notSelectedSenderId() {
+    return this.isTouched('senderId') && this.getFormValue('senderId') == '';
+  }
   public smsCharges() {
     let email = this.profile.user.email;
     let senderId = this.form.get('senderId').value;
@@ -113,7 +129,7 @@ export class CampaignSendComponent implements OnInit {
     this.smsService.getCharges(sms).subscribe(charges => {
       this.chargeAmount = charges.estimatedCost;
       this.totalSubscribers = charges.totalContacts;
-      if(this.canSend)
+      if (this.canSend)
         this.enoughUnits = true;
     });
   }
@@ -124,8 +140,8 @@ export class CampaignSendComponent implements OnInit {
     else
       return false;
   }
-  public get isSelectedValid(){
-    if(this.form.get('group').value == 0)
+  public get isSelectedValid() {
+    if (this.form.get('group').value == 0)
       return false;
     return true;
   }
@@ -134,43 +150,53 @@ export class CampaignSendComponent implements OnInit {
       return true;
     return false;
   }
-  public get max(){
-    if(this.messageLength == 320)
+  get charText() {
+    if (this.max)
+      return {
+        'text-warning': true
+      }
+    else
+      return {
+        'text-muted': true
+      }
+  }
+  public get max() {
+    if (this.messageLength == 320)
       return true;
     return false;
   }
   public sendSms(form) {
-    this.isSendingSms = true; 
-    if(!this.enoughUnits){
+    this.isSendingSms = true;
+    if (!this.enoughUnits) {
       this.notify.error("Not enough units.");
-      this.isSendingSms = false;      
+      this.isSendingSms = false;
     }
-    else{
-      let sms: Sms = new Sms(this.profile.user.email, form.senderId, form.message, 
+    else {
+      let sms: Sms = new Sms(this.profile.user.email, form.senderId, form.message,
         new Schedule(), this.recipientsIds);
       this.smsService.sendSms(sms).subscribe(
-        response =>{
-          this.isSendingSms = false;      
+        response => {
+          this.isSendingSms = false;
           this.enoughUnits = false;
-          this.notify.success(response.message, response.title);
+          this.notify.success(response.message);
           this.resetDataValues();
           this.resetForm();
-        }, error =>{
+        }, error => {
           this.isSendingSms = false;
-          this.notify.error(error.error.error_description, error.error.error);
+          this.notify.error(error.error.error_description);
         }
       );
     }
   }
-  private get recipientsIds(): number[]{
-    let id =[];
+  private get recipientsIds(): number[] {
+    let id = [];
     this.selectedRecipients.forEach(group => id.push(group.id))
     return id;
   }
   private resetForm() {
-    this.form.get('senderId').setValue('');
-    this.form.get('message').setValue('');
-    this.form.get('group').setValue('0');
+    this.form.get('senderId').reset('');
+    this.form.get('message').reset('');
+    this.form.get('group').reset('');
   }
   private resetDataValues() {
     this.selectedRecipients = [];

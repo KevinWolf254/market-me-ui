@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
-import { ServiceProviderReport, GroupedContactsRequest } from '../../models/models.model';
+import { GroupedContactsRequest } from '../../models/models.model';
+import { ServiceProviderReport } from '../../models/interfaces.model';
 
 @Injectable({
   providedIn: 'root'

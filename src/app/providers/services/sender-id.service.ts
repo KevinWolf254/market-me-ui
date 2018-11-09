@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { SenderId } from '../../models/models.model';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
+import { SenderId } from '../../models/interfaces.model';
 
 @Injectable({
   providedIn: 'root'
