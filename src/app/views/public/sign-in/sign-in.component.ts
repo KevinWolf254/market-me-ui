@@ -23,7 +23,7 @@ export class SignInComponent implements OnInit {
   constructor(private _fb: FormBuilder, private router: Router, private notify: ToastrService,
     private userService: UserService) {
     this.signInForm = _fb.group({
-      'email': [null, Validators.email],
+      'email': [null, Validators.compose([Validators.required, Validators.email])],
       'password': [null, Validators.required]
     });
   }
@@ -31,7 +31,21 @@ export class SignInComponent implements OnInit {
   ngOnInit() {
     this.userService.profileObserver.subscribe(profile => this.profile = profile);
   }
-
+  public isTouched(input: string): boolean {
+    return this.signInForm.controls[input].touched;
+  }
+  public isInValid(input: string, error: string): boolean {
+    return this.signInForm.controls[input].hasError(error);
+  }
+  get isEmailInvalid() {
+    return this.emailHasError && this.isTouched('email')
+  }
+  get emailHasError() {
+    return this.isInValid('email', 'required') || this.isInValid('email', 'email')
+  }
+  get isPasswordInvalid() {
+    return this.isInValid('password', 'required') && this.isTouched('password')
+  }
   public authenticate(form) {
     this.isSigningIn = true;
     this.userService.authenticate(form.email, form.password).subscribe(

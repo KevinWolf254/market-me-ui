@@ -20,8 +20,8 @@ export class SignUpComponent implements OnInit {
   codes: string[] = [];
   isCodeNonExistant: boolean;
   public version = VERSION.full;
-  phoneNoPattern: string = '^[7]\d{8}$'
-  codePattern: string = '^[+2]\d{2}$'
+  phoneNoPattern = new RegExp('^[7]\d{8}$');
+  codePattern = new RegExp('^[+]2\d{2}$');
 
   constructor(private _fb: FormBuilder, private router: Router, private notify: ToastrService,
     private countryService: CountryService, private uService: UserService) {
