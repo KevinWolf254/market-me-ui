@@ -3,6 +3,8 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NgbModalRef, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { ToastrService } from 'ngx-toastr';
+import { groupNameValidator } from '../../../../providers/validators/validators';
+import { GroupService } from '../../../../providers/services/group.service';
 
 @Component({
   selector: 'app-sub-groups',
@@ -37,9 +39,10 @@ export class SubGroupsComponent implements OnInit {
     pagerRightArrow: 'fa fa-chevron-right', pagerPrevious: 'fa fa-step-backward', pagerNext: 'fa fa-step-forward'
   };
 
-  constructor(private _fb: FormBuilder, private modalService: NgbModal, private notify: ToastrService) { 
+  constructor(private _fb: FormBuilder, private modalService: NgbModal, private notify: ToastrService,
+    groupService: GroupService) { 
     this.createForm = _fb.group({
-      'name': [null,Validators.required]
+      'name': ['',Validators.compose([Validators.required, groupNameValidator(groupService)])]
     });
     this.deleteForm = _fb.group({
       'group': ['0']
@@ -48,10 +51,26 @@ export class SubGroupsComponent implements OnInit {
 
   ngOnInit() {    
     this.getGroups();
-
     this.entriesPerPage = this.perPageNos[0];
   } 
-  
+  public isInValid(input: string, error: string): boolean {
+    return this.createForm.controls[input].hasError(error);
+  }
+  public isTouched(input: string): boolean {
+    return this.createForm.controls[input].touched;
+  }
+  get isCreateFormInvalid(){
+    return this.createForm.invalid;
+  }
+  public get isNameInvalid(): boolean {
+    return (this.hasRequiredError || this.hasExistError) && this.isTouched('name')
+  }
+  get hasRequiredError(){
+    return this.isInValid('name', 'required')
+  }
+  get hasExistError(){
+    return this.isInValid('name', 'exists');
+  }
   private getGroups() {
     // this.groupService.getGroups().subscribe(response => {
     //   this.groups = response;

@@ -4,9 +4,9 @@ import { Disbursement, User, Organization, Credentials, Country_ } from "./inter
 export class Models {
 }
 export class CampaignRequest {
-	campaignName: string;
+    campaignName: string;
     command: Command;
-    constructor(campaignName: string, command: Command){
+    constructor(campaignName: string, command: Command) {
         this.campaignName = campaignName;
         this.command = command;
     }
@@ -32,7 +32,7 @@ export class Report {
     title: string;
     message: string;
 }
-export class CampaignReport extends Report{
+export class CampaignReport extends Report {
     schedule: Schedule;
     groups: Group[];
     charges: ChargesReport;
@@ -166,6 +166,14 @@ export class Sms {
         this.message = message;
         this.schedule = schedule;
         this.groupIds = groupIds;
+    }
+}
+export class Subscriber_ {
+    code: string;
+    number: string;
+    constructor(code: string, number: string) {
+        this.code = code;
+        this.number = number;
     }
 }
 export class UserReport extends Report {

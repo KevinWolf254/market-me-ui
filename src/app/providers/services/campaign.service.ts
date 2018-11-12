@@ -21,9 +21,7 @@ export class CampaignService {
       debounceTime(500),
       distinctUntilChanged(),
       map((report: Report) => {
-        if (report.code == 200)
-          return true;
-        return false;
+        return (report.code == 200)
       })
     );
   }

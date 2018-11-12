@@ -60,13 +60,13 @@
               formControlName="phoneNo" placeholder="Phone Number*" aria-label="Phone number" aria-describedby="phoneIcon"
               maxlength="9">
           </div>
-          <!-- Errors -->
-          <small class="form-text text-danger float-left" *ngIf="isCodeInvalid || isCodeNonExistant">
-            <span *ngIf="isCodeNonExistant">Country code does not exist.</span>
+          <!-- code Errors -->
+          <small class="form-text text-danger float-left" *ngIf="isCodeInvalid || isCodeValueInvalid">
+            <span *ngIf="isCodeValueInvalid">Country code does not exist.</span>
             <span *ngIf="isInValid('code', 'required')">Please enter country code.</span>
             <span *ngIf="isInValid('code', 'pattern')">Please enter a valid country code. e.g. +250</span>
           </small>
-          <!-- Errors -->
+          <!-- phone no Errors -->
           <small class="form-text text-danger float-left" *ngIf="isPhoneNoInvalid">
             <span *ngIf="isInValid('phoneNo', 'required')">Please enter your phone number.</span>
             <span *ngIf="isInValid('phoneNo', 'pattern')">Please enter a valid phone number. e.g. 720000000</span>
@@ -96,6 +96,10 @@
             <input type="password" [class.is-invalid]="isPasswordInvalid" class="form-control form-control-sm" formControlName="password" placeholder="Password*"
               aria-label="Password" aria-describedby="passwordIcon">
           </div>
+          <small class="form-text text-muted float-left">
+            <div>Must include: a lowercase letter, an uppercase letter, and a number</div> 
+            <div>Must be at least 8 characters long</div>
+          </small>
           <!-- Error -->
           <small class="form-text text-danger float-left" *ngIf="isPasswordInvalid">
             <span *ngIf="isInValid('password', 'required')">Please enter a password.</span>

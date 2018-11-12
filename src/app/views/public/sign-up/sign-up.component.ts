@@ -20,8 +20,8 @@ export class SignUpComponent implements OnInit {
   codes: string[] = [];
   isCodeNonExistant: boolean;
   public version = VERSION.full;
-  phoneNoPattern = new RegExp('^[7]\d{8}$');
-  codePattern = new RegExp('^[+]2\d{2}$');
+  codePattern = new RegExp('^[+][2][0-9]{2}$');
+  phoneNoPattern = new RegExp('^[7][0-9]{8}$');
 
   constructor(private _fb: FormBuilder, private router: Router, private notify: ToastrService,
     private countryService: CountryService, private uService: UserService) {
@@ -29,7 +29,6 @@ export class SignUpComponent implements OnInit {
       'surname': ['', Validators.required],
       'otherNames': [''],
       'country': ['4', countryValidator],
-      // 'code': ['4', countryValidator],
       'code': ['', Validators.compose([Validators.required, Validators.pattern(this.codePattern)])],
       'phoneNo': ['', Validators.compose([Validators.required, Validators.pattern(this.phoneNoPattern)])],
       'organisation': ['', Validators.required],
@@ -45,7 +44,6 @@ export class SignUpComponent implements OnInit {
       (response: any) => {
         response.forEach((country: Country) => {
           this.countries.push(country);
-          console.log("Code: "+country.callingCodes)
           this.codes.push(country.callingCodes[0]);
         });
       }
@@ -56,7 +54,6 @@ export class SignUpComponent implements OnInit {
       distinctUntilChanged()
     ).subscribe(
       value=>{
-        console.log("Selected code: "+value)
         this.isCodeNonExistant = this.codeExists(value)
       }
     )
@@ -87,6 +84,9 @@ export class SignUpComponent implements OnInit {
   }
   get codeHasErrors(){
     return (this.isInValid('code', 'required') || this.isInValid('code', 'pattern'));
+  }
+  get isCodeValueInvalid(){
+    return (!this.codeHasErrors && this.isCodeNonExistant);
   }
   get isPhoneNoInvalid() {
     return  this.phoneNoHasErrors && this.isTouched('phoneNo')
@@ -129,5 +129,4 @@ export class SignUpComponent implements OnInit {
         }
       );
   }
-
 }

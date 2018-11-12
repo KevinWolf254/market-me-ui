@@ -146,9 +146,7 @@ export class CampaignSendComponent implements OnInit {
     return true;
   }
   public get canSend() {
-    if (this.units >= this.chargeAmount)
-      return true;
-    return false;
+    return this.units >= this.chargeAmount
   }
   get charText() {
     if (this.max)
@@ -161,9 +159,7 @@ export class CampaignSendComponent implements OnInit {
       }
   }
   public get max() {
-    if (this.messageLength == 320)
-      return true;
-    return false;
+    return this.messageLength == 320
   }
   public sendSms(form) {
     this.isSendingSms = true;
