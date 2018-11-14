@@ -1,13 +1,13 @@
 <div class="card border-top-0 shadow">
   <div class="card-body">
     <p class="bg-light p-2 rounded"><b>Create Group:</b></p>
-    <form [formGroup]="createForm" (ngSubmit)="createGroup(createForm.value)">
+    <form [formGroup]="createForm" (ngSubmit)="openDeleteModal(deleteModal, createForm.value)">
       <div class="form-group">
-        <div class="input-group mb-3">
+        <div class="input-group">
           <input type="text" formControlName="name" [class.is-invalid]="isNameInvalid" class="form-control form-control-sm"
             placeholder="Group Name">
           <div class="input-group-append">
-            <button type="submit" class="btn btn-sm btn-info px-4" [disabled]="isCreateFormInvalid">
+            <button type="submit" class="btn btn-sm btn-info px-4" [disabled]="isNameInvalid">
               <div *ngIf="!isCreatingGroup">
                 Create
               </div>
@@ -30,23 +30,23 @@
         </div>
         <!-- Error -->
         <small class="form-text text-danger" *ngIf="isTouched('name')">
-          <div *ngIf="isInValid('name', 'required')">Please provide a Group name.</div>
-          <div *ngIf="isInValid('name', 'exists')">Group name already exists.</div>
+          <div *ngIf="hasRequiredError">Please provide a name.</div>
+          <div *ngIf="!notExists && !hasRequiredError">Group name already exists.</div>
         </small>
       </div>
     </form>
     <hr class="mb-4">
     <p class="bg-light p-2 rounded"><b>Grouped Contacts:</b></p>
-    <form [formGroup]="deleteForm" (ngSubmit)="deleteGroup(deleteForm.value)">
+    <!-- Delete group -->
+    <form [formGroup]="deleteForm" (ngSubmit)="delete(deleteForm.value)">
       <div class="form-group ">
         <div class="input-group mb-3">
-          <select class="form-control form-control-sm" id="selectGroup" formControlName="group" (change)="getContactsOfGroup($event)"
-            [(ngModel)]="selectedGroupId">
-            <option value='0' selected>Choose Group...</option>
+          <select class="form-control form-control-sm" id="selectGroup" formControlName="group">
+            <option value='0' selected>Choose Group</option>
             <option *ngFor="let group of groups" [value]="group.id">{{group.name}}</option>
           </select>
           <div class="input-group-append">
-            <button class="btn btn-sm btn-danger px-4" type="submit" [disabled]="!deleteForm.valid">
+            <button class="btn btn-sm btn-danger px-4" type="submit" [disabled]="deleteForm.invalid">
               <div *ngIf="!isDeletingGroup">
                 Delete
               </div>
@@ -85,15 +85,15 @@
       </div>
       <!-- Search -->
       <div class="input-group col-sm-7">
-        <input type="text" class="form-control form-control-sm" placeholder="Search by phone no e.g. 720000000" (keyup)='searchContact($event)'
-          aria-label="Search by Email" aria-describedby="search">
+        <input type="text" class="form-control" placeholder="Search" (keyup)='search($event)' aria-label="Search by phone number"
+          aria-describedby="search">
         <div class="input-group-append">
           <span class="input-group-text" id="search"><i class="fa fa-search"></i></span>
         </div>
       </div>
     </div>
     <!-- Grouped clients Table -->
-    <ngx-datatable class="bootstrap mt-3" [rows]="groupContacts" [limit]="entriesPerPage" [columnMode]="'force'"
+    <ngx-datatable class="bootstrap mt-3" [rows]="subscribers" [limit]="entriesPerPage" [columnMode]="'force'"
       [rowHeight]="55" [cssClasses]="customPagerIcons" [footerHeight]="40" [scrollbarH]="true">
       <ngx-datatable-column name="id" [width]="40"></ngx-datatable-column>
       <ngx-datatable-column name="Phone Number">
@@ -106,7 +106,7 @@
       <ngx-datatable-column name="actions">
         <ng-template ngx-datatable-cell-template let-row="row" let-rowIndex="rowIndex">
           <div class="btn-group" role="group" aria-label="actions">
-            <button (click)="openRemoveClientDialog(removeModal, row, rowIndex)" class="btn btn-sm btn-outline-danger"
+            <button (click)="openDeleteSubModal(removeModal, row, rowIndex)" class="btn btn-sm btn-outline-danger"
               data-toggle="tooltip" data-placement="top" title="Remove client from group"><i class="fa fa-trash"></i>
               Remove</button>
           </div>
@@ -115,6 +115,26 @@
     </ngx-datatable>
   </div>
 </div>
+
+<!-- delete group -->
+<ng-template #deleteModal let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h5 class="modal-title">Group deletion</h5>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p><strong>Are you sure you want to delete Group <span class="text-primary">{{groupToDelete.name}}</span>?</strong></p>
+    <p>All information about the group will be permanently deleted.
+      <span class="text-danger">This operation can not be undone.</span>
+    </p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss('cancel click')">Cancel</button>
+    <button type="button" class="btn btn-danger" (click)="delete()">Ok</button>
+  </div>
+</ng-template>
 
 <!-- Remove Client from group -->
 <ng-template #removeModal let-c="close" let-d="dismiss">

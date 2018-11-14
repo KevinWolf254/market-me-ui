@@ -9,30 +9,32 @@ import { ServiceProviderReport } from '../../models/interfaces.model';
 })
 export class SubscriberService {
   private basicUri: string = "http://localhost:8083/mmcs";
-  private jsonHeader = {headers: new HttpHeaders({'Content-Type':'application/json'})};
+  private jsonHeader = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
 
   constructor(private _http: HttpClient) { }
-  
-  public get subscribers(): Observable<ServiceProviderReport[]>{
+
+  public get subscribers(): Observable<ServiceProviderReport[]> {
     return this._http.get<ServiceProviderReport[]>(this.basicUri + "/secure/subscriber");
   }
-  public find(groupIds: number[]): Observable<ServiceProviderReport[]>{ 
+  public find(groupIds: number[]): Observable<ServiceProviderReport[]> {
     let request: GroupedContactsRequest = new GroupedContactsRequest(groupIds);
     return this._http.post<ServiceProviderReport[]>(this.basicUri + "/secure/subscriber/groups", request, this.jsonHeader);
   }
-  public save(groupId: number, subscriber: Subscriber_){
-    return this._http.post(this.basicUri + "/secure/subscriber/"+groupId, subscriber, this.jsonHeader);
+  public save(groupId: number, subscriber: Subscriber_) {
+    return this._http.post(this.basicUri + "/secure/subscriber/" + groupId, subscriber, this.jsonHeader);
   }
 
-  public saveSubscribers(file: File){
-    let formData: FormData = new FormData();    
+  public saveSubscribers(file: File) {
+    let formData: FormData = new FormData();
     formData.append("file", file, file.name);
     return this._http.post(this.basicUri + "/secure/subscribers", formData, {
       reportProgress: true,
       observe: 'events'
     });
   }
-
+  getByGroupId(id: number) {
+    return this._http.get<Subscriber_[]>(this.basicUri + "/secure/subscriber/" + id);
+  }
   // public saveClient(contact: Client){
   //   return this._http.post(this.basicUri + "/secure/subscriber", contact, this.jsonHeader);
   // }

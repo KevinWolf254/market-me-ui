@@ -22,25 +22,27 @@ export class GroupService {
   public set _groups(groups: Group[]) {
     this.groupSource.next(groups);
   }
-  getGroup(name: string) {
-    return this._http.get(this.url + "/secure/group/" + name);
+  getGroup(name: string): Observable<Group> {
+    console.log("getting: " + name)
+    return this._http.get<Group>(this.url + "/secure/group/" + name);
   }
   public nameExists(name: string): Observable<boolean> {
     return this.getGroup(name).pipe(
       debounceTime(500),
       distinctUntilChanged(),
       map((group: Group) => {
-        console.log(JSON.stringify("group: "+group))
-        if (group.name == null || group.name == undefined)
-          return false;
-        return true;
+        return !(group == null || group == undefined)
       })
     );
   }
-  // public saveGroup(name: string){
-  //   let requestParam = "name="+name;
-  //   return this._http.post(this.uri + "/secure/group", requestParam, this.header);
-  // }
+  public save(name: string) {
+    let requestParam = "name=" + name;
+    return this._http.post(this.url + "/secure/group", requestParam, this.header);
+  }
+
+  public delete(groupId: number) {
+    return this._http.delete(this.url + "/secure/group/" + groupId);
+  }
 
   // public getContactsOfGroup(id: number) {
   //   return this._http.get(this.uri + "/secure/contacts/" + id);
@@ -52,8 +54,4 @@ export class GroupService {
     });
     return group;
   }
-
-  // deleteGroup(groupId: number){
-  //   return this._http.delete(this.uri + "/secure/group/"+groupId);
-  // }
 }

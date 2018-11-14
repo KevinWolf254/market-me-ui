@@ -70,15 +70,14 @@ export function campaignNameValidator(campaignService: CampaignService): AsyncVa
 }
 export function groupNameValidator(groupService: GroupService): AsyncValidatorFn {
     return (control: AbstractControl): Promise<ValidationErrors> | Observable<ValidationErrors> | null => {
-        console.log("value: "+control.value)
-        return groupService.nameExists(control.value).pipe(
+        let exists = groupService.nameExists(control.value).pipe(
             map(exists => {
-                console.log("nameExists: "+exists)
                 if (exists)
                     return { exists: true };
                 return null;
             })
         )
+        return exists;
     }
 }
 export function countryCodeValidator(control: AbstractControl) {
