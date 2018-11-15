@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { GroupedContactsRequest, Subscriber_ } from '../../models/models.model';
-import { ServiceProviderReport } from '../../models/interfaces.model';
+import { ServiceProviderReport, SubscriberDetails } from '../../models/interfaces.model';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +10,7 @@ import { ServiceProviderReport } from '../../models/interfaces.model';
 export class SubscriberService {
   private basicUri: string = "http://localhost:8083/mmcs";
   private jsonHeader = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
+  private header = {headers: new HttpHeaders({'Content-Type':'application/x-www-form-urlencoded'})};
 
   constructor(private _http: HttpClient) { }
 
@@ -32,8 +33,12 @@ export class SubscriberService {
       observe: 'events'
     });
   }
-  getByGroupId(id: number) {
-    return this._http.get<Subscriber_[]>(this.basicUri + "/secure/subscriber/" + id);
+  public getByGroupId(id: number) {
+    return this._http.get<SubscriberDetails[]>(this.basicUri + "/secure/subscriber/" + id);
+  }
+  public deleteSubscriber(contactId: number, groupId: number){
+    let requestParams = "ContactId="+contactId+"&GroupId="+groupId;
+    return this._http.post(this.basicUri + "/secure/subscriber/remove", requestParams, this.header);
   }
   // public saveClient(contact: Client){
   //   return this._http.post(this.basicUri + "/secure/subscriber", contact, this.jsonHeader);
@@ -50,10 +55,5 @@ export class SubscriberService {
   //     reportProgress: true,
   //     observe: 'events'
   //   });
-  // }
-
-  // public removeContactFromGroup(contactId: number, groupId: number){
-  //   let requestParams = "ContactId="+contactId+"&GroupId="+groupId;
-  //   return this._http.post(this.basicUri + "/secure/subscriber/remove", requestParams, this.header);
   // }
 }

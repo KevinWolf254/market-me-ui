@@ -60,6 +60,10 @@ export interface Organization {
     createdOn: Date;
     country: Country_;
 }
+export interface Prefix{
+    id: number;
+    number: number;
+}
 export interface SenderId {
     id: number;
     name: string;
@@ -67,11 +71,18 @@ export interface SenderId {
 export interface ServiceProvider {
     id: number;
     name: string;
-    country: Country;
+    country: Country_;
 }
 export interface ServiceProviderReport {
     name: ServiceProvider;
     totalSubscribers: number;
+}
+export interface SubscriberDetails{
+    id: number;
+    number: number;
+    fullPhoneNo: string;
+    serviceProvider: ServiceProvider;
+    prefix: Prefix;
 }
 export interface Token {
     access_token: string;

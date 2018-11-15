@@ -1,5 +1,5 @@
 import { Role, ScheduleType, Days, Command } from "./enums.model";
-import { Disbursement, User, Organization, Credentials, Country_ } from "./interfaces.model";
+import { Disbursement, User, Organization, Credentials, Country_, ServiceProvider } from "./interfaces.model";
 
 export class Models {
 }

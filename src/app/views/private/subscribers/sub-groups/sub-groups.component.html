@@ -1,7 +1,8 @@
 <div class="card border-top-0 shadow">
   <div class="card-body">
     <p class="bg-light p-2 rounded"><b>Create Group:</b></p>
-    <form [formGroup]="createForm" (ngSubmit)="openDeleteModal(deleteModal, createForm.value)">
+    <!-- create group -->
+    <form [formGroup]="createForm" (ngSubmit)="createGroup(createForm.value)">
       <div class="form-group">
         <div class="input-group">
           <input type="text" formControlName="name" [class.is-invalid]="isNameInvalid" class="form-control form-control-sm"
@@ -38,15 +39,17 @@
     <hr class="mb-4">
     <p class="bg-light p-2 rounded"><b>Grouped Contacts:</b></p>
     <!-- Delete group -->
-    <form [formGroup]="deleteForm" (ngSubmit)="delete(deleteForm.value)">
-      <div class="form-group ">
+    <!-- <form [formGroup]="deleteForm" (ngSubmit)="delete(deleteForm.value)"> -->
+      <form [formGroup]="deleteForm">
+        <div class="form-group ">
         <div class="input-group mb-3">
           <select class="form-control form-control-sm" id="selectGroup" formControlName="group">
             <option value='0' selected>Choose Group</option>
             <option *ngFor="let group of groups" [value]="group.id">{{group.name}}</option>
           </select>
           <div class="input-group-append">
-            <button class="btn btn-sm btn-danger px-4" type="submit" [disabled]="deleteForm.invalid">
+            <button class="btn btn-sm btn-danger px-4" type="button" (click)="openDeleteModal(deleteModal)" 
+            [disabled]="deleteForm.invalid || isDefaultGroup">
               <div *ngIf="!isDeletingGroup">
                 Delete
               </div>
@@ -67,6 +70,10 @@
             </button>
           </div>
         </div>
+        <!-- Error -->
+        <small class="form-text text-warning bg-light" *ngIf="isDefaultGroup">
+          Default group cannot be deleted. Subscribers are not fetched to enhance performance.
+        </small>
       </div>
     </form>
     <!-- Members of group: Table -->
@@ -95,19 +102,27 @@
     <!-- Grouped clients Table -->
     <ngx-datatable class="bootstrap mt-3" [rows]="subscribers" [limit]="entriesPerPage" [columnMode]="'force'"
       [rowHeight]="55" [cssClasses]="customPagerIcons" [footerHeight]="40" [scrollbarH]="true">
-      <ngx-datatable-column name="id" [width]="40"></ngx-datatable-column>
-      <ngx-datatable-column name="Phone Number">
+      <ngx-datatable-column name="Id" [width]="40"></ngx-datatable-column>
+      <ngx-datatable-column name="Country" [width]="60">
         <ng-template ngx-datatable-cell-template let-row="row" let-rowIndex="rowIndex">
-          {{row.countryCode}} {{row.phoneNumber.slice(0,3)}} {{row.phoneNumber.slice(3,6)}}
-          {{row.phoneNumber.slice(6,9)}}
+          {{row.serviceProvider.country.name}}
         </ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column name="teleCom"></ngx-datatable-column>
-      <ngx-datatable-column name="actions">
+      <ngx-datatable-column name="Service Provider">
+        <ng-template ngx-datatable-cell-template let-row="row" let-rowIndex="rowIndex">
+          {{row.serviceProvider.name}}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Phone Number">
+        <ng-template ngx-datatable-cell-template let-row="row" let-rowIndex="rowIndex">
+          {{row.fullPhoneNo}}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Actions">
         <ng-template ngx-datatable-cell-template let-row="row" let-rowIndex="rowIndex">
           <div class="btn-group" role="group" aria-label="actions">
             <button (click)="openDeleteSubModal(removeModal, row, rowIndex)" class="btn btn-sm btn-outline-danger"
-              data-toggle="tooltip" data-placement="top" title="Remove client from group"><i class="fa fa-trash"></i>
+              data-toggle="tooltip" data-placement="top" title="Remove subscriber from group"><i class="fa fa-trash"></i>
               Remove</button>
           </div>
         </ng-template>
@@ -125,7 +140,7 @@
     </button>
   </div>
   <div class="modal-body">
-    <p><strong>Are you sure you want to delete Group <span class="text-primary">{{groupToDelete.name}}</span>?</strong></p>
+    <p><strong>Are you sure you want to delete Group <span class="text-primary">{{selectedGroup.name}}</span>?</strong></p>
     <p>All information about the group will be permanently deleted.
       <span class="text-danger">This operation can not be undone.</span>
     </p>
@@ -136,7 +151,7 @@
   </div>
 </ng-template>
 
-<!-- Remove Client from group -->
+<!-- delete subscriber from group -->
 <ng-template #removeModal let-c="close" let-d="dismiss">
   <div class="modal-header bg-danger text-white">
     <h5 class="modal-title"><i class="fa fa-warning fa-lg"></i> Confirm Deletion</h5>
@@ -145,6 +160,18 @@
     </button>
   </div>
   <div class="modal-body">
+    <p><strong>Are you sure you want to delete subscriber <span class="text-primary">{{selectedSubscriber.fullPhoneNo}}</span>
+      from group <span class="text-primary">{{selectedGroup.name}}</span>?</strong></p>
+    <p>
+      <span class="text-danger">This operation can not be undone.</span>
+    </p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss('cancel click')">Cancel</button>
+    <button type="button" class="btn btn-danger" (click)="deleteSubscriber()">Ok</button>
+  </div>
+
+  <!-- <div class="modal-body">
     Are you sure you want to remove
     <span class="bg-light border rounded px-2">
       <b>{{removeContact.countryCode}}</b>
@@ -156,5 +183,5 @@
       <button type="button" class="btn btn-outline-danger" (click)="removeContactFromGroup()">Delete</button>
       <button type="button" class="btn btn-info" (click)="c('Save click')">Dismiss</button>
     </div>
-  </div>
+  </div> -->
 </ng-template>

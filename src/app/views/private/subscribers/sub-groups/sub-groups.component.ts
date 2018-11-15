@@ -6,8 +6,10 @@ import { ToastrService } from 'ngx-toastr';
 import { groupNameValidator, selectValidator } from '../../../../providers/validators/validators';
 import { GroupService } from '../../../../providers/services/group.service';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
-import { Group, Subscriber_ } from '../../../../models/models.model';
+import { Group, Subscriber_, UserReport } from '../../../../models/models.model';
 import { SubscriberService } from '../../../../providers/services/subscriber.service';
+import { SubscriberDetails } from '../../../../models/interfaces.model';
+import { UserService } from '../../../../providers/services/user.service';
 
 @Component({
   selector: 'app-sub-groups',
@@ -18,25 +20,25 @@ export class SubGroupsComponent implements OnInit {
 
   public entriesPerPage: number;
   public perPageNos: number[] = [10, 25, 50, 100];
-  public tempSubscribers: any[] = [];
+  public tempSubscribers: SubscriberDetails[] = [];
 
   public isCreatingGroup: boolean = false;
   public isDeletingGroup: boolean = false;
 
-  public groups: any[] = [];
+  public groups: Group[] = [];
   public createForm: FormGroup;
   public deleteForm: FormGroup;
 
-  public subscribers: Subscriber_[] = [];
-  groupToDelete: Group;
+  public subscribers: SubscriberDetails[] = [];
   private modal: NgbModalRef;
 
-  public removeContact: any = null;
-  public removeRow: number;
+  public selectedGroup: Group;
+  public selectedSubscriber: SubscriberDetails;
+  public selectedRow: number;
 
-  public selectedGroupId: number = 0;
-  public selectedGroup: any;
   notExists: boolean;
+
+  public profile: UserReport;
 
   @ViewChild(DatatableComponent) table: DatatableComponent;
   customPagerIcons = {
@@ -45,7 +47,7 @@ export class SubGroupsComponent implements OnInit {
   };
 
   constructor(private _fb: FormBuilder, private modalService: NgbModal, private notify: ToastrService,
-    private groupService: GroupService, private subscriberService: SubscriberService) {
+    private groupService: GroupService, private userService: UserService, private subscriberService: SubscriberService) {
     this.createForm = _fb.group({
       'name': ['', Validators.compose([Validators.required])]
     });
@@ -67,7 +69,9 @@ export class SubGroupsComponent implements OnInit {
         this.notExists = group == null
       });
     });
-    this.getSubscribersByGroupId();
+    this.monitorSelected();
+    this.userService.profileObserver.subscribe(profile => this.profile = profile);
+
   }
   public isInValid(input: string, error: string): boolean {
     return this.createForm.controls[input].hasError(error);
@@ -92,55 +96,42 @@ export class SubGroupsComponent implements OnInit {
       this.groups = groups;
     });
   }
-
   public createGroup(form) {
     this.isCreatingGroup = true;
     this.groupService.save(form.name).subscribe(
       (response: any) => {
         this.createForm.reset();
         this.isCreatingGroup = false;
-        this.notify.success(response.message, response.title);
+        this.getGroups();
+        this.notify.success(response.message);
       }, error => {
         this.isCreatingGroup = false;
         this.notify.error(error.error.error_description, error.error.error);
       }
     );
   }
-  openDeleteModal(modal, form) {
-    this.groupToDelete = this.groups.find(group => group.id == form.group);
-    this.modal = this.modalService.open(modal);
-  }
-  public delete(form) {
-    this.groupService.delete(form.group).subscribe(response => {
-      this.getGroups();
-      this.notify.success('Deleted');
-    }, error => {
-      this.notify.error(error.error);
-    }
-    );
-  }
-  getSubscribersByGroupId() {
+  monitorSelected() {
     this.deleteForm.get('group').valueChanges.pipe(map(id => id))
       .subscribe(id => {
-        if (id == 0)
+        if (id == 0 || this.isDefaultGroup) {
           this.subscribers = [];
-        else
-          this.getSubscribers(id);
+          this.selectedGroup = null;
+        }
+        else {
+          this.selectedGroup = this.groups.find(group => group.id == id);
+          this.getSubscribersByGroupId(id);
+        }
       });
   }
-  private getSubscribers(id: any) {
-    this.subscriberService.getByGroupId(id).subscribe(subscribers => {
-      this.subscribers = subscribers;
-      // cache our clients
-      this.tempSubscribers = [...this.subscribers];
-    });
+  get isDefaultGroup() {
+    let defaultGroup = this.profile.client.id + '_All_Subscribers';
+    return this.selectedGroup.name == defaultGroup;
   }
-
   public search(event) {
     let searchParam = event.target.value.toLowerCase();
     // filter our data
-    let subscriber = this.tempSubscribers.filter((subscriber: Subscriber_) => {
-      return subscriber.number.indexOf(searchParam) !== -1 || !searchParam;
+    let subscriber = this.tempSubscribers.filter((subscriber: SubscriberDetails) => {
+      return subscriber.fullPhoneNo.indexOf(searchParam) !== -1 || !searchParam;
     });
     // update the rows
     this.subscribers = subscriber;
@@ -150,18 +141,44 @@ export class SubGroupsComponent implements OnInit {
   public changeEntriesPerPage(event) {
     this.entriesPerPage = event.target.value;
   }
-
-  public removeContactFromGroup() {
-    // this.groupContacts.splice(this.removeRow, 1);
-    // this.contactService.removeContactFromGroup(this.removeContact.id, this.selectedGroup.id).subscribe(
-    //   (response: any) => {
-    //     this.notify.success(response.message, response.title);
-    //   }, error =>{
-    //     this.notify.error(error.error);        
-    //   }
-    // );
-    // this.groupContacts = [...this.groupContacts];
+  openDeleteModal(modal) {
+    this.modal = this.modalService.open(modal);
+  }
+  delete() {
+    this.groupService.delete(this.selectedGroup.id).subscribe(response => {
+      this.getGroups();
+      this.deleteForm.get('group').reset('0');
+      this.modal.close();
+      this.getGroups();
+      this.notify.success('Deleted');
+    }, error => {
+      this.notify.error(error.error);
+    }
+    );
+  }
+  private getSubscribersByGroupId(id: number) {
+    this.subscriberService.getByGroupId(id).subscribe(subscribers => {
+      this.subscribers = subscribers;
+      // cache our clients
+      this.tempSubscribers = [...this.subscribers];
+    });
+  }
+  openDeleteSubModal(modal, subscriber: SubscriberDetails, rowIndex: number) {
+    this.selectedRow = rowIndex;
+    this.selectedSubscriber = subscriber;
+    this.modal = this.modalService.open(modal);
+  }
+  public deleteSubscriber() {
+    this.subscribers.splice(this.selectedRow, 1);
+    this.subscriberService.deleteSubscriber(this.selectedSubscriber.id, this.selectedGroup.id).subscribe(
+      (response: any) => {
+        this.modal.close();
+        this.notify.success(response.message);
+      }, error => {
+        this.notify.error(error.error);
+      }
+    );
+    // this.groupContacts = [...this.groupContacts]; 
     // this.tempContacts = [...this.groupContacts];
-    // this.removeModal.close(); 
   }
 }
