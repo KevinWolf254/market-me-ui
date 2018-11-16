@@ -3,7 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NgbModalRef, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { ToastrService } from 'ngx-toastr';
-import { groupNameValidator, selectValidator } from '../../../../providers/validators/validators';
+import { selectValidator } from '../../../../providers/validators/validators';
 import { GroupService } from '../../../../providers/services/group.service';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { Group, Subscriber_, UserReport } from '../../../../models/models.model';
@@ -36,7 +36,7 @@ export class SubGroupsComponent implements OnInit {
   public selectedSubscriber: SubscriberDetails;
   public selectedRow: number;
 
-  notExists: boolean;
+  public nameExists: boolean = false;
 
   public profile: UserReport;
 
@@ -49,7 +49,7 @@ export class SubGroupsComponent implements OnInit {
   constructor(private _fb: FormBuilder, private modalService: NgbModal, private notify: ToastrService,
     private groupService: GroupService, private userService: UserService, private subscriberService: SubscriberService) {
     this.createForm = _fb.group({
-      'name': ['', Validators.compose([Validators.required])]
+      'name': ['', Validators.required]
     });
     this.deleteForm = _fb.group({
       'group': ['0', selectValidator]
@@ -59,48 +59,67 @@ export class SubGroupsComponent implements OnInit {
   ngOnInit() {
     this.getGroups();
     this.entriesPerPage = this.perPageNos[0];
-    this.createForm.get('name').valueChanges.pipe(
-      debounceTime(500),
-      distinctUntilChanged()
-    ).subscribe(value => {
-      let group = this.groupService.getGroup(value).pipe(
-        map((group: Group) => group)
-      ).subscribe(group => {
-        this.notExists = group == null
-      });
-    });
+    this.monitorName();
     this.monitorSelected();
     this.userService.profileObserver.subscribe(profile => this.profile = profile);
 
   }
+
+  private monitorName() {
+    this.createForm.get('name').valueChanges.pipe(
+      debounceTime(1000),
+      distinctUntilChanged())
+      .subscribe((name: string) => {
+        this.setNameValidity(name);
+      });
+  }
+
+  private setNameValidity(name: string) {
+    this.groupService.getGroup(name).pipe(
+      map((group: Group) => group))
+      .subscribe(group => {
+        if (group == null || group == undefined)
+          this.nameExists = false;
+        else
+          this.nameExists = true;
+      });
+  }
+
   public isInValid(input: string, error: string): boolean {
     return this.createForm.controls[input].hasError(error);
   }
+
   public isTouched(input: string): boolean {
     return this.createForm.controls[input].touched;
   }
+
   get isCreateFormInvalid() {
     return this.createForm.invalid;
   }
+
   public get isNameInvalid(): boolean {
-    return this.hasRequiredError && this.isTouched('name')
+      if (this.nameExists || this.hasRequiredError)
+        return true;
+      return false
   }
+
   get hasRequiredError() {
     return this.isInValid('name', 'required')
   }
+
   get isDeletionInvalid() {
     return this.deleteForm.get('group').invalid;
   }
+
   private getGroups() {
-    this.groupService.groups.subscribe(groups => {
-      this.groups = groups;
-    });
+    this.groupService.groups.subscribe(groups => this.groups = groups);
   }
+
   public createGroup(form) {
     this.isCreatingGroup = true;
     this.groupService.save(form.name).subscribe(
       (response: any) => {
-        this.createForm.reset();
+        this.reset();
         this.isCreatingGroup = false;
         this.getGroups();
         this.notify.success(response.message);
@@ -110,23 +129,33 @@ export class SubGroupsComponent implements OnInit {
       }
     );
   }
+
+  private reset() {
+    this.createForm.get('name').reset('');
+    this.nameExists = false;
+  }
+
   monitorSelected() {
     this.deleteForm.get('group').valueChanges.pipe(map(id => id))
       .subscribe(id => {
-        if (id == 0 || this.isDefaultGroup) {
+        if (id == 0)
           this.subscribers = [];
-          this.selectedGroup = null;
-        }
         else {
           this.selectedGroup = this.groups.find(group => group.id == id);
-          this.getSubscribersByGroupId(id);
+          this.subscribers = [];
+          if (!this.isDefaultGroup)
+            this.getSubscribersByGroupId(id);
         }
       });
   }
+
   get isDefaultGroup() {
-    let defaultGroup = this.profile.client.id + '_All_Subscribers';
-    return this.selectedGroup.name == defaultGroup;
+    let defaultGroupName = this.profile.client.id + '_All_Subscribers';
+    if (this.selectedGroup)
+      return this.selectedGroup.name == defaultGroupName;
+    return false;
   }
+
   public search(event) {
     let searchParam = event.target.value.toLowerCase();
     // filter our data
@@ -138,12 +167,15 @@ export class SubGroupsComponent implements OnInit {
     // Whenever the filter changes, always go back to the first page
     this.table.offset = 0;
   }
+
   public changeEntriesPerPage(event) {
     this.entriesPerPage = event.target.value;
   }
+
   openDeleteModal(modal) {
     this.modal = this.modalService.open(modal);
   }
+
   delete() {
     this.groupService.delete(this.selectedGroup.id).subscribe(response => {
       this.getGroups();
@@ -156,6 +188,7 @@ export class SubGroupsComponent implements OnInit {
     }
     );
   }
+
   private getSubscribersByGroupId(id: number) {
     this.subscriberService.getByGroupId(id).subscribe(subscribers => {
       this.subscribers = subscribers;
@@ -163,11 +196,13 @@ export class SubGroupsComponent implements OnInit {
       this.tempSubscribers = [...this.subscribers];
     });
   }
+
   openDeleteSubModal(modal, subscriber: SubscriberDetails, rowIndex: number) {
     this.selectedRow = rowIndex;
     this.selectedSubscriber = subscriber;
     this.modal = this.modalService.open(modal);
   }
+
   public deleteSubscriber() {
     this.subscribers.splice(this.selectedRow, 1);
     this.subscriberService.deleteSubscriber(this.selectedSubscriber.id, this.selectedGroup.id).subscribe(

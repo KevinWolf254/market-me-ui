@@ -1,7 +1,7 @@
 import { AbstractControl, ValidationErrors, AsyncValidatorFn } from "@angular/forms";
 import { Observable } from "rxjs";
 import { CampaignService } from '../services/campaign.service';
-import { map, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { GroupService } from "../services/group.service";
 
 export function selectValidator(control: AbstractControl) {
@@ -66,18 +66,6 @@ export function campaignNameValidator(campaignService: CampaignService): AsyncVa
                 return null;
             })
         )
-    }
-}
-export function groupNameValidator(groupService: GroupService): AsyncValidatorFn {
-    return (control: AbstractControl): Promise<ValidationErrors> | Observable<ValidationErrors> | null => {
-        let exists = groupService.nameExists(control.value).pipe(
-            map(exists => {
-                if (exists)
-                    return { exists: true };
-                return null;
-            })
-        )
-        return exists;
     }
 }
 export function countryCodeValidator(control: AbstractControl) {

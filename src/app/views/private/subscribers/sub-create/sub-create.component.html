@@ -1,5 +1,5 @@
 <div class="d-flex pb-2 mb-2 border-bottom">
-  <h3>Contacts</h3>
+  <h3>Subscribers</h3>
 </div>
 <ngb-tabset>
   <!-- subscriber create -->
@@ -7,8 +7,9 @@
     <ng-template ngbTabContent>
       <div class="card border-top-0 shadow">
         <div class="card-body">
-          <p class="bg-light p-2 rounded"><b>Add Contact:</b></p>
-          <form [formGroup]="form" (ngSubmit)="createClient(form.value)">
+          <p class="bg-light p-2 rounded"><b>Add Subscribers:</b></p>
+          <form [formGroup]="form" (ngSubmit)="add(form.value)">
+            <!-- phone number -->
             <div class="form-group">
               <div class="input-group">
                 <div class="input-group-prepend">
@@ -34,7 +35,7 @@
             </div>
             <button type="submit" class="btn btn-sm btn-primary btn-block mb-2" [disabled]="!isFormValid">
               <div *ngIf="!isCreating">
-                Save Contact
+                Save Subscriber
               </div>
               <div *ngIf="isCreating" class="sk-circle my-0 py-0">
                 <div class="sk-circle1 sk-child"></div>
@@ -53,7 +54,7 @@
             </button>
           </form>
           <hr class="mb-4">
-          <p class="bg-light p-2 rounded"><b>Add Multiple Contacts:</b></p>
+          <p class="bg-light p-2 rounded"><b>Add Multiple Subscribers:</b></p>
           <div>
             <input style="display: none" type="file" name="selectCsv" id="selectCsv" accept=".csv" #fileUpload (change)="uploadFile($event)">
           </div>
@@ -64,7 +65,7 @@
               <button class="btn btn-sm btn-outline-secondary" type="button" (click)="fileUpload.click()">Browse...</button>
               <button type="button" class="btn btn-sm btn-primary" (click)="saveContacts()" [disabled]="!isFileChoosen">
                 <div *ngIf="!isAddingClients">
-                  Upload Contacts
+                  Upload Subscribers
                 </div>
                 <div *ngIf="isAddingClients">
                   Uploading..
@@ -98,7 +99,7 @@
     </ng-template>
   </ngb-tab>
   <!-- subscriber list -->
-  <ngb-tab title="List of Subscribers" id="subListTab">
+  <ngb-tab title="Add Subscribers to Groups" id="subListTab">
     <ng-template ngbTabContent>
       <app-sub-list></app-sub-list>
     </ng-template>

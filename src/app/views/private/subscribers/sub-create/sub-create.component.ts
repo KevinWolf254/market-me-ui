@@ -51,16 +51,12 @@ export class SubCreateComponent implements OnInit {
     this.form.get('code').valueChanges.pipe(
       debounceTime(1000),
       distinctUntilChanged()
-    ).subscribe(
-      value => {
-        this.isCodeNonExistant = this.codeExists(value)
-      }
-    )
+    ).subscribe(value => this.isCodeNonExistant = this.codeExists(value))
   }
   public getFormValue(formAttribute: string) {
     return this.form.get(formAttribute).value
   }
-  codeExists(code: string): boolean {
+  public codeExists(code: string): boolean {
     return this.codes.includes(code);
   }
   public isTouched(inputField: string): boolean {
@@ -99,7 +95,7 @@ export class SubCreateComponent implements OnInit {
   public get isFormValid() {
     return (this.form.valid && !this.isCodeNonExistant);
   }
-  public createClient(form) {
+  public add(form) {
     this.isCreating = true;
     const code: string = form.code;
     const phone: string = form.phoneNo;
@@ -127,9 +123,12 @@ export class SubCreateComponent implements OnInit {
   }
   public uploadFile(event) {
     this.file = event.target.files[0];
+    let isRightFormat = this.file.type == 'text/csv';
     this.fileName = this.file.name;
-    if (this.fileName)
+    if (this.fileName && isRightFormat)
       this.isFileChoosen = true;
+    else
+      this.isFileChoosen = false;
   }
 
   public saveContacts() {

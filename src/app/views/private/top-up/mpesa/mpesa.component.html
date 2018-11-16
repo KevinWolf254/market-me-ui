@@ -10,9 +10,9 @@
           <div class="card-body">
             <h5 class="card-title">Instructions</h5>
             <div class="d-flex flex-column bd-highlight">
-              <div class="bd-highlight">1. Go to Lipa na mpesa, Choose Paybill</div>
-              <div class="bd-highlight">2. Enter Business Number: 12345 </div>
-              <div class="bd-highlight">3. Enter Account No: Your Organization name</div>
+              <div class="bd-highlight">1. Go to Lipa na mpesa; Choose Paybill</div>
+              <div class="bd-highlight">2. Enter Business Number: <b>{{businessNo}}</b></div>
+              <div class="bd-highlight">3. Enter Account No: <b>Organization name</b></div>
               <div class="bd-highlight">4. Enter amount and send</div>
               <div class="bd-highlight">5. After receiving Mpesa confirmation, Enter details in below form and submit</div>
             </div>
@@ -21,7 +21,7 @@
         <!-- Payment form -->
         <div class="col-xl-9 mt-2">
           <div class="card mb-3 shadow-sm">
-            <form [formGroup] = "form" (ngSubmit) = "submit(form.value)">
+            <form [formGroup]="form" (ngSubmit)="confirmPayment(form.value)">
               <div class="card-body">
                 <div class="text-center pb-3 border-bottom">
                   <h4><b>PAYMENT</b></h4>
@@ -35,35 +35,57 @@
                       <div class="p-1 bd-highlight">Nairobi, Kenya.</div>
                       <div class="p-1 bd-highlight mb-3 border-bottom">Tel no: +254 720 200000</div>
                       <div class="p-1 bd-highlight"><b>By,</b></div>
-                      <div class="p-1 bd-highlight"><b>Customer:</b> {{names}}</div>
+                      <div class="p-1 bd-highlight"><b>Customer:</b> {{otherNames}} {{surname}}</div>
                       <div class="p-1 bd-highlight"><b>Email:</b> {{userEmail}}</div>
                       <div class="p-1 bd-highlight"><b>Company:</b> {{organization}}</div>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="d-flex flex-column bd-highlight mb-3 text-right">
+                      <!-- mpesa trans no -->
                       <div class="p-1 bd-highlight">
                         <div class="form-group form-row mb-1">
-                            <label class="col col-form-label">Mpesa Trans No:</label>
-                            <div class="col">
-                              <input type="text" class="form-control" formControlName="transNo" placeholder="mpesa trans no">
-                            </div>
-                          </div>
-                      </div>
-                      <div class="p-1 bd-highlight">
-                        <div class="form-group form-row align-items-center mb-1">
-                          <label class="col col-form-label">Currency:</label>
+                          <label class="col col-form-label">Mpesa Trans No:</label>
                           <div class="col">
-                            <select id="role" class="form-control col form-control-sm" formControlName="currency">
-                              <option value="0" selected>Choose</option>
-                              <option *ngFor="let country of countries" >{{country.currencies[0]}}</option>
-                            </select>
+                            <input type="text" [class.is-invalid]="istransNoInvalid" [class.is-valid]="istransNoValid"
+                              class="form-control form-control-sm" formControlName="transNo" placeholder="mpesa trans no*"
+                              maxlength="10">
+                          </div>
+                        </div>
+                        <!-- trans no Errors -->
+                        <small class="form-text text-danger float-right mt-0" *ngIf="istransNoInvalid">
+                          <div *ngIf="hasTransNoRequiredError">Mpesa trans No is required.</div>
+                          <div *ngIf="hasTransNoMinError || hasTransNoMaxError">Please enter a valid number.</div>
+                        </small>
+                        <small class="form-text text-primary float-right mt-0" *ngIf="istransNoValid">
+                          <div>Mpesa trans No: <b>{{transNo}}</b></div>
+                        </small>
+                      </div>
+                      <!-- business no -->
+                      <div class="p-1 bd-highlight">
+                        <div class="form-group form-row mb-1">
+                          <label class="col col-form-label">Business No:</label>
+                          <div class="col">
+                            <input type="text" class="form-control form-control-sm" formControlName="bizNo" placeholder="business no"
+                              readonly [value]="businessNo">
                           </div>
                         </div>
                       </div>
+                      <!-- account no -->
+                      <div class="p-1 bd-highlight">
+                        <div class="form-group form-row mb-1">
+                          <label class="col col-form-label">Account No:</label>
+                          <div class="col">
+                            <input type="text" class="form-control form-control-sm" formControlName="acntNo"
+                              placeholder="account no" readonly [value]="accountNo">
+                          </div>
+                        </div>
+                      </div>
+                      <!-- status -->
                       <div class="p-1 bd-highlight">
                         Status: <a class="text-warning">Unconfirmed</a>
                       </div>
+                      <!-- date -->
                       <div class="p-1 bd-highlight">
                         Date: {{date | date: 'MMM d, y'}}
                       </div>
@@ -82,19 +104,43 @@
                     <tbody>
                       <tr>
                         <td>Top up Bulk SMS Units</td>
-                        <td>                          
-                          <input type="number" class="form-control" formControlName="amount" placeholder="Enter amount">
+                        <td>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fa fa-dollar"></i></span>
+                              </div>
+                              <select id="role" [class.is-invalid]="isCurrencyInvalid" [class.is-valid]="isCurrencyValid"
+                                class="form-control col form-control-sm col-sm-4" formControlName="currency">
+                                <option value="0" selected>Currency*..</option>
+                                <option *ngFor="let country of countries">{{country.currencies[0]}}</option>
+                              </select>
+                              <input type="number" [class.is-invalid]="isAmountInvalid" [class.is-valid]="isAmountValid"
+                                class="form-control col form-control-sm col-sm-8" formControlName="amount" placeholder="enter amount*">
+                            </div>
+                            <!-- currency Errors -->
+                            <small class="form-text text-danger float-left" *ngIf="isCurrencyInvalid">
+                              <div *ngIf="hasCurrencyRequiredError || hasCurrencyDefaultError">Please choose currency.</div>
+                            </small>
+                            <!-- amount Errors -->
+                            <div *ngIf="isAmountInvalid">
+                              <small class="form-text text-danger float-left">
+                                <div *ngIf="hasAmountRequiredError">Please enter amount.</div>
+                              </small>
+                            </div>
+                          </div>
                         </td>
                       </tr>
                       <tr>
                         <td class="text-right"><b>Total</b></td>
-                        <td>{{total}}</td>
+                        <td *ngIf="isCurrencyValid && isAmountValid" class="text-success"><b>{{paymentCurrency}}
+                            {{paymentAmount | number:'1.2-2'}}</b></td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
-                <button type="submit" class="btn btn-block btn-info" [disabled]="!form.valid">
-                  Submit
+                <button type="submit" class="btn btn-sm btn-block btn-info" [disabled]="!form.valid">
+                  Confirm Payment
                 </button>
               </div>
             </form>

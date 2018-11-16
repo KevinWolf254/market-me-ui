@@ -23,17 +23,8 @@ export class GroupService {
     this.groupSource.next(groups);
   }
   getGroup(name: string): Observable<Group> {
-    if(name != null || name != undefined)
+    if (name != null || name != undefined)
       return this._http.get<Group>(this.url + "/secure/group/" + name);
-  }
-  public nameExists(name: string): Observable<boolean> {
-    return this.getGroup(name).pipe(
-      debounceTime(500),
-      distinctUntilChanged(),
-      map((group: Group) => {
-        return !(group == null || group == undefined)
-      })
-    );
   }
   public save(name: string) {
     let requestParam = "name=" + name;

@@ -10,7 +10,7 @@ import { ServiceProviderReport, SubscriberDetails } from '../../models/interface
 export class SubscriberService {
   private basicUri: string = "http://localhost:8083/mmcs";
   private jsonHeader = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
-  private header = {headers: new HttpHeaders({'Content-Type':'application/x-www-form-urlencoded'})};
+  private header = { headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' }) };
 
   constructor(private _http: HttpClient) { }
 
@@ -28,32 +28,21 @@ export class SubscriberService {
   public saveSubscribers(file: File) {
     let formData: FormData = new FormData();
     formData.append("file", file, file.name);
-    return this._http.post(this.basicUri + "/secure/subscribers", formData, {
-      reportProgress: true,
-      observe: 'events'
-    });
+    return this._http.post(this.basicUri + "/secure/subscribers", formData);
   }
+
+  public addMultiple(file: File, groupId: number) {
+    let formData: FormData = new FormData();
+    formData.append("file", file, file.name);
+    return this._http.post(this.basicUri + "/secure/subscribers/" + groupId, formData);
+  }
+
   public getByGroupId(id: number) {
     return this._http.get<SubscriberDetails[]>(this.basicUri + "/secure/subscriber/" + id);
   }
-  public deleteSubscriber(contactId: number, groupId: number){
-    let requestParams = "ContactId="+contactId+"&GroupId="+groupId;
+
+  public deleteSubscriber(contactId: number, groupId: number) {
+    let requestParams = "ContactId=" + contactId + "&GroupId=" + groupId;
     return this._http.post(this.basicUri + "/secure/subscriber/remove", requestParams, this.header);
   }
-  // public saveClient(contact: Client){
-  //   return this._http.post(this.basicUri + "/secure/subscriber", contact, this.jsonHeader);
-  // }
-
-  // public saveContactToGroup(contact: Client, groupId: number){
-  //   return this._http.post(this.basicUri + "/secure/subscriber/"+groupId, contact);
-  // }
-
-  // public saveContactsToGroup(file: File, groupId: number){
-  //   let formData: FormData = new FormData();    
-  //   formData.append("file", file, file.name);
-  //   return this._http.post(this.basicUri + "/secure/subscriber/file/"+groupId, formData, {
-  //     reportProgress: true,
-  //     observe: 'events'
-  //   });
-  // }
 }

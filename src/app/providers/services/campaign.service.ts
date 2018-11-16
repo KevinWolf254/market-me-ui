@@ -18,8 +18,6 @@ export class CampaignService {
   }
   public nameExists(name: string): Observable<boolean> {
     return this.getCampaignByName(name).pipe(
-      debounceTime(500),
-      distinctUntilChanged(),
       map((report: Report) => {
         return (report.code == 200)
       })

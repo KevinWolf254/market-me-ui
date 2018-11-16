@@ -74,8 +74,8 @@ export interface ServiceProvider {
     country: Country_;
 }
 export interface ServiceProviderReport {
-    name: ServiceProvider;
-    totalSubscribers: number;
+    provider: ServiceProvider;
+    subscribers: number;
 }
 export interface SubscriberDetails{
     id: number;

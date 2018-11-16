@@ -23,7 +23,7 @@ export class DashboardComponent implements OnInit {
   public deliveryReportParamsIsValid: boolean;
 
   public expendituresAreLoading: boolean = true;
-  public subscribersPieChart = [];
+  public subscribersPieChart: Chart;
 
   constructor(private fb: FormBuilder, private userService: UserService, private modalService: NgbModal,
     private reportService: ReportService, private subscriberService: SubscriberService) { }
@@ -83,13 +83,13 @@ export class DashboardComponent implements OnInit {
     );
   }
 
-  public setPieChart(providers: ServiceProviderReport[]) {
+  public setPieChart(reports: ServiceProviderReport[]) {
     let pieChartData = [];
     let pieChartLabel = [];
     let i: number = 0;
-    providers.forEach(provider => {
-      pieChartData[i] = provider.totalSubscribers;
-      pieChartLabel[i] = provider.name.name;
+    reports.forEach((report: ServiceProviderReport) => {
+      pieChartData[i] = report.subscribers;
+      pieChartLabel[i] = report.provider.name;
       i++;
     });
     this.subscribersPieChart = new Chart('ctx', {

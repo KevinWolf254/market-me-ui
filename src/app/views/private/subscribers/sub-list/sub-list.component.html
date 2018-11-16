@@ -1,88 +1,109 @@
-
 <div class="card border-top-0 shadow">
   <div class="card-body">
-    <p class="bg-light p-2 rounded">
-      <b>Add Single Contact:</b>
-    </p>
+    <p class="bg-light p-2 rounded"><b>Add Single Subscriber to Group:</b></p>
     <!-- Single Client Form -->
-    <form [formGroup]="form" (ngSubmit)="addContactToGroup(form.value)">
-      <div class="input-group mb-3">
-        <div class="input-group-prepend">
-          <span class="input-group-text">
-            <i class="fa fa-group"></i>
-          </span>
-        </div>
-        <select class="form-control form-control-sm" formControlName="group">
-          <option value='0' selected>Choose Group...</option>
-          <option *ngFor="let group of groups" [value]="group.id">{{group.name}}</option>
-        </select>
-      </div>
-      <div class="input-group mb-2">
-        <div class="input-group-prepend">
-          <span class="input-group-text">
-            <i class="fa fa-phone fa-lg"></i>
-          </span>
-        </div>
-        <input type="number" class="form-control form-control-sm col-sm-3" formControlName="code" placeholder="Country Code">
-        <input type="number" class="form-control form-control-sm col-sm-9" formControlName="phone" placeholder="Phone Number">
-      </div>
-      <button type="submit" class="btn btn-primary btn-sm btn-block mb-2" [disabled]="!form.valid">
-        <div *ngIf="!isAddingClient">
-            Add contact to group
+    <form [formGroup]="form" (ngSubmit)="addSubscriber(form.value)">
+      <!-- Choose group -->
+      <div class="form-group">
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fa fa-group"></i></span>
           </div>
-          <div *ngIf="isAddingClient" class="sk-circle my-0 py-0">
-            <div class="sk-circle1 sk-child"></div>
-            <div class="sk-circle2 sk-child"></div>
-            <div class="sk-circle3 sk-child"></div>
-            <div class="sk-circle4 sk-child"></div>
-            <div class="sk-circle5 sk-child"></div>
-            <div class="sk-circle6 sk-child"></div>
-            <div class="sk-circle7 sk-child"></div>
-            <div class="sk-circle8 sk-child"></div>
-            <div class="sk-circle9 sk-child"></div>
-            <div class="sk-circle10 sk-child"></div>
-            <div class="sk-circle11 sk-child"></div>
-            <div class="sk-circle12 sk-child"></div>
+          <select class="form-control form-control-sm" formControlName="group" [class.is-invalid]="isGroupSelectInvalid">
+            <option value='0' selected>Choose Group...</option>
+            <option *ngFor="let group of groups" [value]="group.id">{{group.name}}</option>
+          </select>
+        </div>
+        <!-- Error -->
+        <small class="form-text text-danger" *ngIf="isTouched('group')">
+          <div *ngIf="groupSelectHasErrors">Please choose a Group.</div>
+        </small>
+      </div>
+      <!-- Phone number -->
+      <div class="form-group">
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="phoneIcon"><i class="fa fa-phone"></i></span>
           </div>
+          <input type="text" [class.is-invalid]="isCodeInvalid || isCodeValueInvalid" class="form-control form-control-sm col-sm-4"
+            formControlName="code" placeholder="Country Code*" maxlength="4">
+          <input type="text" [class.is-invalid]="isPhoneNoInvalid" class="form-control form-control-sm col-sm-8"
+            formControlName="phoneNo" placeholder="Phone Number*" aria-label="Phone number" aria-describedby="phoneIcon"
+            maxlength="9">
+        </div>
+        <!-- code Errors -->
+        <small class="form-text text-danger float-left" *ngIf="isCodeInvalid || isCodeValueInvalid">
+          <div *ngIf="isCodeValueInvalid">Country code does not exist.</div>
+          <div *ngIf="hasCodeRequiredError">Please enter country code.</div>
+          <div *ngIf="hasCodeFormatError">Please enter a valid country code. e.g. +250</div>
+        </small>
+        <!-- phone no Errors -->
+        <small class="form-text text-danger float-left" *ngIf="isPhoneNoInvalid">
+          <div *ngIf="hasPhoneNoRequiredError">Please enter your phone number.</div>
+          <div *ngIf="hasPhoneNoFormatError">Please enter a valid phone number. e.g. 720000000</div>
+        </small>
+      </div>
+      <!-- submit button -->
+      <button type="submit" class="btn btn-primary btn-sm btn-block my-2" [disabled]="!isFormValid">
+        <div *ngIf="!isAddingSingle">
+          Add Subscriber to Group
+        </div>
+        <div *ngIf="isAddingSingle" class="sk-circle my-0 py-0">
+          <div class="sk-circle1 sk-child"></div>
+          <div class="sk-circle2 sk-child"></div>
+          <div class="sk-circle3 sk-child"></div>
+          <div class="sk-circle4 sk-child"></div>
+          <div class="sk-circle5 sk-child"></div>
+          <div class="sk-circle6 sk-child"></div>
+          <div class="sk-circle7 sk-child"></div>
+          <div class="sk-circle8 sk-child"></div>
+          <div class="sk-circle9 sk-child"></div>
+          <div class="sk-circle10 sk-child"></div>
+          <div class="sk-circle11 sk-child"></div>
+          <div class="sk-circle12 sk-child"></div>
+        </div>
       </button>
     </form>
     <!-- Multiple Clients Form -->
     <p class="bg-light p-2 mt-4 rounded">
-      <b>Add Multiple Contacts:</b>
-    </p> 
-    <form [formGroup]="fileForm" (ngSubmit)="addClientsToGroup(fileForm.value)">
-      <div class="input-group mb-3">
-        <div class="input-group-prepend">
-          <span class="input-group-text">
-            <i class="fa fa-group"></i>
-          </span>
+      <b>Add Multiple Subscribers to Group:</b>
+    </p>
+    <form [formGroup]="fileForm">
+      <!-- Choose group -->
+      <div class="form-group">
+        <div class="input-group">
+          <div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-group"></i></span>
+          </div>
+          <select class="form-control form-control-sm" formControlName="group" [class.is-invalid]="isMultipleSelectInvalid">
+            <option value='0' selected>Choose Group...</option>
+            <option *ngFor="let group of groups" [value]="group.id">{{group.name}}</option>
+          </select>
         </div>
-        <select class="form-control form-control-sm" formControlName="group">
-          <option value='0' selected>Choose Group...</option>
-          <option *ngFor="let group of groups" [value]="group.id">{{group.name}}</option>
-        </select>
+        <!-- Error -->
+        <small class="form-text text-danger" *ngIf="isMultipleSelectTouched('group')">
+          <div *ngIf="multipleSelectHasErrors">Please choose a Group.</div>
+        </small>
       </div>
     </form>
-    <small>
-      <p class=" p-1 mt-4 bg-light rounded">Import Contacts from File</p>
-    </small>
-
+    <!-- <small>
+      <p class=" p-1 mt-2 bg-light rounded">Import Contacts from File</p>
+    </small> -->
     <div>
       <input style="display: none" type="file" name="selectCsv" id="selectCsv" accept=".csv" #fileUpload (change)="uploadFile($event)">
     </div>
+
     <div class="input-group mb-0">
-      <input type="text" class="form-control form-control-sm" placeholder="Choose Csv file" aria-label="Choose Csv file" 
-        aria-describedby="basic-addon1"
-        [value]="fileName" readonly>
+      <input type="text" class="form-control form-control-sm" placeholder="Choose Csv file" aria-label="Choose Csv file"
+        aria-describedby="basic-addon1" [value]="fileName" readonly>
       <div class="input-group-append">
         <button class="btn btn-sm btn-outline-secondary" type="button" (click)="fileUpload.click()">
           Browse...
         </button>
-        <button type="button" class="btn btn-sm btn-primary" (click)="addContactssToGroup()" [disabled]="!contactsChoosen || !fileForm.valid">
-          <div *ngIf="!isAddingClients">
-            Upload Contacts
+        <button type="button" class="btn btn-sm btn-primary" (click)="addMultiple()" [disabled]="isFileChoosenInvalid">
+          <div *ngIf="!isAddingMultiple">
+            Add Subscribers
           </div>
-          <div *ngIf="isAddingClients" class="sk-circle my-0 py-0">
+          <div *ngIf="isAddingMultiple" class="sk-circle my-0 py-0">
             <div class="sk-circle1 sk-child"></div>
             <div class="sk-circle2 sk-child"></div>
             <div class="sk-circle3 sk-child"></div>
@@ -99,5 +120,6 @@
         </button>
       </div>
     </div>
+    
   </div>
 </div>
