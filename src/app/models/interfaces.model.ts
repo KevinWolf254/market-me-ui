@@ -54,9 +54,10 @@ export interface Disbursement {
 }
 export interface Organization {
     id: number;
+    customerId: string;
     name: string;
     creditAmount: number;
-    enables: boolean;
+    enabled: boolean;
     createdOn: Date;
     country: Country_;
 }

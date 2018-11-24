@@ -1,5 +1,5 @@
-import { Role, ScheduleType, Days, Command } from "./enums.model";
-import { Disbursement, User, Organization, Credentials, Country_, ServiceProvider } from "./interfaces.model";
+import { Role, ScheduleType, Days, Command, PaymentType, ProductType } from "./enums.model";
+import { Disbursement, User, Organization, Credentials, Country_ } from "./interfaces.model";
 
 export class Models {
 }
@@ -25,6 +25,29 @@ export class GroupedContactsRequest {
 
     constructor(groupIds: number[]) {
         this.groupIds = groupIds;
+    }
+}
+export class Payment {
+    productName: string;
+    productType: ProductType;
+    paymentType: PaymentType;
+    email: string;
+    currency: string;
+    amount: number;
+    mpesaNo: string;
+    senderId: string;
+
+    constructor(productName: string, productType: ProductType, 
+        paymentType: PaymentType, email: string, currency: string, 
+        amount: number, mpesaNo: string, senderId: string) {
+        this.productName = productName;
+        this.productType = productType;
+        this.paymentType = paymentType;
+        this.email = email;
+        this.currency = currency;
+        this.amount = amount;
+        this.mpesaNo = mpesaNo;
+        this.senderId = senderId;
     }
 }
 export class Report {

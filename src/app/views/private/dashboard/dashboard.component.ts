@@ -127,4 +127,9 @@ export class DashboardComponent implements OnInit {
       }
     });
   }
+
+  // testing remove ....
+  getReport(){
+    this.reportService.getReport(this.profile.user.email, new Date(), new Date()).subscribe();
+  }
 }

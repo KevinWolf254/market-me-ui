@@ -21,7 +21,7 @@ const routes: Routes = [
   canActivate: [AuthGuard],
     children:[
       {path: 'dashboard', component: DashboardComponent},
-      {path: 'topUp', component: MpesaComponent},
+      {path: 'units', component: MpesaComponent},
       {path: 'profile', component: ProfileComponent},
       {path: 'users', component: UserCreateComponent},
       {path: 'campaigns', component: CampaignSendComponent},

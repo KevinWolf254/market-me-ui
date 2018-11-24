@@ -5,6 +5,7 @@ import { ReportService } from './services/report.service';
 import { SubscriberService } from './services/subscriber.service';
 import { GroupService } from './services/group.service';
 import { SmsService } from './services/sms.service';
+import { PaymentService } from './services/payment.service';
 import { SenderIdService } from './services/sender-id.service';
 import { CampaignService } from './services/campaign.service';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -21,6 +22,7 @@ import { AuthGuard } from './guards/auth.guard';
     SmsService,
     SenderIdService,
     CampaignService,
+    PaymentService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,

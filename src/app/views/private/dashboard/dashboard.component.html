@@ -22,10 +22,14 @@
         <li class="list-group-item">
           <div class="row">
             <div class="col-sm-8">
-              Invoices
+              Purchase report
             </div>
             <div class="col-sm-4">
-              <button type="button" (click)="openPurchase(purchaseReportModal)" class="btn btn-sm btn-outline-secondary">
+              <!-- <button type="button" (click)="openPurchase(purchaseReportModal)" class="btn btn-sm btn-outline-secondary">
+                <i class="fa fa-cloud-download"></i>
+                Download
+              </button> -->
+              <button type="button" (click)="getReport()" class="btn btn-sm btn-outline-secondary">
                 <i class="fa fa-cloud-download"></i>
                 Download
               </button>
@@ -71,7 +75,7 @@
 <ng-template #purchaseReportModal let-c="close" let-d="dismiss">
   <div class="modal-header bg-light">
     <h5 class="modal-title">
-      <i class="fa fa-light fa-lg"></i> Invoice: Date parameters</h5>
+      <i class="fa fa-light fa-lg"></i> Purchase: Date parameters</h5>
     <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
