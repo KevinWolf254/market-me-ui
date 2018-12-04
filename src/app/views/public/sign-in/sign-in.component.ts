@@ -57,6 +57,7 @@ export class SignInComponent implements OnInit {
         if (error.status == 400)
           this.notify.error('Email or password are incorrect');
         else
+        console.log(error);
           this.notify.error(error.error.message);
         this.isSigningIn = false;
       }

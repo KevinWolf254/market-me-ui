@@ -16,7 +16,7 @@ export class ProfileComponent implements OnInit {
   public changingPass: boolean = false;
   public profile: UserReport;
 
-  constructor(private _fb: FormBuilder, private userService: UserService, private notify: ToastrService) { 
+  constructor(private _fb: FormBuilder, private _userService: UserService, private _notify: ToastrService) { 
     this.form = _fb.group({
       'password': [null,Validators.compose([Validators.required, Validators.minLength(8)])],
       'confirm': [null,Validators.compose([Validators.required, confirmPasswordValidator])]
@@ -24,7 +24,7 @@ export class ProfileComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.userService.profileObserver.subscribe(profile => this.profile = profile);
+    this._userService.profileObserver.subscribe(profile => this.profile = profile);
   }
   public get surname(){
     return this.profile.user.surname;
@@ -53,14 +53,14 @@ export class ProfileComponent implements OnInit {
   }
   public changePassword(form){
     this.changingPass = true;
-    this.userService.changePassword(form.newPass).subscribe(
+    this._userService.changePassword(form.newPass).subscribe(
       (response: any)=>{  
         this.changingPass = false; 
-        this.notify.success('Password was successfully changed..');   
+        this._notify.success('Password was successfully changed..');   
         this.form.reset(); 
       },errror =>{        
         this.changingPass = false; 
-        this.notify.error('Something wrong happened..'); 
+        this._notify.error('Something wrong happened..'); 
       }
     );
   } 

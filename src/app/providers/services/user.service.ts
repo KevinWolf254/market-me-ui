@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Observable, of, BehaviorSubject } from 'rxjs';
-import { UserReport, UserRole } from '../../models/models.model';
-import { ToastrService } from 'ngx-toastr';
-import { Token } from '../../models/interfaces.model';
-import { TokenService } from './token.service';
-import { map, switchMap, catchError } from 'rxjs/operators';
+import { UserReport } from '../../models/models.model';
+import { map, catchError } from 'rxjs/operators';
+import { Role } from '../../models/enums.model';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +16,7 @@ export class UserService {
   private profileSource = new BehaviorSubject<UserReport>(new UserReport());
   public profileObserver = this.profileSource.asObservable();
 
-  constructor(private _http: HttpClient, private tokenService: TokenService) { }
+  constructor(private _http: HttpClient) { }
 
   public signUp(surname: string, otherNames: string, country: string, code: string,
     phoneNo: string, organisation: string, email: string, password: string): Observable<any> {
@@ -70,9 +68,18 @@ export class UserService {
     );
   }
   public isAuthenticated(): Observable<boolean> {
-    return this.getUserProfile().pipe(
+    return this._http.get<any>(this.uri + "/secure/user/isauth").pipe(
+      map(any => true),
+      catchError(err => of(false))
+    );
+  }
+  public isAdmin(): Observable<boolean> {
+    return this.getUserProfile().pipe( 
       map((profile: UserReport) => {
-        return true;
+        let admin = profile.roles.find(role => {
+          return role.role == Role.ADMIN;
+        });
+        return !(admin == null || admin == undefined);        
       }),
       catchError(err => of(false))
     );

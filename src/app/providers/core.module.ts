@@ -1,4 +1,7 @@
 import { NgModule } from '@angular/core';
+import { AuthGuard } from './guards/auth.guard';
+import { AdminGuard } from './guards/admin.guard';
+import { UserProfileResolverService } from './services/user-profile-resolver.service';
 import { CountryService } from './services/country.service';
 import { UserService } from './services/user.service';
 import { ReportService } from './services/report.service';
@@ -11,7 +14,6 @@ import { CampaignService } from './services/campaign.service';
 import { TokenService } from './services/token.service';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './services/auth-interceptor';
-import { AuthGuard } from './guards/auth.guard';
 
 @NgModule({
   providers: [
@@ -25,12 +27,14 @@ import { AuthGuard } from './guards/auth.guard';
     CampaignService,
     PaymentService,
     TokenService,
+    UserProfileResolverService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true
     },
     AuthGuard,
+    AdminGuard
   ]
 })
 export class CoreModule { }
