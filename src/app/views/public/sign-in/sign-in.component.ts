@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Role } from '../../../models/enums.model';
 import { UserService } from '../../../providers/services/user.service';
 import { UserReport } from '../../../models/models.model';
 import { Token } from '../../../models/interfaces.model';
 import { TokenService } from '../../../providers/services/token.service';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-sign-in',
@@ -17,21 +18,17 @@ export class SignInComponent implements OnInit {
 
   public signInForm: FormGroup;
   public isSigningIn: boolean = false;
-  public profile: UserReport;
 
-  public isAdmin: boolean;
-
-  constructor(private _fb: FormBuilder, private router: Router, private notify: ToastrService,
-    private userService: UserService, private tokenService: TokenService) {
-    this.signInForm = _fb.group({
+  constructor(private _fb: FormBuilder, private _router: Router, private _notify: ToastrService,
+    private _userService: UserService, private _tokenService: TokenService) {
+    this.signInForm = this._fb.group({
       'email': [null, Validators.compose([Validators.required, Validators.email])],
       'password': [null, Validators.required]
     });
   }
 
-  ngOnInit() {
-    this.userService.profileObserver.subscribe(profile => this.profile = profile);
-  }
+  ngOnInit() {}
+
   public isTouched(input: string): boolean {
     return this.signInForm.controls[input].touched;
   }
@@ -49,39 +46,28 @@ export class SignInComponent implements OnInit {
   }
   public signIn(form) {
     this.isSigningIn = true;
-    this.tokenService.getJsonToken(form.email, form.password).subscribe(
+    this._tokenService.getJsonToken(form.email, form.password).subscribe(
       (jsonToken: Token) => {
-        localStorage.setItem('accessToken', jsonToken.access_token);
-        this.getUserProfile();
-      }, error => {
-        if (error.status == 400)
-          this.notify.error('Email or password are incorrect');
-        else
-        console.log(error);
-          this.notify.error(error.error.message);
+        if (jsonToken != null || jsonToken != undefined) {
+          localStorage.setItem('accessToken', jsonToken.access_token);
+          this.routeTo();
+        }
         this.isSigningIn = false;
       }
     );
   }
-  private getUserProfile() {
-    this.userService.getUserProfile().subscribe(
-      (profile: UserReport) => {
-        this.isSigningIn = false;
-        this.userProfile = profile;
-      }, error => {
-        this.isSigningIn = false;
-      }
-    );
-  }
-  private set userProfile(profile: UserReport) {
-    this.userService.profile = profile;
-    let admin = profile.roles.find(role => {
-      return role.role == Role.ADMIN;
+  public routeTo() {
+    this._userService.getUserProfile().pipe(
+      map((profile: UserReport) => {
+        let admin = profile.roles.find(role => {
+          return role.role == Role.ADMIN;
+        });
+        this._notify.success('Welcome: ' + profile.user.otherNames + ' ' + profile.user.surname);
+        return !(admin == null || admin == undefined);
+      })
+    ).subscribe(isAdmin => {
+      isAdmin ? this._router.navigate(['/bulksms/dashboard']) :
+        this._router.navigate(['/bulksms/profile'])
     });
-    if (admin == null || admin == undefined)
-      this.router.navigate(['/bulksms/profile']);
-    else
-      this.router.navigate(['/bulksms/dashboard']);
-    this.notify.success('Welcome: ' + this.profile.user.otherNames + ' ' + this.profile.user.surname);
   }
 }
