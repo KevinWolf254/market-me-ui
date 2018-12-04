@@ -1,94 +1,206 @@
-<div class="container form-signin">
-  <div class="card text-center shadow mb-5 rounded">
-    <h4 class="card-header">
-      MarketMe
-    </h4>
-    <div class="card-body">
-      <p class="text-center">
-        Promote your business and retain your clients through our marketing
-        and promotion App
-      </p>
-      <ul class="text-left">
-        <li>Reach out to potential and existing clients all over east africa</li>
-        <li>Create sms sales and marketing campaigns</li>
-        <li>Schedule promotions and marketing campaigns</li>
-        <li>Engage and inform potential clients about your business</li>
-        <li>Easily manage client contacts distributed in east africa</li>
-      </ul>
-      <hr>
-      <h5 class="text-center mb-3">Sign in</h5>
-      <form class="mx-4 mb-3" [formGroup]="signInForm" (ngSubmit)="authenticate(signInForm.value)">
-        <!-- Email -->
-        <div class="form-group">
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text" id="emailIcon"><i class="fa fa-envelope"></i></span>
+<!-- sign in -->
+<div class="sign-in-content d-flex">
+  <div class="container my-auto">
+    <div class="card signin-card text-center shadow mb-5 rounded">
+      <h4 class="card-header">
+        <strong>MarketMe</strong>
+      </h4>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-sm-6 my-auto info">
+            <p class="text-center intro">
+              Promote your business and retain your clients through our marketing
+              and promotion App
+            </p>
+            <ul class="text-left">
+              <li>Engage and inform potential and existing clients about your business</li>
+              <li>Reach out to potential and existing clients all over east africa</li>
+              <li>Create sms sales and marketing campaigns</li>
+              <li>Schedule promotions and marketing campaigns</li>
+              <li>Easily manage client contacts distributed in east africa</li>
+            </ul>
+            <button type="button" class="btn btn-sm btn-primary mb-2"><i class="fa fa-book"></i> Learn more</button>
+            <hr class="d-none d-sm-none">
+          </div>
+          <div class="col-sm-6 my-auto">
+            <h5 class="text-center mb-3 sign-in"><strong>Sign in</strong></h5>
+            <form class="mx-4 mb-3" [formGroup]="signInForm" (ngSubmit)="signIn(signInForm.value)">
+              <!-- Email -->
+              <div class="form-group">
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="emailIcon"><i class="fa fa-envelope"></i></span>
+                  </div>
+                  <input type="email" [class.is-invalid]="isEmailInvalid" class="form-control" formControlName="email"
+                    placeholder="Email address" aria-label="Email address" aria-describedby="emailIcon">
+                </div>
+                <!-- Error -->
+                <small class="form-text text-danger float-left" *ngIf="isEmailInvalid">
+                  <span *ngIf="isInValid('email', 'required')">Please enter your email address.</span>
+                  <span *ngIf="isInValid('email', 'email')">Please enter a valid email address.</span>
+                </small>
+              </div>
+              <!-- Password -->
+              <div class="form-group">
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="passwordIcon"><i class="fa fa-lock fa-lg"></i></span>
+                  </div>
+                  <input type="password" [class.is-invalid]="isPasswordInvalid" class="form-control" formControlName="password"
+                    placeholder="Password" aria-label="Password" aria-describedby="passwordIcon">
+                </div>
+                <!-- Error -->
+                <small class="form-text text-danger float-left" *ngIf="isPasswordInvalid">
+                  Please enter your password.
+                </small>
+              </div>
+              <!-- Sign in -->
+              <button class="btn btn-primary btn-block mt-3" type="submit" [disabled]="!signInForm.valid">
+                <div *ngIf="!isSigningIn">
+                  Sign in
+                </div>
+                <div *ngIf="isSigningIn" class="sk-circle my-0 py-0">
+                  <div class="sk-circle1 sk-child"></div>
+                  <div class="sk-circle2 sk-child"></div>
+                  <div class="sk-circle3 sk-child"></div>
+                  <div class="sk-circle4 sk-child"></div>
+                  <div class="sk-circle5 sk-child"></div>
+                  <div class="sk-circle6 sk-child"></div>
+                  <div class="sk-circle7 sk-child"></div>
+                  <div class="sk-circle8 sk-child"></div>
+                  <div class="sk-circle9 sk-child"></div>
+                  <div class="sk-circle10 sk-child"></div>
+                  <div class="sk-circle11 sk-child"></div>
+                  <div class="sk-circle12 sk-child"></div>
+                </div>
+              </button>
+            </form>
+            <div class="text-center">Not registered?
+              <a class="sign-up" routerLink="/signUp">
+                Sign up
+              </a>
             </div>
-            <input type="email" [class.is-invalid]="isEmailInvalid" class="form-control" formControlName="email" placeholder="Email address" aria-label="Email address"
-              aria-describedby="emailIcon">
           </div>
-          <!-- Error -->
-          <small class="form-text text-danger float-left" *ngIf="isEmailInvalid">
-            <span *ngIf="isInValid('email', 'required')">Please enter your email address.</span>
-            <span *ngIf="isInValid('email', 'email')">Please enter a valid email address.</span>           
-          </small>
         </div>
-        <!-- Email validity -->
-        <!-- <div class=" d-flex flex-row-reverse" 
-          *ngIf="!signInForm.controls['email'].valid && signInForm.controls['email'].touched">
-            <span class="text text-danger mt-0 pt-0 pr-3" style="font-size:13px">
-                Please enter a valid email
-            </span>
-          </div> -->
-        <!-- Password -->
-        <div class="form-group">
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text" id="passwordIcon"><i class="fa fa-lock fa-lg"></i></span>
-            </div>
-            <input type="password" [class.is-invalid]="isPasswordInvalid" class="form-control" formControlName="password" placeholder="Password" aria-label="Password"
-              aria-describedby="passwordIcon">
-          </div>
-          <!-- Error -->
-          <small class="form-text text-danger float-left" *ngIf="isPasswordInvalid">
-            Please enter your password.
-          </small>
-        </div>
-        <!-- Password validity -->
-        <!-- <div class=" d-flex flex-row-reverse" *ngIf="!signInForm.controls['password'].valid && signInForm.controls['password'].touched">
-          <span class="text text-danger mt-0 pt-0 pr-3" style="font-size:13px">
-            Please enter a valid password
-          </span>
-        </div> -->
-        <!-- Sign in -->
-        <button class="btn btn-primary btn-block mt-3" type="submit" [disabled]="!signInForm.valid">
-          <div *ngIf="!isSigningIn">
-            Sign in
-          </div>
-          <div *ngIf="isSigningIn" class="sk-circle my-0 py-0">
-            <div class="sk-circle1 sk-child"></div>
-            <div class="sk-circle2 sk-child"></div>
-            <div class="sk-circle3 sk-child"></div>
-            <div class="sk-circle4 sk-child"></div>
-            <div class="sk-circle5 sk-child"></div>
-            <div class="sk-circle6 sk-child"></div>
-            <div class="sk-circle7 sk-child"></div>
-            <div class="sk-circle8 sk-child"></div>
-            <div class="sk-circle9 sk-child"></div>
-            <div class="sk-circle10 sk-child"></div>
-            <div class="sk-circle11 sk-child"></div>
-            <div class="sk-circle12 sk-child"></div>
-          </div>
-        </button>
-      </form>
-      <div class="text-center">Not registered?
-        <a routerLink="/signUp">
-          Sign up
-        </a>
       </div>
-    </div>
-    <div class="card-footer text-muted">
-      © 2018-2019
+      <div class="card-footer text-muted">© 2018-2019</div>
     </div>
   </div>
 </div>
+
+<!-- benefits -->
+<section id="benefits">
+  <div id="benefits-content">
+    <div class="container pb-5">
+      <h2 class="section-heading">Benefits</h2>
+      <div class="card-deck dflex flex-column flex-md-row">
+        <div class="card text-center">
+          <i class="fa fa-benefits fa-globe mt-2"></i>
+          <div class="card-body">
+            <h5 class="card-title benefit">East African reach</h5>
+            <p class="card-text">MarketMe app can be used to reach out to any mobile phones in East Africa. Your
+              business can grow using the same application to reach out and retain your customers throughout Kenya,
+              Rwanda, Uganda, and Tanzania.</p>
+            <p class="card-text"><small class="text-muted">Kenya | Rwanda | Tanzania | Uganda</small></p>
+          </div>
+        </div>
+        <div class="card text-center">
+          <i class="fa fa-benefits fa-clock-o mt-2"></i>
+          <div class="card-body">
+            <h5 class="card-title benefit">Time Efficient</h5>
+            <p class="card-text">With its easy to use interface, MarketMe can be used to compose a message which
+              is send to multiple mobile phones at once, saving alot of time. In addition, schedules
+              can be set up to send these messages.</p>
+            <p class="card-text"><small class="text-muted">Easy management | Scheduler</small></p>
+          </div>
+        </div>
+        <div class="card text-center">
+          <i class="fa fa-benefits fa-thumbs-up mt-2"></i>
+          <div class="card-body">
+            <h5 class="card-title benefit">Reliable</h5>
+            <p class="card-text">Research has shown that SMS are read within 3 minutes when the mobile phone owner
+              receives it. This assures you that the intended message is read by your subscribers making
+              it one of the most reliable promotion and marketing tool to use compared to others.</p>
+            <p class="card-text"><small class="text-muted">High conversion rate | Value for money</small></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- features -->
+<section id="features">
+  <div id="features-content">
+    <div class="container pb-5">
+      <h2 class="section-heading">Features</h2>
+      <!--  -->
+      <div class="d-flex flex-column flex-sm-row">
+        <div class="d-flex flex-column">
+          <!-- scheduler -->
+          <div class="d-flex flex-row">
+            <div class="p-2">
+              <i class="fa fa-features fa-clock-o"></i>
+            </div>
+            <div class="p-2">
+              With the campaign scheduler, one is able to schedule a marketing campaign set at
+              either daily, weekly, monthly or simply to be sent at a particular date. Ensuring your
+              clients receive messages on a timely manner.
+            </div>
+          </div>
+          <!-- user management -->
+          <div class="d-flex flex-row">
+            <div class="p-2">
+              <i class="fa fa-features fa-users"></i>
+            </div>
+            <div class="p-2">
+              Easy user management. The administrator is able to easily manage the users of their account.
+            </div>
+          </div>
+          <!-- sender id -->
+          <div class="d-flex flex-row">
+            <div class="p-2">
+              <i class="fa fa-features fa-map-marker"></i>
+            </div>
+            <div class="p-2">
+              Sender Id support. Sender ids are used to identify your business. On receiving a SMS, customers
+              are able to identify your company as the sender.
+            </div>
+          </div>
+        </div>
+        <!--  -->
+        <div class="d-flex flex-column">
+          <!-- subscriber management -->
+          <div class="d-flex flex-row">
+            <div class="p-2">
+              <i class="fa fa-features fa-mobile-phone"></i>
+            </div>
+            <div class="p-2">
+              Easy management of subscriber mobile numbers. MarketMe has an easy subscriber management system
+              that enables users to group their subscribers and sort them according to region.
+            </div>
+          </div>
+          <!-- service providers -->
+          <div class="d-flex flex-row">
+            <div class="p-2">
+              <i class="fa fa-features fa-signal"></i>
+            </div>
+            <div class="p-2">
+              Supports all mobile service providers in East Africa. The application is able to identify
+              all the service providers across East Africa.
+            </div>
+          </div>
+          <!-- reports -->
+          <div class="d-flex flex-row">
+            <div class="p-2">
+              <i class="fa fa-features fa-pie-chart"></i>
+            </div>
+            <div class="p-2">
+              Delivery reports can also be produced by the system.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

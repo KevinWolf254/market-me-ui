@@ -6,6 +6,7 @@ import { Role } from '../../../models/enums.model';
 import { UserService } from '../../../providers/services/user.service';
 import { UserReport } from '../../../models/models.model';
 import { Token } from '../../../models/interfaces.model';
+import { TokenService } from '../../../providers/services/token.service';
 
 @Component({
   selector: 'app-sign-in',
@@ -21,7 +22,7 @@ export class SignInComponent implements OnInit {
   public isAdmin: boolean;
 
   constructor(private _fb: FormBuilder, private router: Router, private notify: ToastrService,
-    private userService: UserService) {
+    private userService: UserService, private tokenService: TokenService) {
     this.signInForm = _fb.group({
       'email': [null, Validators.compose([Validators.required, Validators.email])],
       'password': [null, Validators.required]
@@ -37,37 +38,37 @@ export class SignInComponent implements OnInit {
   public isInValid(input: string, error: string): boolean {
     return this.signInForm.controls[input].hasError(error);
   }
-  get isEmailInvalid() {
+  public get isEmailInvalid() {
     return this.emailHasError && this.isTouched('email')
   }
-  get emailHasError() {
+  public get emailHasError() {
     return this.isInValid('email', 'required') || this.isInValid('email', 'email')
   }
-  get isPasswordInvalid() {
+  public get isPasswordInvalid() {
     return this.isInValid('password', 'required') && this.isTouched('password')
   }
-  public authenticate(form) {
+  public signIn(form) {
     this.isSigningIn = true;
-    this.userService.authenticate(form.email, form.password).subscribe(
-      (token: Token) => {
-        this.userService.expireTime = token.expires_in;
-        this.userService.token = token.access_token;
-        this.signIn();
+    this.tokenService.getJsonToken(form.email, form.password).subscribe(
+      (jsonToken: Token) => {
+        localStorage.setItem('accessToken', jsonToken.access_token);
+        this.getUserProfile();
       }, error => {
         if (error.status == 400)
-          this.notify.error(error.error.error_description);
+          this.notify.error('Email or password are incorrect');
         else
           this.notify.error(error.error.message);
         this.isSigningIn = false;
       }
     );
   }
-  private signIn() {
-    this.userService.signIn().subscribe(
-      (report: UserReport) => {
+  private getUserProfile() {
+    this.userService.getUserProfile().subscribe(
+      (profile: UserReport) => {
         this.isSigningIn = false;
-        this.userService.isAuthenticated = true;
-        this.userProfile = report;
+        this.userProfile = profile;
+      }, error => {
+        this.isSigningIn = false;
       }
     );
   }

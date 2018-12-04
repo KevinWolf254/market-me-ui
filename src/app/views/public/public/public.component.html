@@ -1,8 +1,8 @@
 <section id="topbar">
   <div class="clearfix">
     <div class="float-left py-2">
-      <i class="fa fa-envelope-o pl-1 pr-1"></i> <a href="mailto:contact@proaktivio.com">contact@proaktivio.com</a>
-      <i class="fa fa-phone pl-4 pr-1"></i> +254 720 000 000
+      <i class="fa fa-envelope-o pl-1 pr-1"></i> <a href="mailto:info@proaktivio.com">info@proaktivio.com</a>
+      <i class="fa fa-phone pl-4 pr-1"></i> +254 724 166 274
     </div>
     <div class="float-right py-2">
       <a href="#" class="mx-2"><i class="fa fa-twitter"></i></a>
@@ -16,7 +16,9 @@
 
 <section id="navigationBar">
   <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-    <a class="navbar-brand" routerLinkActive="active" routerLink="/home">Proaktiv-<span style="color:aquamarine">io</span></a>
+    <a class="navbar-brand" routerLinkActive="active" routerLink="/home">
+      <img src="../../../../assets/proactivelogo_blue.png" height="38" class="d-inline-block align-top" alt="">
+    </a>
     <button (click)="toggleCollapse()" class="navbar-toggler" type="button" data-toggle="collapse" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -28,35 +30,29 @@
         </li>
         <li class="nav-item">
           <div ngbDropdown class="d-inline-block">
-            <a class="nav-link btn" id="products" ngbDropdownToggle>Products</a>
-            <div ngbDropdownMenu aria-labelledby="products">
-              <a routerLink="/" class="dropdown-item">Microsoft Nav ERP</a>
-            </div>
-          </div>
-        </li>
-        <li class="nav-item">
-          <div ngbDropdown class="d-inline-block">
-            <a class="nav-link btn" id="saas" ngbDropdownToggle>Services</a>
+            <a class="nav-link btn" id="saas" ngbDropdownToggle>Our Solutions</a>
             <div ngbDropdownMenu aria-labelledby="saas">
               <a routerLink="/" class="dropdown-item">Bulk-Sms</a>
             </div>
           </div>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">About Us</a>
+          <div ngbDropdown class="d-inline-block">
+            <a class="nav-link btn" id="products" ngbDropdownToggle>Our Products</a>
+            <div ngbDropdownMenu aria-labelledby="products">
+              <a routerLink="/" class="dropdown-item">Microsoft Nav ERP</a>
+            </div>
+          </div>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Contact Us</a>
+          <a class="nav-link" href="#">About Us</a>
         </li>
       </ul>
       <div class="clearfix">
         <ul class="nav navbar-nav">
           <li class="nav-item">
-            <a class="nav-link" routerLinkActive="active" routerLink="/signIn">Sign In</a>
-          </li>
-          <li class="nav-item">
-            <button type="button" class="btn btn-outline-success py-1 mt-1" routerLinkActive="active" routerLink="/signUp">
-              Not registered? Sign up here
+            <button type="button" class="btn btn-outline-primary py-1 mt-1" routerLinkActive="active" routerLink="/signIn">
+              Sign In to MarketMe
             </button>
           </li>
         </ul>
@@ -64,6 +60,5 @@
     </div>
   </nav>
 </section>
-<!-- <div class="mt-2"> -->
+
 <router-outlet></router-outlet>
-<!-- </div> -->

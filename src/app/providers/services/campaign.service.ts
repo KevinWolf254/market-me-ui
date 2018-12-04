@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Sms, Report, CampaignRequest, CampaignReport } from '../../models/models.model';
-import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Campaign } from '../../models/interfaces.model';
 
 @Injectable({

@@ -14,7 +14,7 @@ import { ServiceProviderReport } from '../../../models/interfaces.model';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
-  public profile: UserReport;
+  public profile: UserReport = new UserReport();
 
   public purchasesForm: FormGroup;
   public deliveryForm: FormGroup;
@@ -30,6 +30,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.userService.profileObserver.subscribe(profile => this.profile = profile);
+
     this.purchasesForm = this.fb.group({
       'from': ['', Validators.required],
       'to': ['', Validators.required],
@@ -38,7 +39,7 @@ export class DashboardComponent implements OnInit {
       'from': ['', Validators.required],
       'to': ['', Validators.required],
     });
-    this.subscribers
+    this.subscribers;
   }
   public get units() {
     return this.profile.client.creditAmount;
@@ -126,10 +127,5 @@ export class DashboardComponent implements OnInit {
         }
       }
     });
-  }
-
-  // testing remove ....
-  getReport(){
-    this.reportService.getReport(this.profile.user.email, new Date(), new Date()).subscribe();
   }
 }

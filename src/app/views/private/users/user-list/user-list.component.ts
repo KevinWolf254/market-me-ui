@@ -52,13 +52,11 @@ export class UserListComponent implements OnInit {
 
   ngOnInit() {
     this.getUsers();
-    this.userService.usersObserver.subscribe(users => { this.users = users; this.temp = [...users] });
-
     this.allRoles = [Role.ADMIN, Role.USER];
     this.perPage = this.perPageNos[0];
   }
   private getUsers() {
-    this.userService.users.subscribe(users => this.userService._users = users);
+    this.userService.users.subscribe(users => this.users = users);
   }
   public surname(row: UserReport) {
     return row.user.surname

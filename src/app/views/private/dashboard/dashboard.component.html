@@ -1,9 +1,32 @@
 <!-- Dashboard -->
 <div class="pb-2 mb-2 border-bottom">
-  <h3>Dashboard</h3> 
+  <h3>Dashboard</h3>
 </div>
-<!-- summary --> 
-<div class="row mb-3">
+<!-- summary cards-->
+<div class="card-deck">
+  <!-- units available -->
+  <div class="card text-right">
+    <div class="card-body">
+        <h5 class="card-title stat">{{currency}} {{units | number:'1.2-2'}}</h5>
+    </div>
+    <div class="card-footer text-muted">Units Available</div>
+  </div>
+  <!-- total subscribers -->
+  <div class="card text-right">
+      <div class="card-body ">
+          <h5 class="card-title stat">{{units | number:'1.0-0'}}</h5>
+      </div>
+      <div class="card-footer text-muted">Total Subscribers</div>
+    </div>
+  <!-- active campaigns -->
+  <div class="card text-right">
+      <div class="card-body">
+          <h5 class="card-title stat">{{units | number:'1.0-0'}}</h5>
+      </div>
+      <div class="card-footer text-muted">Active Campaigns</div>
+    </div>
+</div>
+<!-- <div class="row mb-3">
   <div class="col-sm-5">
     <div class="card mt-2">
       <h6 class="card-header">Units Available</h6>
@@ -13,9 +36,9 @@
         </h5>
       </div>
     </div>
-  </div>
-  <!-- reports -->
-  <div class="col-sm-7">
+  </div> -->
+<!-- reports -->
+<!-- <div class="col-sm-7">
     <div class="card mt-2">
       <h6 class="card-header">Reports</h6>
       <ul class="list-group list-group-flush">
@@ -23,13 +46,13 @@
           <div class="row">
             <div class="col-sm-8">
               Purchase report
-            </div>
-            <div class="col-sm-4">
-              <!-- <button type="button" (click)="openPurchase(purchaseReportModal)" class="btn btn-sm btn-outline-secondary">
+            </div> -->
+<!-- <div class="col-sm-4"> -->
+<!-- <button type="button" (click)="openPurchase(purchaseReportModal)" class="btn btn-sm btn-outline-secondary">
                 <i class="fa fa-cloud-download"></i>
                 Download
               </button> -->
-              <button type="button" (click)="getReport()" class="btn btn-sm btn-outline-secondary">
+<!-- <button type="button" (click)="getReport()" class="btn btn-sm btn-outline-secondary">
                 <i class="fa fa-cloud-download"></i>
                 Download
               </button>
@@ -52,13 +75,13 @@
       </ul>
     </div>
   </div>
-</div>
+</div> -->
 <!-- chart card -->
 <div class="card mt-3">
   <h6 class="card-header">
     Subscribers
   </h6>
-  <div class="card-body"> 
+  <div class="card-body">
     <!-- chart -->
     <div *ngIf="expendituresAreLoading" class="spinner mt-3">
       <div class="bounce1"></div>
@@ -87,7 +110,8 @@
           From:
           <div class="form-group">
             <div class="input-group">
-              <input class="form-control form-control-sm" placeholder="YYYY-MM-DD" formControlName="from" ngbDatepicker #dateFrom01="ngbDatepicker">
+              <input class="form-control form-control-sm" placeholder="YYYY-MM-DD" formControlName="from" ngbDatepicker
+                #dateFrom01="ngbDatepicker">
               <div class="input-group-append">
                 <button class="btn btn-sm btn-primary" (click)="dateFrom01.toggle()" type="button">
                   <i class="fa fa-calendar"></i>
@@ -100,7 +124,8 @@
           To:
           <div class="form-group">
             <div class="input-group">
-              <input class="form-control form-control-sm" placeholder="YYYY-MM-DD" formControlName="to" ngbDatepicker #dateTo02="ngbDatepicker">
+              <input class="form-control form-control-sm" placeholder="YYYY-MM-DD" formControlName="to" ngbDatepicker
+                #dateTo02="ngbDatepicker">
               <div class="input-group-append">
                 <button class="btn btn-sm btn-primary" (click)="dateTo02.toggle()" type="button">
                   <i class="fa fa-calendar"></i>
@@ -134,7 +159,8 @@
           From:
           <div class="form-group">
             <div class="input-group">
-              <input class="form-control form-control-sm" placeholder="YYYY-MM-DD" formControlName="from" ngbDatepicker #dateFrom="ngbDatepicker">
+              <input class="form-control form-control-sm" placeholder="YYYY-MM-DD" formControlName="from" ngbDatepicker
+                #dateFrom="ngbDatepicker">
               <div class="input-group-append">
                 <button class="btn btn-sm btn-primary" (click)="dateFrom.toggle()" type="button">
                   <i class="fa fa-calendar"></i>
@@ -147,7 +173,8 @@
           To:
           <div class="form-group">
             <div class="input-group">
-              <input class="form-control form-control-sm" placeholder="YYYY-MM-DD" formControlName="to" ngbDatepicker #dateTo="ngbDatepicker">
+              <input class="form-control form-control-sm" placeholder="YYYY-MM-DD" formControlName="to" ngbDatepicker
+                #dateTo="ngbDatepicker">
               <div class="input-group-append">
                 <button class="btn btn-sm btn-primary" (click)="dateTo.toggle()" type="button">
                   <i class="fa fa-calendar"></i>

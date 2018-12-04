@@ -1,13 +1,17 @@
 /* You can add global styles to this file, and also import other style files */
 // @import url('https://fonts.googleapis.com/css?family=Allerta+Stencil|Noto+Serif|Roboto+Slab|Ubuntu');
-@import url('https://fonts.googleapis.com/css?family=Allerta+Stencil|Niramit|Oswald|Source+Sans+Pro|Ubuntu');
+@import url('https://fonts.googleapis.com/css?family=Allerta+Stencil|Niramit|Oswald|Source+Sans+Pro|Ubuntu|Sedgwick+Ave');
 
-body html{
+body, html{
   margin: 0;
   padding: 0;
+  height: 100%;
 }
 body{
   font-family: 'Ubuntu'
+}
+img{
+  max-width: 100%;
 }
 /* NGX-DATATABLE */
 .ngx-datatable.bootstrap {

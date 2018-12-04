@@ -1,11 +1,57 @@
-.form-signin{
-    width: 100%;
-    max-width: 420px;
-    padding: 15px;
-    margin: auto;
-}
 
-.form-label-group {
-    position: relative;
-    margin-bottom: 1rem;
+.sign-in-content{
+    background-image: url('../../../../assets/laptopkeyboard.jpg');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    height: 90%;
+}
+.container .signin-card{
+    background: rgba(79, 166, 236, 0.5);
+}
+.card-header{
+    color: rgb(255, 136, 0);
+}
+.info{
+    color: rgb(0, 217, 255);
+}
+.info .intro{
+    font-size: 1.1rem;
+}
+.sign-in{
+    font-size: 1.4rem;
+    color: rgb(255, 136, 0);
+}
+.form-control{
+    background: rgba(255, 255, 255, 0.25);
+}
+.sign-up{
+    font-weight: bold;
+    color: aqua;
+}
+.section-heading{   
+    color: rgb(13, 55, 145);
+    font-size: 3rem;
+    font-weight: bold;
+    text-align: center;
+    padding-top: 3.5rem;
+}
+.fa-benefits{
+    font-size: 5rem;
+    color: rgb(0, 153, 255);
+}
+.benefit{
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: rgb(240, 111, 6);
+}
+#features-content{
+    background-color: rgb(247, 247, 247);    
+}
+.features-card{    
+    background-color: rgb(247, 247, 247); 
+}
+.fa-features{
+    font-size: 2.2rem;
+    color: rgb(240, 111, 6);   
 }

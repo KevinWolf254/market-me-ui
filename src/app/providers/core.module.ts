@@ -8,6 +8,7 @@ import { SmsService } from './services/sms.service';
 import { PaymentService } from './services/payment.service';
 import { SenderIdService } from './services/sender-id.service';
 import { CampaignService } from './services/campaign.service';
+import { TokenService } from './services/token.service';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './services/auth-interceptor';
 import { AuthGuard } from './guards/auth.guard';
@@ -23,6 +24,7 @@ import { AuthGuard } from './guards/auth.guard';
     SenderIdService,
     CampaignService,
     PaymentService,
+    TokenService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
