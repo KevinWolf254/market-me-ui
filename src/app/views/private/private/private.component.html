@@ -1,10 +1,10 @@
 <div class="fixed-top">
   <div class="clearfix bg-light ">
     <div class="float-left py-2">
-      <i class="fa fa-envelope-o pl-1 pr-1"></i> <a href="mailto:contact@proaktivio.com">contact@proaktivio.com</a>
-      <i class="fa fa-phone pl-4 pr-1"></i> +254 720 000 000
+      <i class="fa fa-envelope-o pl-1 pr-1"></i> <a href="mailto:info@proaktivio.com">info@proaktivio.com</a>
+      <i class="fa fa-phone pl-4 pr-1"></i> +254 724 166 274
     </div>
-    <div class="float-right py-2">
+    <div class="float-right d-none d-sm-block py-2">
       <a href="#" class="mx-2"><i class="fa fa-twitter"></i></a>
       <a href="#" class="mx-2"><i class="fa fa-facebook"></i></a>
       <a href="#" class="mx-2"><i class="fa fa-instagram"></i></a>
@@ -12,19 +12,20 @@
       <a href="#" class="mx-2"><i class="fa fa-linkedin"></i></a>
     </div>
   </div>
-<!-- navigation bar -->
-  <nav class="navbar navbar-expand-sm navbar-dark bg-dark py-3">
-    <a class="navbar-brand" routerLinkActive="active" routerLink="/bulksms/dashboard">ProAktiv-io</a>
-    <button (click)="toggleCollapse()" class="navbar-toggler" type="button" 
-    data-toggle="collapse" data-target="#topNav" aria-controls="topNav" 
-    aria-expanded="false" aria-label="Toggle navigation">
+  <!-- navigation bar -->
+  <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+    <a class="navbar-brand">
+      <img src="../../../../assets/proactivelogo_blue.png" height="38" class="d-inline-block align-top" alt="proaktiv-io technology ltd">
+    </a>
+    <button (click)="toggleCollapse()" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#topNav"
+      aria-controls="topNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-  
+
     <div class="collapse navbar-collapse" [class.show]="show" id="topNav">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item">
-          <a class="nav-link" routerLink="/bulksms/profile">Welcome: {{name}}</a>
+          <a class="nav-link" routerLinkActive="active" routerLink="/bulksms/profile">Welcome: {{name}}</a>
         </li>
       </ul>
       <div class="clearfix">
@@ -33,8 +34,7 @@
             <a class="nav-link">Units: {{currency}} {{units | number:'1.2-2'}}</a>
           </li>
           <li class="nav-item">
-            <button type="button" class="btn btn-sm btn-outline-secondary mt-1" 
-              routerLinkActive="active" routerLink="/home">
+            <button type="button" class="btn btn-outline-secondary" routerLinkActive="active" routerLink="/signIn">
               <i class="fa fa-sign-out"></i>
               Sign Out
             </button>
@@ -44,6 +44,7 @@
     </div>
   </nav>
 </div>
+
 <div class="container-fluid">
   <div class="row mt-5">
     <!-- SideNav -->
@@ -52,16 +53,22 @@
         <div class="sidebar-sticky">
           <ul class="nav flex-column">
             <li class="nav-item">
-              <a *ngIf="isAdmin" routerLink="/bulksms/dashboard" routerLinkActive="active" class="nav-link" >
-                <i class="fa fa-bar-chart fa-lg pr-2"></i> 
+              <a *ngIf="isAdmin" routerLink="/bulksms/dashboard" routerLinkActive="active" class="nav-link">
+                <i class="fa fa-bar-chart fa-lg pr-2"></i>
                 Dashboard
-              </a> 
+              </a>
             </li>
             <li class="nav-item">
-              <a *ngIf="isAdmin" routerLink="/bulksms/units" routerLinkActive="active" class="nav-link" >
-                <i class="fa fa-cart-plus fa-lg pr-2"></i> 
+              <a *ngIf="isAdmin" routerLink="/bulksms/units" routerLinkActive="active" class="nav-link">
+                <i class="fa fa-cart-plus fa-lg pr-2"></i>
                 Get Units
-              </a> 
+              </a>
+            </li>
+            <li class="nav-item">
+              <a *ngIf="isAdmin" class="nav-item nav-link" routerLink="/bulksms/senderid" routerLinkActive="active">
+                <i class="fa fa-map-marker fa-lg pr-2"></i>
+                Sender Id
+              </a>
             </li>
             <li class="nav-item">
               <a routerLink="/bulksms/profile" routerLinkActive="active" class="nav-link">
@@ -73,7 +80,7 @@
               <a routerLink="/bulksms/users" routerLinkActive="active" class="nav-link">
                 <i class="fa fa-cogs fa-lg pr-2"></i>
                 Users
-              </a> 
+              </a>
             </li>
             <li class="nav-item">
               <a routerLink="/bulksms/campaigns" routerLinkActive="active" class="nav-link">
@@ -89,26 +96,29 @@
             </li>
           </ul>
         </div>
-      </nav> 
-    </div>             
+      </nav>
+    </div>
     <!-- Content Body -->
     <div class="col-md-9 ml-sm-auto mt-5 px-3 pt-3">
       <nav class="navbar navbar-expand-sm m-0 p-0 navbar-light bg-light d-lg-none 
       d-xl-none d-md-none shadow-sm p-2 mb-2 bg-white rounded">
-        <button (click)="toggleCollapse2()" class="navbar-toggler" type="button" 
-        data-toggle="collapse" data-target="#sideNav" aria-controls="sideNav" 
-        aria-expanded="false" aria-label="Toggle navigation">
+        <button (click)="toggleCollapse2()" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#sideNav"
+          aria-controls="sideNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" [class.show]="show2" id="sideNav">
           <div class="navbar-nav">
             <a *ngIf="isAdmin" class="nav-item nav-link" routerLink="/bulksms/dashboard" routerLinkActive="active">
-              <i class="fa fa-bar-chart fa-lg pr-1"></i> 
+              <i class="fa fa-bar-chart fa-lg pr-1"></i>
               Dashboard
             </a>
             <a *ngIf="isAdmin" class="nav-item nav-link" routerLink="/bulksms/units" routerLinkActive="active">
-              <i class="fa fa-cart-plus fa-lg pr-1"></i> 
+              <i class="fa fa-cart-plus fa-lg pr-1"></i>
               Get Units
+            </a>
+            <a *ngIf="isAdmin" class="nav-item nav-link" routerLink="/bulksms/senderid" routerLinkActive="active">
+              <i class="fa fa-map-marker fa-lg pr-1"></i>
+              Sender Id
             </a>
             <a class="nav-item nav-link" routerLink="/bulksms/profile" routerLinkActive="active">
               <i class="fa fa-user-circle-o fa-lg pr-1"></i>

@@ -23,7 +23,6 @@ export class SubCreateComponent implements OnInit {
   public isFileChoosen: boolean = false;
   public file: File;
   public fileName: string = '';
-  // codes: string[] = ["+254", "+255", "+256", "+257"];
 
   public codes: string[] = [];
   public isCodeNonExistant: boolean;

@@ -12,7 +12,7 @@
             <div class="d-flex flex-column bd-highlight">
               <div class="bd-highlight">1. Go to Lipa na mpesa; Choose Paybill</div>
               <div class="bd-highlight">2. Enter Business Number: <b>{{businessNo}}</b></div>
-              <div class="bd-highlight">3. Enter Account No: <b>Organization name</b></div>
+              <div class="bd-highlight">3. Enter Account No: <b>Your Customer Id</b></div>
               <div class="bd-highlight">4. Enter amount and send</div>
               <div class="bd-highlight">5. After receiving Mpesa confirmation, Enter details in below form and submit</div>
             </div>
@@ -118,7 +118,7 @@
                           <div class="form-group">
                             <div class="input-group">
                               <div class="input-group-prepend">
-                                <span class="input-group-text"><i class="fa fa-dollar"></i></span>
+                                <span class="input-group-text"><i class="fa fa-money"></i></span>
                               </div>
                               <select id="role" [class.is-invalid]="isCurrencyInvalid" [class.is-valid]="isCurrencyValid"
                                 class="form-control col form-control-sm col-sm-4" formControlName="currency">

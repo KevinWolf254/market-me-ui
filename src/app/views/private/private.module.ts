@@ -6,6 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbDropdownModule, NgbTabsetModule, NgbDatepickerModule, NgbModalModule, NgbButtonsModule } from '@ng-bootstrap/ng-bootstrap';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ProfileComponent } from './profile/profile.component';
+import { SenderIdModule } from './sender-id/sender-id.module';
 import { UsersModule } from './users/users.module';
 import { CampaignsModule } from './campaigns/campaigns.module';
 import { SubscribersModule } from './subscribers/subscribers.module';
@@ -25,7 +26,8 @@ import { TopUpModule } from './top-up/top-up.module';
     UsersModule,
     CampaignsModule,
     SubscribersModule,
-    TopUpModule
+    TopUpModule,
+    SenderIdModule
   ],
   declarations: [
     PrivateComponent,

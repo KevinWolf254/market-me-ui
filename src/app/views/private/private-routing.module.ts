@@ -10,6 +10,7 @@ import { UserCreateComponent } from './users/user-create/user-create.component';
 import { CampaignSendComponent } from './campaigns/campaign-send/campaign-send.component';
 import { SubCreateComponent } from './subscribers/sub-create/sub-create.component';
 import { AdminGuard } from '../../providers/guards/admin.guard';
+import { ManageComponent } from './sender-id/manage/manage.component';
 
 const routes: Routes = [
   {
@@ -23,6 +24,7 @@ const routes: Routes = [
         children: [
           { path: 'dashboard', component: DashboardComponent, canActivate: [AdminGuard] },
           { path: 'units', component: MpesaComponent, canActivate: [AdminGuard] },
+          { path: 'senderid', component: ManageComponent, canActivate: [AdminGuard] },
           { path: 'profile', component: ProfileComponent },
           { path: 'users', component: UserCreateComponent, canActivate: [AdminGuard] },
           { path: 'campaigns', component: CampaignSendComponent },
