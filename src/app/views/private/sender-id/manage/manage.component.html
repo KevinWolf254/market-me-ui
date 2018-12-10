@@ -13,110 +13,119 @@
             <!-- sender  id type -->
             <div class="form-check form-check-inline">
               <label class="form-check-label p-2" for="newSenderId">Acquire New</label>
-              <input class="form-check-input p-2" type="radio" formControlName="type" id="new" value="newSenderId">
+              <input class="form-check-input p-2" type="radio" formControlName="type" id="newSenderId" value="new">
             </div>
             <div class="form-check form-check-inline">
               <label class="form-check-label p-2" for="updateSenderId">Update Existing</label>
-              <input class="form-check-input p-2" type="radio" formControlName="type" id="existing" value="updateSenderId">
+              <input class="form-check-input p-2" type="radio" formControlName="type" id="updateSenderId" value="update">
             </div>
+            <small class="mt-0 text-mute">Acquire a new Sender Id or Update existing ones</small>
 
             <div class="card" *ngIf="isTypeValid">
               <div class="card-body" *ngIf="isTypeNew">
-                <!-- sender id -->
-                <div class="form-group">
-                  <div class="input-group">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+
+                <div formArrayName="details">
+                  <div formGroupName="0">
+
+                    <!-- sender id -->
+                    <div class="form-group">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+                        </div>
+                        <input type="text" class="form-control form-control-sm" formControlName="senderId" placeholder="Sender Id*">
+                      </div>
                     </div>
-                    <input type="text" class="form-control form-control-sm" formControlName="senderId" placeholder="Sender Id*">
-                  </div>
-                </div>
-                <!-- country -->
-                <div class="form-group">
-                  <div class="input-group">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text"><i class="fa fa-cog"></i></span>
+                    <!-- country -->
+                    <div class="form-group">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text"><i class="fa fa-cog"></i></span>
+                        </div>
+                        <select id="country" class="form-control form-control-sm" formControlName="country">
+                          <option value="0" selected>Choose country*</option>
+                          <option *ngFor="let country of countries">{{country.name}}</option>
+                        </select>
+                      </div>
                     </div>
-                    <select id="country" class="form-control form-control-sm" formControlName="country">
-                      <option value="0" selected>Choose country*</option>
-                      <option *ngFor="let country of countries">{{country.name}}</option>
-                    </select>
-                  </div>
-                </div>
-                <!-- payment details -->
-                <h6 class="bg-light border p-2 my-2">Payment details:</h6>
-                <!-- paybill no -->
-                <div class="form-group">
-                  <div class="input-group">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text"><i class="fa fa-user fa-lg"></i></span>
-                    </div>
-                    <input type="text" class="form-control form-control-sm" formControlName="paybillNo" placeholder="Paybill No">
-                  </div>
-                </div>
-                <div class="form-row">
-                  <div class="col-sm-4">
-                    <!-- customer id -->
+                    <!-- payment details -->
+                    <h6 class="bg-light border p-2 my-2">Payment details:</h6>
+                    <!-- paybill no -->
                     <div class="form-group">
                       <div class="input-group">
                         <div class="input-group-prepend">
                           <span class="input-group-text"><i class="fa fa-user fa-lg"></i></span>
                         </div>
-                        <input type="text" class="form-control form-control-sm" formControlName="customerId"
-                          placeholder="Customer Id">
+                        <input type="text" class="form-control form-control-sm" formControlName="paybillNo" placeholder="Paybill No">
                       </div>
                     </div>
-                  </div>
-                  <div class="col">
-                    <!-- transNo -->
+                    <div class="form-row">
+                      <div class="col-sm-4">
+                        <!-- customer id -->
+                        <div class="form-group">
+                          <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text"><i class="fa fa-user fa-lg"></i></span>
+                            </div>
+                            <input type="text" class="form-control form-control-sm" formControlName="customerId"
+                              placeholder="Customer Id">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col">
+                        <!-- transNo -->
+                        <div class="form-group">
+                          <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text"><i class="fa fa-user fa-lg"></i></span>
+                            </div>
+                            <input type="text" class="form-control" formControlName="transNo" placeholder="Mpesa transaction id*">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                     <div class="form-group">
                       <div class="input-group">
                         <div class="input-group-prepend">
-                          <span class="input-group-text"><i class="fa fa-user fa-lg"></i></span>
+                          <span class="input-group-text"><i class="fa fa-money"></i></span>
                         </div>
-                        <input type="text" class="form-control" formControlName="transNo" placeholder="Mpesa transaction id*">
+                        <!-- currency -->
+                        <select id="role" [class.is-invalid]="isCurrencyInvalid" [class.is-valid]="isCurrencyValid"
+                          class="form-control col form-control-sm col-sm-4" formControlName="currency">
+                          <option value="0" selected>Currency*..</option>
+                          <option *ngFor="let country of countries">{{country.currency}}</option>
+                        </select>
+                        <!-- amount -->
+                        <input type="number" [class.is-invalid]="isAmountInvalid" [class.is-valid]="isAmountValid"
+                          class="form-control col form-control-sm col-sm-8" formControlName="amount" placeholder="Payment amount*">
                       </div>
                     </div>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <div class="input-group">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text"><i class="fa fa-money"></i></span>
+                    <h6 class="bg-light border p-2 mb-2">Fill application form:</h6>
+                    <p>Download file from 
+                      <button class="btn btn-sm btn-outline-secondary" type="button" (click)="download()">Here</button>
+                    </p>
+                    <div>
+                      <input style="display: none" type="file" name="selectFilledForm" id="selectFilledForm" accept=""
+                        #fileUpload (change)="uploadFile($event)">
                     </div>
-                    <!-- currency -->
-                    <select id="role" [class.is-invalid]="isCurrencyInvalid" [class.is-valid]="isCurrencyValid" class="form-control col form-control-sm col-sm-4"
-                      formControlName="currency">
-                      <option value="0" selected>Currency*..</option>
-                      <option *ngFor="let country of countries">{{country.currency}}</option>
-                    </select>
-                    <!-- amount -->
-                    <input type="number" [class.is-invalid]="isAmountInvalid" [class.is-valid]="isAmountValid" class="form-control col form-control-sm col-sm-8"
-                      formControlName="amount" placeholder="Payment amount*">
-                  </div>
-                </div>
-                <h6 class="bg-light border p-2 mb-2">Fill application form:</h6>
-                <div>
-                  <input style="display: none" type="file" name="selectFilledForm" id="selectFilledForm" accept=""
-                    #fileUpload (change)="uploadForm($event)">
-                </div>
-                <!-- upload form -->
-                <div class="form-group">
-                  <div class="input-group mb-0">
-                    <input type="text" class="form-control form-control-sm" placeholder="Choose filled form" [value]="fileName"
-                      readonly>
-                    <div class="input-group-append">
-                      <button class="btn btn-sm btn-outline-secondary" type="button" (click)="fileUpload.click()">Browse...</button>
+                    <!-- upload form -->
+                    <div class="form-group">
+                      <div class="input-group mb-0">
+                        <input type="text" class="form-control form-control-sm" placeholder="Choose filled form"
+                          [value]="fileName" readonly>
+                        <div class="input-group-append">
+                          <button class="btn btn-sm btn-outline-secondary" type="button" (click)="fileUpload.click()">Browse...</button>
+                        </div>
+                      </div>
                     </div>
+
+
+                    <button type="submit" class="btn btn-sm btn-block btn-info" [disabled]="!form.valid || !isFileChoosen">
+                      Submit
+                    </button>
+
                   </div>
                 </div>
-
-
-                <button type="submit" class="btn btn-sm btn-block btn-info" [disabled]="!form.valid || !isFileChoosen">
-                  Submit
-                </button>
-
-
               </div>
             </div>
           </form>

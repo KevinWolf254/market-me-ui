@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { selectValidator } from '../../../../providers/validators/validators';
+import { SenderIdService } from '../../../../providers/services/sender-id.service';
 
 @Component({
   selector: 'app-manage',
@@ -13,7 +14,7 @@ export class ManageComponent implements OnInit {
   public fileName: string = '';
   public isFileChoosen: boolean = false;
 
-  constructor(private _fb: FormBuilder) {
+  constructor(private _fb: FormBuilder, private _senderIdService: SenderIdService) {
     this.form = _fb.group({
       'type': ['', Validators.required],
       'details': this._fb.array([])
@@ -116,5 +117,19 @@ export class ManageComponent implements OnInit {
     this.file = event.target.files[0];
     this.fileName = this.file.name;
     this.isFileChoosen = this.fileName != '';
+  }
+  download(){
+    this._senderIdService.applicationForm.subscribe(
+    res =>{
+      let url = window.URL.createObjectURL(res.data);
+      let a = document.createElement('a');
+      document.body.appendChild(a);
+      a.setAttribute('style', 'display: none');
+      a.href = url;
+      a.download = res.filename;
+      a.click();
+      window.URL.revokeObjectURL(url);
+      a.remove(); // remove the element
+    });
   }
 }
