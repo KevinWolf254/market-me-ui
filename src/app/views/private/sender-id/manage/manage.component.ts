@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
-import { selectValidator } from '../../../../providers/validators/validators';
+import { selectValidator, senderIdNameValidator } from '../../../../providers/validators/validators';
 import { SenderIdService } from '../../../../providers/services/sender-id.service';
 
 @Component({
@@ -45,7 +45,7 @@ export class ManageComponent implements OnInit {
   private setNew(): FormGroup {
     let form: FormGroup;
     form = this._fb.group({
-      'senderId': ['', Validators.required],
+      'senderId': ['', Validators.compose([Validators.required, Validators.maxLength(11)]), senderIdNameValidator(this._senderIdService)],
       'country': ['0', selectValidator],
       'customerId': [''],
       'paybillNo': ['', Validators.required],
@@ -66,6 +66,26 @@ export class ManageComponent implements OnInit {
   }
   public isArrayTouched(input: string): boolean {
     return (<FormGroup>(<FormArray>this.form.get('details')).controls[0]).controls[input].touched;
+  }
+  //sender id name
+  public get isSenderIdInValid(){
+    return this.senderIdHasErrors && this.isArrayTouched('senderId');
+  }
+  public get senderIdHasErrors() {
+    return (this.hasSenderIdRequiredError || this.hasSenderIdExistError);
+  }
+  public get hasSenderIdRequiredError() {
+    return this.isArrayInValid('senderId', 'required')
+  }
+  public get hasSenderIdExistError() {
+    return this.isArrayInValid('senderId', 'exists')
+  }
+  //country
+  public get isCountryInValid(){
+    return this.hasDefaultValueError && this.isArrayTouched('country');
+  }
+  public get hasDefaultValueError() {
+    return this.isArrayInValid('country', 'defaultValue')
   }
   //transNo
   get istransNoValid() {
@@ -118,7 +138,7 @@ export class ManageComponent implements OnInit {
     this.fileName = this.file.name;
     this.isFileChoosen = this.fileName != '';
   }
-  download(){
+  public downloadForm(){
     this._senderIdService.applicationForm.subscribe(
     res =>{
       let url = window.URL.createObjectURL(res.data);

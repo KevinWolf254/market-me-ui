@@ -2,12 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { GroupService } from '../../../../providers/services/group.service';
-import { Group, UserReport, Sms, Schedule } from '../../../../models/models.model';
+import { Group, UserReport, Sms, Schedule, SenderId } from '../../../../models/models.model';
 import { UserService } from '../../../../providers/services/user.service';
-import { SubscriberService } from '../../../../providers/services/subscriber.service';
 import { SenderIdService } from '../../../../providers/services/sender-id.service';
 import { SmsService } from '../../../../providers/services/sms.service';
-import { SenderId } from '../../../../models/interfaces.model';
 
 @Component({
   selector: 'app-campaign-send',

@@ -1,8 +1,8 @@
 import { AbstractControl, ValidationErrors, AsyncValidatorFn } from "@angular/forms";
-import { Observable } from "rxjs";
+import { Observable, timer } from "rxjs";
 import { CampaignService } from '../services/campaign.service';
-import { map } from 'rxjs/operators';
-import { GroupService } from "../services/group.service";
+import { map, switchMap } from 'rxjs/operators';
+import { SenderIdService } from "../services/sender-id.service";
 
 export function selectValidator(control: AbstractControl) {
     if (control && (control.value != null || control.value != undefined)) {
@@ -57,15 +57,30 @@ export function confirmPasswordValidator(control: AbstractControl) {
         return null;
     }
 }
+export function senderIdNameValidator(senderIdService: SenderIdService): AsyncValidatorFn {
+    return (control: AbstractControl): Promise<ValidationErrors> | Observable<ValidationErrors> | null => {
+        return timer(1500).pipe(switchMap(() => {
+            return senderIdService.exists(control.value).pipe(
+                map(exists => {
+                    if (exists)
+                        return { exists: true };
+                    return null;
+                })
+            )
+        }))
+    }
+}
 export function campaignNameValidator(campaignService: CampaignService): AsyncValidatorFn {
     return (control: AbstractControl): Promise<ValidationErrors> | Observable<ValidationErrors> | null => {
-        return campaignService.nameExists(control.value).pipe(
-            map(exists => {
-                if (exists)
-                    return { exists: true };
-                return null;
-            })
-        )
+        return timer(1500).pipe(switchMap(() => {
+            return campaignService.nameExists(control.value).pipe(
+                map(exists => {
+                    if (exists)
+                        return { exists: true };
+                    return null;
+                })
+            )
+        }))
     }
 }
 export function countryCodeValidator(control: AbstractControl) {

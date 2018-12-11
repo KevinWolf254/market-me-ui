@@ -65,10 +65,6 @@ export interface Prefix{
     id: number;
     number: number;
 }
-export interface SenderId {
-    id: number;
-    name: string;
-}
 export interface ServiceProvider {
     id: number;
     name: string;

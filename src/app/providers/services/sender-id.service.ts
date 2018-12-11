@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { SenderId } from '../../models/interfaces.model';
-import { map } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { map, catchError, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { SenderIdResponse, SenderId } from '../../models/models.model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +16,11 @@ export class SenderIdService {
   constructor(private _http: HttpClient) { }
 
   public senderIds(id: number): Observable<SenderId[]> {
-    return this._http.get<SenderId[]>(this.uri + "/secure/senderId/" + id);
+    return this._http.get<SenderId[]>(this.uri + "/secure/senderId/" + id).pipe(
+      catchError( err =>{
+        return of([]);
+      })
+    );
   }
   public set _senderIds(senderIds: SenderId[]) {
     this.senderIdsSource.next(senderIds);
@@ -31,5 +35,24 @@ export class SenderIdService {
           }
         })
       );
+  }
+  public exists(name: string): Observable<boolean> {
+    return this.getSenderIdByName(name).pipe(
+      map((response: SenderId) => {
+        if (response.id == null || response.id == undefined)
+          return false;
+        return true;
+      }),
+      catchError(err => {
+        return of(false);
+      })
+    );
+  }
+  public getSenderIdByName(name: string): Observable<SenderId> {
+    return this._http.get<SenderId>(this.uri + '/secure/senderId/byName/' + name).pipe(
+      catchError(err => {
+        return of(new SenderId());
+      })
+    );
   }
 }

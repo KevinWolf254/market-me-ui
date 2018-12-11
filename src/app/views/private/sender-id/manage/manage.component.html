@@ -19,34 +19,45 @@
               <label class="form-check-label p-2" for="updateSenderId">Update Existing</label>
               <input class="form-check-input p-2" type="radio" formControlName="type" id="updateSenderId" value="update">
             </div>
-            <small class="mt-0 text-mute">Acquire a new Sender Id or Update existing ones</small>
-
-            <div class="card" *ngIf="isTypeValid">
+            <small class="mt-0 form-text text-muted pl-3">
+              <div>Acquire a new Sender Id or Update existing ones</div>
+            </small>
+            <div class="card mt-2" *ngIf="isTypeValid">
               <div class="card-body" *ngIf="isTypeNew">
-
                 <div formArrayName="details">
                   <div formGroupName="0">
-
                     <!-- sender id -->
                     <div class="form-group">
                       <div class="input-group">
                         <div class="input-group-prepend">
-                          <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+                          <span class="input-group-text"><i class="fa fa-map-marker"></i></span>
                         </div>
-                        <input type="text" class="form-control form-control-sm" formControlName="senderId" placeholder="Sender Id*">
+                        <input type="text" class="form-control form-control-sm" [class.is-invalid]="isSenderIdInValid"
+                          formControlName="senderId" placeholder="Sender Id Name*" maxlength="11">
                       </div>
+                      <small class="form-text text-muted">Sender Id identifies your Company as the sender. It <strong>must</strong>
+                        be unique.</small>
+                      <!-- Error -->
+                      <small class="form-text text-danger" *ngIf="isArrayTouched('senderId')">
+                        <div *ngIf="hasSenderIdRequiredError">Please provide a Sender Id name.</div>
+                        <div *ngIf="hasSenderIdExistError">Sender Id name already exists.</div>
+                      </small>
                     </div>
                     <!-- country -->
                     <div class="form-group">
                       <div class="input-group">
                         <div class="input-group-prepend">
-                          <span class="input-group-text"><i class="fa fa-cog"></i></span>
+                          <span class="input-group-text"><i class="fa fa-globe"></i></span>
                         </div>
-                        <select id="country" class="form-control form-control-sm" formControlName="country">
+                        <select id="country" class="form-control form-control-sm" [class.is-invalid]="isCountryInValid" formControlName="country">
                           <option value="0" selected>Choose country*</option>
                           <option *ngFor="let country of countries">{{country.name}}</option>
                         </select>
                       </div>
+                      <!-- Error -->
+                      <small class="form-text text-danger" *ngIf="isArrayTouched('country')">
+                        <div *ngIf="hasDefaultValueError">Please select a country.</div>
+                      </small>
                     </div>
                     <!-- payment details -->
                     <h6 class="bg-light border p-2 my-2">Payment details:</h6>
@@ -101,7 +112,7 @@
                       </div>
                     </div>
                     <h6 class="bg-light border p-2 mb-2">Fill application form:</h6>
-                    <p>Download file from 
+                    <p>Download file from
                       <button class="btn btn-sm btn-outline-secondary" type="button" (click)="download()">Here</button>
                     </p>
                     <div>

@@ -177,6 +177,16 @@ export class ScheduleBuilder {
             this.date, this.dayOfWeek, this.dayOfMonth, this.cronExpression)
     }
 }
+export class SenderId {
+    id: number;
+    paid: boolean;
+    name: string;
+}
+export class SenderIdResponse extends Report{ 
+    id: number;
+    paid: boolean;
+    name: string;
+}
 export class Sms {
     email: string;
     senderId: string;

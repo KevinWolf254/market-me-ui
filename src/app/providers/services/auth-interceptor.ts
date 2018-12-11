@@ -1,14 +1,14 @@
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from "@angular/common/http";
+import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpEventType, HttpResponse, HttpHeaderResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
-import { tap } from "rxjs/operators";
-import { Observable } from "rxjs";
+import { tap, catchError } from "rxjs/operators";
+import { Observable, of } from "rxjs";
 import { ToastrService } from "ngx-toastr";
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-    
-    constructor(private router: Router, private notify: ToastrService) {}
+
+    constructor(private router: Router, private notify: ToastrService) { }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         if (request.headers.get('No-Auth') == "true") {
@@ -21,13 +21,23 @@ export class AuthInterceptor implements HttpInterceptor {
         if (this.isTokenValid) {
             const clonedRequest = request.clone({ headers: request.headers.set("Authorization", "Bearer " + localStorage.getItem('accessToken')) });
             return next.handle(clonedRequest).pipe(
-                tap(() => null,
-                    error => {
+                // tap(() => null,
+                //     error => {
+                //         if (error.status == 401) {
+                //             localStorage.removeItem('accessToken');
+                //             this.router.navigateByUrl('/signIn');
+                //             this.notify.warning('Session has Expired!');
+                //         }
+                //     }
+                // )
+                catchError(err => {
+                    if (err.status == 401) {
                         localStorage.removeItem('accessToken');
                         this.router.navigateByUrl('/signIn');
                         this.notify.warning('Session has Expired!');
                     }
-                )
+                    return of(new HttpResponse());
+                })
             );
         }
         this.router.navigateByUrl('/signIn');

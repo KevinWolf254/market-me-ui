@@ -4,12 +4,11 @@ import { ToastrService } from 'ngx-toastr';
 import { GroupService } from '../../../../providers/services/group.service';
 import { selectValidator, campaignNameValidator } from '../../../../providers/validators/validators';
 import { CampaignService } from '../../../../providers/services/campaign.service';
-import { UserReport, Group, Sms, Schedule, ScheduleBuilder } from '../../../../models/models.model';
+import { UserReport, Group, Sms, Schedule, ScheduleBuilder, SenderId } from '../../../../models/models.model';
 import { UserService } from '../../../../providers/services/user.service';
 import { SenderIdService } from '../../../../providers/services/sender-id.service';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { ScheduleType } from '../../../../models/enums.model';
-import { SenderId } from '../../../../models/interfaces.model';
 
 @Component({
   selector: 'app-campaign-schedule',
