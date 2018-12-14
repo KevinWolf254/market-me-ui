@@ -62,8 +62,8 @@ export class CampaignScheduleComponent implements OnInit {
     //obtain user profile
     this.userService.profileObserver.subscribe(profile => this.profile = profile);
     //retrieve senderIds
-    this.senderIdService.senderIds(this.profile.client.id).subscribe(senderIds => this.senderIdService._senderIds = senderIds);
-    this.senderIdService.senderIdsObserver.subscribe(senderIds => this.senderIds = senderIds);
+    this.senderIdService.getSenderIdsByCompanyId(this.profile.client.id)
+    .subscribe(senderIds => this.senderIds = senderIds);
     //observes the changes in the message textfield
     this.form.get('message').valueChanges.subscribe(message => {
       this.messageLength = message.length;

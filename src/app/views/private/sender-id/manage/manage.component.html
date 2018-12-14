@@ -7,143 +7,186 @@
 
       <div class="card border-top-0 mb-5 shadow">
         <div class="card-body">
-          <h6 class="bg-light border p-2 mb-2">Acquire:</h6>
           <!-- form -->
-          <form [formGroup]="form" (ngSubmit)="acquire(form.value)">
+          <form [formGroup]="form" (ngSubmit)="sendSenderIdRequest(form.value)">
             <!-- sender  id type -->
             <div class="form-check form-check-inline">
-              <label class="form-check-label p-2" for="newSenderId">Acquire New</label>
+              <label class="form-check-label p-2" for="newSenderId">New</label>
               <input class="form-check-input p-2" type="radio" formControlName="type" id="newSenderId" value="new">
             </div>
             <div class="form-check form-check-inline">
-              <label class="form-check-label p-2" for="updateSenderId">Update Existing</label>
+              <label class="form-check-label p-2" for="updateSenderId">Update</label>
               <input class="form-check-input p-2" type="radio" formControlName="type" id="updateSenderId" value="update">
             </div>
-            <small class="mt-0 form-text text-muted pl-3">
+            <small class="mt-0 form-text text-muted pl-2">
               <div>Acquire a new Sender Id or Update existing ones</div>
             </small>
-            <div class="card mt-2" *ngIf="isTypeValid">
-              <div class="card-body" *ngIf="isTypeNew">
-                <div formArrayName="details">
-                  <div formGroupName="0">
-                    <!-- sender id -->
-                    <div class="form-group">
-                      <div class="input-group">
-                        <div class="input-group-prepend">
-                          <span class="input-group-text"><i class="fa fa-map-marker"></i></span>
-                        </div>
-                        <input type="text" class="form-control form-control-sm" [class.is-invalid]="isSenderIdInValid"
-                          formControlName="senderId" placeholder="Sender Id Name*" maxlength="11">
+            <div class="mt-2" *ngIf="isTypeValid">
+              <div formArrayName="details">
+                <div formGroupName="0">
+                  <h6 class="bg-light border rounded p-2">Sender Id details:</h6>
+                  <!-- new sender id -->
+                  <div class="form-group mx-2" *ngIf="isTypeNew">
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fa fa-map-marker"></i></span>
                       </div>
-                      <small class="form-text text-muted">Sender Id identifies your Company as the sender. It <strong>must</strong>
-                        be unique.</small>
-                      <!-- Error -->
-                      <small class="form-text text-danger" *ngIf="isArrayTouched('senderId')">
-                        <div *ngIf="hasSenderIdRequiredError">Please provide a Sender Id name.</div>
-                        <div *ngIf="hasSenderIdExistError">Sender Id name already exists.</div>
-                      </small>
+                      <input type="text" class="form-control form-control-sm" [class.is-invalid]="isSenderIdInValid"
+                        formControlName="senderId" placeholder="Sender Id Name*" maxlength="11">
                     </div>
-                    <!-- country -->
-                    <div class="form-group">
-                      <div class="input-group">
-                        <div class="input-group-prepend">
-                          <span class="input-group-text"><i class="fa fa-globe"></i></span>
-                        </div>
-                        <select id="country" class="form-control form-control-sm" [class.is-invalid]="isCountryInValid" formControlName="country">
-                          <option value="0" selected>Choose country*</option>
-                          <option *ngFor="let country of countries">{{country.name}}</option>
-                        </select>
+                    <small class="form-text text-muted">Sender Id identifies your Company as the sender. It <strong>must</strong>
+                      be unique.</small>
+                    <!-- Error -->
+                    <small class="form-text text-danger" *ngIf="isArrayTouched('senderId')">
+                      <div *ngIf="hasSenderIdRequiredError">Please provide a Sender Id name.</div>
+                      <div *ngIf="hasSenderIdExistError">Sender Id name already exists.</div>
+                    </small>
+                  </div>
+                  <!-- update sender id list -->
+                  <div class="form-group mx-2" *ngIf="!isTypeNew">
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fa fa-map-marker"></i></span>
                       </div>
-                      <!-- Error -->
-                      <small class="form-text text-danger" *ngIf="isArrayTouched('country')">
-                        <div *ngIf="hasDefaultValueError">Please select a country.</div>
-                      </small>
+                      <select id="senderId" class="form-control form-control-sm" [class.is-invalid]="isUpdateSenderIdInValid"
+                        formControlName="senderId">
+                        <option value="0" selected>Select Sender Id*</option>
+                        <option *ngFor="let senderId of senderIds">{{senderId.name}}</option>
+                      </select>
                     </div>
-                    <!-- payment details -->
-                    <h6 class="bg-light border p-2 my-2">Payment details:</h6>
+                    <!-- selected sender id's countries -->
+                    <small class="form-text text-primary" *ngIf="isUpdateSenderIdValid">
+                      Sender Id Registered Countries: {{regSenderIdCountries}}
+                    </small>
+                    <!-- Error -->
+                    <small class="form-text text-danger" *ngIf="isArrayTouched('senderId')">
+                      <div *ngIf="hasSenderIdDefaultValueError">Please select a Sender Id.</div>
+                    </small>
+                  </div>
+                  <!-- country -->
+                  <div class="form-group mx-2">
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fa fa-globe"></i></span>
+                      </div>
+                      <select id="country" class="form-control form-control-sm" [class.is-invalid]="isCountryInValid"
+                        formControlName="country">
+                        <option value="0" selected>Choose country*</option>
+                        <option *ngFor="let country of countries">{{country.name}}</option>
+                      </select>
+                    </div>
+                    <!-- Error -->
+                    <small class="form-text text-danger" *ngIf="isArrayTouched('country')">
+                      <div *ngIf="hasDefaultValueError">Please select a country.</div>
+                    </small>
+                  </div>
+                  <!-- payment details -->
+                  <h6 class="bg-light border rounded p-2 my-2">Payment details:</h6>
+                  <div class="form-row mx-2">
                     <!-- paybill no -->
-                    <div class="form-group">
-                      <div class="input-group">
-                        <div class="input-group-prepend">
-                          <span class="input-group-text"><i class="fa fa-user fa-lg"></i></span>
-                        </div>
-                        <input type="text" class="form-control form-control-sm" formControlName="paybillNo" placeholder="Paybill No">
-                      </div>
-                    </div>
-                    <div class="form-row">
-                      <div class="col-sm-4">
-                        <!-- customer id -->
-                        <div class="form-group">
-                          <div class="input-group">
-                            <div class="input-group-prepend">
-                              <span class="input-group-text"><i class="fa fa-user fa-lg"></i></span>
-                            </div>
-                            <input type="text" class="form-control form-control-sm" formControlName="customerId"
-                              placeholder="Customer Id">
+                    <div class="col">
+                      <div class="form-group">
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fa fa-briefcase"></i></span>
                           </div>
+                          <input type="text" class="form-control form-control-sm" formControlName="paybillNo"
+                            placeholder="Paybill No" readonly [value]="businessNo">
                         </div>
+                        <small class="form-text text-muted">Paybill: Business Number</small>
                       </div>
-                      <div class="col">
-                        <!-- transNo -->
-                        <div class="form-group">
-                          <div class="input-group">
-                            <div class="input-group-prepend">
-                              <span class="input-group-text"><i class="fa fa-user fa-lg"></i></span>
-                            </div>
-                            <input type="text" class="form-control" formControlName="transNo" placeholder="Mpesa transaction id*">
+                    </div>
+                    <!-- customer id -->
+                    <div class="col">
+                      <div class="form-group">
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fa fa-institution"></i></span>
                           </div>
+                          <input type="text" class="form-control form-control-sm" formControlName="customerId"
+                            placeholder="Customer Id" readonly [value]="accountNo">
                         </div>
+                        <small class="form-text text-muted">Paybill: Account Number</small>
                       </div>
                     </div>
-                    <div class="form-group">
-                      <div class="input-group">
-                        <div class="input-group-prepend">
-                          <span class="input-group-text"><i class="fa fa-money"></i></span>
-                        </div>
-                        <!-- currency -->
-                        <select id="role" [class.is-invalid]="isCurrencyInvalid" [class.is-valid]="isCurrencyValid"
-                          class="form-control col form-control-sm col-sm-4" formControlName="currency">
-                          <option value="0" selected>Currency*..</option>
-                          <option *ngFor="let country of countries">{{country.currency}}</option>
-                        </select>
-                        <!-- amount -->
-                        <input type="number" [class.is-invalid]="isAmountInvalid" [class.is-valid]="isAmountValid"
-                          class="form-control col form-control-sm col-sm-8" formControlName="amount" placeholder="Payment amount*">
+                  </div>
+                  <!-- transNo -->
+                  <div class="form-group mx-2">
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fa fa-exchange"></i></span>
+                      </div>
+                      <input type="text" class="form-control form-control-sm text-uppercase" formControlName="transNo"
+                        placeholder="Mpesa transaction id*" [class.is-invalid]="isTransNoInvalid" maxlength="10">
+                    </div>
+                    <small class="form-text text-muted">Mpesa Transaction Number</small>
+                    <!-- Error -->
+                    <small class="form-text text-danger" *ngIf="isArrayTouched('transNo')">
+                      <div *ngIf="hasTransNoRequiredError">Please provide the Mpesa Transaction Number.</div>
+                      <div *ngIf="hasTransNoMinError || hasTransNoMaxError">Mpesa Transaction Number contains 10
+                        characters.</div>
+                    </small>
+                  </div>
+                  <!-- currency and amount -->
+                  <div class="form-group mx-2">
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fa fa-money"></i></span>
+                      </div>
+                      <!-- currency -->
+                      <select id="role" [class.is-invalid]="isCurrencyInvalid" [class.is-valid]="isCurrencyValid" class="form-control col form-control-sm col-sm-4"
+                        formControlName="currency">
+                        <option value="0" selected>Currency*..</option>
+                        <option *ngFor="let country of countries">{{country.currency}}</option>
+                      </select>
+                      <!-- amount -->
+                      <input type="number" [class.is-invalid]="isAmountInvalid" [class.is-valid]="isAmountValid" class="form-control col form-control-sm col-sm-8"
+                        formControlName="amount" placeholder="Payment amount*">
+                    </div>
+                    <small class="form-text text-primary" *ngIf="isAmountValid && isCurrencyValid">
+                      Paid Amount: {{selectedCurrency}} {{selectedAmount | number:'1.2-2'}}
+                    </small>
+                    <!-- Currency Error -->
+                    <small class="form-text text-danger" *ngIf="isCurrencyInvalid">
+                      <div *ngIf="hasCurrencyRequiredError || hasCurrencyDefaultError">Please choose currency.</div>
+                    </small>
+                    <!-- Amount Error -->
+                    <small class="form-text text-danger" *ngIf="isAmountInvalid">
+                      <div *ngIf="hasAmountRequiredError">Please enter amount.</div>
+                    </small>
+                  </div>
+                  <h6 class="bg-light border rounded p-2 mb-2">Application form:</h6>
+                  <p class="pl-2">Download file from
+                    <button class="btn btn-sm btn-outline-secondary px-2" type="button" (click)="downloadForm()"><i
+                        class="fa fa-cloud-download"></i>
+                      Here</button>
+                  </p>
+                  <div>
+                    <input class="d-none" type="file" name="selectFilledForm" id="selectFilledForm" accept=""
+                      #fileUpload (change)="uploadFile($event)">
+                  </div>
+                  <!-- upload form -->
+                  <div class="form-group mx-2">
+                    <div class="input-group mb-0">
+                      <input type="text" class="form-control form-control-sm" placeholder="Choose form*" [value]="fileName"
+                        readonly>
+                      <div class="input-group-append">
+                        <button class="btn btn-sm btn-outline-secondary" type="button" (click)="fileUpload.click()">Browse...</button>
                       </div>
                     </div>
-                    <h6 class="bg-light border p-2 mb-2">Fill application form:</h6>
-                    <p>Download file from
-                      <button class="btn btn-sm btn-outline-secondary" type="button" (click)="download()">Here</button>
-                    </p>
-                    <div>
-                      <input style="display: none" type="file" name="selectFilledForm" id="selectFilledForm" accept=""
-                        #fileUpload (change)="uploadFile($event)">
-                    </div>
-                    <!-- upload form -->
-                    <div class="form-group">
-                      <div class="input-group mb-0">
-                        <input type="text" class="form-control form-control-sm" placeholder="Choose filled form"
-                          [value]="fileName" readonly>
-                        <div class="input-group-append">
-                          <button class="btn btn-sm btn-outline-secondary" type="button" (click)="fileUpload.click()">Browse...</button>
-                        </div>
-                      </div>
-                    </div>
-
-
-                    <button type="submit" class="btn btn-sm btn-block btn-info" [disabled]="!form.valid || !isFileChoosen">
-                      Submit
-                    </button>
-
+                    <small class="form-text text-muted">Filled application form</small>
                   </div>
                 </div>
               </div>
+              <!-- submit button -->
+              <button type="submit" class="btn btn-sm btn-block btn-info mx-2">
+                <!-- [disabled]="!form.valid" -->
+                Submit
+              </button>
             </div>
           </form>
         </div>
       </div>
-
-
     </ng-template>
   </ngb-tab>
 </ngb-tabset>

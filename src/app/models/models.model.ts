@@ -1,4 +1,4 @@
-import { Role, ScheduleType, Days, Command, PaymentType, ProductType } from "./enums.model";
+import { Role, ScheduleType, Days, Command, PaymentType, ProductType, SenderIdProduct } from "./enums.model";
 import { Disbursement, User, Organization, Credentials, Country_ } from "./interfaces.model";
 
 export class Models {
@@ -179,14 +179,34 @@ export class ScheduleBuilder {
 }
 export class SenderId {
     id: number;
-    paid: boolean;
     name: string;
+    countries: Country_[];
 }
-export class SenderIdResponse extends Report{ 
-    id: number;
-    paid: boolean;
-    name: string;
+export class SenderIdRequest{
+    product: SenderIdProduct;
+    type: string;
+    email: string;
+    senderId: string;
+    country: string;
+    transNo: string;
+    currency: string;
+    amount: number;
+    constructor(product: SenderIdProduct, type: string, email: string, senderId?: string, country?: string, transNo?: string, currency?: string, amount?: number){
+        this.product = product;
+        this.type = type;
+        this.email = email;
+        this.senderId = senderId;
+        this.country = country;
+        this.transNo = transNo;
+        this.currency = currency;
+        this.amount = amount;
+    }
 }
+// export class SenderIdResponse extends Report{ 
+//     id: number;
+//     paid: boolean;
+//     name: string;
+// }
 export class Sms {
     email: string;
     senderId: string;
