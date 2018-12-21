@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { GroupedContactsRequest, Subscriber_ } from '../../models/models.model';
 import { ServiceProviderReport, SubscriberDetails } from '../../models/interfaces.model';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,9 @@ export class SubscriberService {
   constructor(private _http: HttpClient) { }
 
   public get subscribers(): Observable<ServiceProviderReport[]> {
-    return this._http.get<ServiceProviderReport[]>(this.basicUri + "/secure/subscriber");
+    return this._http.get<ServiceProviderReport[]>(this.basicUri + "/secure/subscriber").pipe(
+      catchError(err => of([]))
+    );
   }
   public find(groupIds: number[]): Observable<ServiceProviderReport[]> {
     let request: GroupedContactsRequest = new GroupedContactsRequest(groupIds);

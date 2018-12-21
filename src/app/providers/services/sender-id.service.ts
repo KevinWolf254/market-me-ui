@@ -44,25 +44,20 @@ export class SenderIdService {
       catchError(err => of(new SenderId()))
     );
   }
-  sendRequest(request: SenderIdRequest): Observable<Report>{
-    return this._http.post<Report>(this.uri + "/secure/senderId", request);
+  public sendRequest(request: SenderIdRequest): Observable<Report>{
+    return this._http.post<Report>(this.uri + "/secure/senderId", request)
+    .pipe(
+      catchError(err => {
+        return of(new Report(400, err.error.title, err.error.message))
+      })
+    );
   }
-  // sendUpdateRequest(request: SenderIdRequest): Observable<Report>{
-  //   return this._http.put<Report>(this.uri + "/secure/senderId", request).pipe(
-  //     catchError(err =>{
-  //       console.log('error: '+err.message);
-  //       return of(new Report());
-  //     })
-  //   );
-  // }
-  sendRequestFile(file: File): Observable<Report> {
+  public sendRequestFile(file: File): Observable<Report> {
     let formData: FormData = new FormData();
     formData.append("file", file, file.name);
     return this._http.post<Report>(this.uri + "/secure/senderId/form", formData).pipe(
       retry(2),
-      catchError(err =>{
-        return of(new Report());
-      })
+      catchError(err => of(new Report()))
     );
   }
 }

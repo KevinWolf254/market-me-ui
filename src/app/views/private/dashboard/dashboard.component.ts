@@ -6,7 +6,10 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ReportService } from '../../../providers/services/report.service';
 import { SubscriberService } from '../../../providers/services/subscriber.service';
 import { Chart } from 'chart.js';
-import { ServiceProviderReport } from '../../../models/interfaces.model';
+import { ServiceProviderReport, Campaign } from '../../../models/interfaces.model';
+import { CampaignService } from '../../../providers/services/campaign.service';
+import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -24,9 +27,11 @@ export class DashboardComponent implements OnInit {
 
   public expendituresAreLoading: boolean = true;
   public subscribersPieChart: Chart;
+  subsReport: ServiceProviderReport[] = [];
+  totalActiveCampaigns: number = 0;
 
   constructor(private fb: FormBuilder, private userService: UserService, private modalService: NgbModal,
-    private reportService: ReportService, private subscriberService: SubscriberService) { }
+    private reportService: ReportService, private subscriberService: SubscriberService, private campaignService: CampaignService) { }
 
   ngOnInit() {
     this.userService.profileObserver.subscribe(profile => this.profile = profile);
@@ -39,7 +44,8 @@ export class DashboardComponent implements OnInit {
       'from': ['', Validators.required],
       'to': ['', Validators.required],
     });
-    this.subscribers;
+    this.getSubscribers();
+    this.getActiveCampaigns();
   }
   public get units() {
     return this.profile.client.creditAmount;
@@ -71,20 +77,33 @@ export class DashboardComponent implements OnInit {
       this.reportService.requestDeliveryReport(this.profile.user.email, from, to).subscribe();
     }
   }
-
-  public get subscribers() {
+  public getSubscribers() {
     if (!this.expendituresAreLoading)
       this.expendituresAreLoading = true;
 
-    return this.subscriberService.subscribers.subscribe(
-      (contacts: ServiceProviderReport[]) => {
+    this.subscriberService.subscribers.subscribe(
+      (subsReport: ServiceProviderReport[]) => {
         this.expendituresAreLoading = false;
-        this.setPieChart(contacts);
+        this.subsReport = subsReport;
+        this.pieChart = subsReport;
       }
     );
   }
 
-  public setPieChart(reports: ServiceProviderReport[]) {
+  public get totalSubscribers(): number{
+    let total: number = 0;
+    this.subsReport.forEach(report =>{
+      total = report.subscribers + total
+    })
+    return total;
+  }
+
+  public getActiveCampaigns(){
+    this.campaignService.getCampaigns().pipe(
+      map((campaigns: Campaign[]) => campaigns.length)
+    ).subscribe(total => this.totalActiveCampaigns = total);
+  }
+  public set pieChart(reports: ServiceProviderReport[]) {
     let pieChartData = [];
     let pieChartLabel = [];
     let i: number = 0;

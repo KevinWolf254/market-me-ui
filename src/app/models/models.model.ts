@@ -54,6 +54,11 @@ export class Report {
     code: number;
     title: string;
     message: string;
+    constructor(code?: number, title?: string, message?: string){
+        this.code = code;
+        this.title = title;
+        this.message = message;
+    }
 }
 export class CampaignReport extends Report {
     schedule: Schedule;

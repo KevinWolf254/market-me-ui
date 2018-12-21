@@ -10,6 +10,7 @@ import { SignUpComponent } from './sign-up/sign-up.component';
 import { RecaptchaFormsModule } from 'ng-recaptcha/forms';
 import { RecaptchaModule, RECAPTCHA_SETTINGS, RecaptchaSettings } from 'ng-recaptcha';
 import { BrowserModule } from '@angular/platform-browser';
+import { SuccessSignUpComponent } from './success-sign-up/success-sign-up.component';
 
 const routes: Routes = [
   {path:'', component:PublicComponent,
@@ -36,7 +37,7 @@ const routes: Routes = [
     PublicComponent, 
     SignInComponent, 
     HomeComponent, 
-    SignUpComponent
+    SignUpComponent, SuccessSignUpComponent
   ],
   providers: [{
     provide: RECAPTCHA_SETTINGS,

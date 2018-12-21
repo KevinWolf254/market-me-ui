@@ -203,23 +203,18 @@ export class ManageComponent implements OnInit {
     this.isFileChoosen = this.fileName != '';
   }
   public sendSenderIdRequest(form) {
-    const product: SenderIdProduct = this.getProductName(form.country);
-    const request = new SenderIdRequest(product, form.type, this.profile.user.email, 
-      form.details.senderId, form.details.country, form.details.transNo, form.details.currency, 
-      form.details.amount);
-    // if (form.type == 'new')
-      this._senderIdService.sendRequest(request).subscribe(response => {
-        console.log(JSON.stringify(response));
-        this._alert.success('Request received!');
-        // this.sendFile();
-      }, error =>{
-        this._alert.error(error.error.message);
-      });
-    // else
-    //   this._senderIdService.sendUpdateRequest(request).subscribe(response => {
-    //     this._alert.success('Request received!');
-    //     this.sendFile();
-    //   });
+    let data = form.details[0];
+    let product: SenderIdProduct = this.getProductName(data.country);
+    let request = new SenderIdRequest(product, form.type, this.profile.user.email,
+      data.senderId, data.country, data.transNo, data.currency, data.amount);
+    this._senderIdService.sendRequest(request).subscribe(response => {
+      if (response.code == 200) {
+        this._alert.success('Request received!')
+        this.sendFile();
+      } else
+        this._alert.error(response.message);
+    });
+
   }
   private sendFile() {
     this._senderIdService.sendRequestFile(this.file).subscribe(response => {

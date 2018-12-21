@@ -4,7 +4,6 @@
 <ngb-tabset>
   <ngb-tab title="Get Sender Id" id="getSenderIdTab">
     <ng-template ngbTabContent>
-
       <div class="card border-top-0 mb-5 shadow">
         <div class="card-body">
           <!-- form -->
@@ -179,8 +178,7 @@
                 </div>
               </div>
               <!-- submit button -->
-              <button type="submit" class="btn btn-sm btn-block btn-info mx-2">
-                <!-- [disabled]="!form.valid" -->
+              <button type="submit" class="btn btn-sm btn-block btn-info mx-2" [disabled]="!form.valid || !isFileChoosen">
                 Submit
               </button>
             </div>
