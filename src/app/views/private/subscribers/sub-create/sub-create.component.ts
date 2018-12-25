@@ -28,9 +28,9 @@ export class SubCreateComponent implements OnInit {
   public isCodeNonExistant: boolean;
   public countries = [];
 
-  constructor(private _fb: FormBuilder, private notify: ToastrService,
-    private countryService: CountryService, private subscriberService: SubscriberService,
-    private groupService: GroupService) {
+  constructor(private _fb: FormBuilder, private _alert: ToastrService,
+    private _countryService: CountryService, private _subscriberService: SubscriberService,
+    private _groupService: GroupService) {
     this.form = _fb.group({
       'code': ['', Validators.compose([Validators.required, countryCodeValidator])],
       'phoneNo': ['', Validators.compose([Validators.required, phoneNoValidator])]
@@ -38,7 +38,7 @@ export class SubCreateComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.countryService.getCountries().subscribe(
+    this._countryService.getCountries().subscribe(
       (response: any) => {
         response.forEach((country: Country) => {
           this.countries.push(country);
@@ -98,7 +98,7 @@ export class SubCreateComponent implements OnInit {
     this.isCreating = true;
     const code: string = form.code;
     const phone: string = form.phoneNo;
-    this.groupService.getGroup('All_Subscribers').pipe(
+    this._groupService.getGroup('All_Subscribers').pipe(
       map((group: Group) => group.id)
     ).subscribe((id: number) => {
       const subscriber = new Subscriber_(form.code, form.phoneNo);
@@ -106,19 +106,33 @@ export class SubCreateComponent implements OnInit {
     });
   }
   public saveSubscriber(groupId: number, subscriber: Subscriber_) {
-    this.subscriberService.save(groupId, subscriber).subscribe(
+    this._subscriberService.save(groupId, subscriber).subscribe(
       (response: any) => {
         this.form.reset();
         this.isCreating = false;
-        this.notify.success("Suscriber added succesfully");
+        this._alert.success("Suscriber added succesfully");
       }, error => {
         this.isCreating = false;
         if (error.status == 400)
-          this.notify.error(error.message);
+          this._alert.error(error.message);
         else
-          this.notify.error(error.error.message);
+          this._alert.error(error.error.message);
       }
     );
+  }//download form
+  public downloadForm() {
+    this._subscriberService.form.subscribe(
+      res => {
+        let url = window.URL.createObjectURL(res.data);
+        let a = document.createElement('a');
+        document.body.appendChild(a);
+        a.setAttribute('style', 'display: none');
+        a.href = url;
+        a.download = res.filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+        a.remove(); // remove the element
+      });
   }
   public uploadFile(event) {
     this.file = event.target.files[0];
@@ -132,21 +146,21 @@ export class SubCreateComponent implements OnInit {
 
   public saveContacts() {
     this.isAddingClients = true;
-    this.subscriberService.saveSubscribers(this.file).subscribe(
+    this._subscriberService.saveSubscribers(this.file).subscribe(
       (response: any) => {
         // if (response.type === HttpEventType.UploadProgress) {
         //   this.uploadProgess = Math.round(100 * response.loaded / response.total) + '%';
         // } else if (response.type === HttpEventType.Response) {
           this.isAddingClients = false;
           this.fileName = '';
-          this.notify.success("Successfully added subscribers");
+          this._alert.success("Successfully added subscribers");
           this.isFileChoosen = false;
         // }
       }, error => {
         if (error.status == 500)
-          this.notify.error("Could not complete request");
+          this._alert.error("Could not complete request");
         else
-          this.notify.error(error.error.error_description);
+          this._alert.error(error.error.error_description);
         this.isAddingClients = false;
       }
     );

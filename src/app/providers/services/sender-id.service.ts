@@ -18,11 +18,11 @@ export class SenderIdService {
     );
   }
   public get applicationForm(): Observable<any> {
-    return this._http.get(this.uri + "/secure/file/contactsFormat.xlsx",
+    return this._http.get(this.uri + "/secure/senderId/form/senderIdForm.doc",
       { responseType: 'blob' }).pipe(
         map(res => {
           return {
-            filename: 'contactsFormat.xlsx',
+            filename: 'senderIdForm.doc',
             data: res
           }
         }),

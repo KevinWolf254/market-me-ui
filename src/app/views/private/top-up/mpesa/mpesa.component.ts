@@ -71,7 +71,7 @@ export class MpesaComponent implements OnInit {
     return 518654;
   }
   public get accountNo() {
-    return this.profile.client.id;
+    return this.profile.client.customerId;
   }
   public get paymentCurrency() {
     return this.currency;

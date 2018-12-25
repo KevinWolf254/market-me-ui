@@ -7,7 +7,7 @@
     <ng-template ngbTabContent>
       <div class="card border-top-0 shadow">
         <div class="card-body">
-          <p class="bg-light p-2 rounded"><b>Add Subscribers:</b></p>
+          <p class="bg-light p-2 rounded"><b>Add Subscriber:</b></p>
           <form [formGroup]="form" (ngSubmit)="add(form.value)">
             <!-- phone number -->
             <div class="form-group">
@@ -55,6 +55,11 @@
           </form>
           <hr class="mb-4">
           <p class="bg-light p-2 rounded"><b>Add Multiple Subscribers:</b></p>
+          <p class="pl-2">Download form from
+            <button class="btn btn-sm btn-outline-secondary px-4" type="button" (click)="downloadForm()"><i
+                class="fa fa-cloud-download"></i>
+              Here</button>
+          </p>
           <div>
             <input style="display: none" type="file" name="selectCsv" id="selectCsv" accept=".csv" #fileUpload (change)="uploadFile($event)">
           </div>

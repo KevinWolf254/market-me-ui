@@ -12,7 +12,7 @@
             <div class="d-flex flex-column bd-highlight">
               <div class="bd-highlight">1. Go to Lipa na mpesa; Choose Paybill</div>
               <div class="bd-highlight">2. Enter Business Number: <b>{{businessNo}}</b></div>
-              <div class="bd-highlight">3. Enter Account No: <b>Your Customer Id</b></div>
+              <div class="bd-highlight">3. Enter Account No: <b>{{accountNo}}</b></div>
               <div class="bd-highlight">4. Enter amount and send</div>
               <div class="bd-highlight">5. After receiving Mpesa confirmation, Enter details in below form and submit</div>
             </div>
@@ -58,14 +58,14 @@
                           <label class="col col-form-label">Mpesa Trans No:</label>
                           <div class="col">
                             <input type="text" [class.is-invalid]="istransNoInvalid" [class.is-valid]="istransNoValid"
-                              class="form-control form-control-sm" formControlName="transNo" placeholder="mpesa trans no*"
+                              class="form-control form-control-sm text-uppercase" formControlName="transNo" placeholder="mpesa trans no*"
                               maxlength="10">
                           </div>
                         </div>
                         <!-- trans no Errors -->
                         <small class="form-text text-danger float-right mt-0" *ngIf="istransNoInvalid">
                           <div *ngIf="hasTransNoRequiredError">Mpesa trans No is required.</div>
-                          <div *ngIf="hasTransNoMinError || hasTransNoMaxError">Please enter a valid number.</div>
+                          <div *ngIf="hasTransNoMinError || hasTransNoMaxError">Please enter a valid number. 10 Characters</div>
                         </small>
                         <small class="form-text text-primary float-right mt-0" *ngIf="istransNoValid">
                           <div>Mpesa trans No: <b>{{transNo}}</b></div>
