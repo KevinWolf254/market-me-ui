@@ -13,7 +13,7 @@
           or potential, all over East Africa. We provide solutions that will help your business to
           <strong class="text-uppercase text-success">grow</strong>.
         </p>
-        <button type="button" class="btn btn-sm btn-outline-primary btn-lg p-2 small-caption" routerLinkActive="active" routerLink="/signUp"><i class="fa fa-sign-in"></i>
+        <button type="button" class="btn btn-sm btn-outline-success btn-lg p-2 small-caption" routerLinkActive="active" routerLink="/signUp"><i class="fa fa-sign-in"></i>
           Sign up for MarketMe App</button>
       </div>
     </div>
@@ -29,7 +29,8 @@
         to custom systems developed to meet your business needs.</p>
       <div class="card-group mb-5">
         <div class="card">
-          <img class="card-img-top" src="../../../../assets/mobileweb.jpg" alt="mobile and web development">
+            <!-- assets/images/mobileweb.jpg -->
+          <img class="card-img-top" [src]="env.img_solution_mobile" alt="mobile and web development">
           <div class="card-body">
             <h5 class="card-title">Mobile &amp; Web</h5>
             <p class="card-text">We develop Mobile and Web applications that are modern and are
@@ -39,7 +40,7 @@
           </div>
         </div>
         <div class="card">
-          <img class="card-img-top" src="../../../../assets/cloud.jpg" alt="Card image cap">
+          <img class="card-img-top" [src]="env.img_solution_cloud" alt="Card image cap">
           <div class="card-body">
             <h5 class="card-title">OnPremise &amp; Cloud</h5>
             <p class="card-text">Based on your business needs, we provide solutions that can be hosted
@@ -49,7 +50,7 @@
           </div>
         </div>
         <div class="card">
-          <img class="card-img-top" src="../../../../assets/planning.jpg" alt="Strategy and Planning">
+          <img class="card-img-top" [src]="env.img_solution_planning" alt="Strategy and Planning">
           <div class="card-body">
             <h5 class="card-title">Strategy &amp; Planning</h5>
             <p class="card-text">Our experienced consultants are able to guide your business into the future
@@ -61,7 +62,7 @@
       </div>
       <div class="card-group mb-5">
         <div class="card">
-          <img class="card-img-top" src="../../../../assets/coding.jpg" alt="mobile and web development">
+          <img class="card-img-top" [src]="env.img_solution_coding" alt="mobile and web development">
           <div class="card-body">
             <h5 class="card-title">Software Development</h5>
             <p class="card-text">Custom made software such as Mpesa integrated software, bulk SMS software, USSD
@@ -72,7 +73,7 @@
           </div>
         </div>
         <div class="card">
-          <img class="card-img-top" src="../../../../assets/integration.jpg" alt="Card image cap">
+          <img class="card-img-top" [src]="env.img_solution_integration" alt="Card image cap">
           <div class="card-body">
             <h5 class="card-title">System Integration</h5>
             <p class="card-text">For organizations that have multiple systems that need to be integrated,
@@ -82,13 +83,13 @@
           </div>
         </div>
         <div class="card">
-          <img class="card-img-top" src="../../../../assets/onphone.jpg" alt="Strategy and Planning">
+          <img class="card-img-top" [src]="env.img_solution_onphone" alt="Strategy and Planning">
           <div class="card-body">
             <h5 class="card-title">SMS Marketing</h5>
             <p class="card-text">Research shows that the most effective method of marketing is through SMS, we
               provide a platform that enables organizatons do effective marketing to promote their products and retain
               their customers through constant engagement with them.</p>
-            <button type="button" class="btn btn-sm btn-outline-primary" routerLinkActive="active" routerLink="/signIn"><i class="fa fa-book"></i> Learn more</button>
+            <button type="button" class="btn btn-sm btn-outline-primary" [routerLink] = "['/signIn']" fragment="benefits"><i class="fa fa-book"></i> Learn more</button>
           </div>
         </div>
       </div>
@@ -103,7 +104,7 @@
       <h2 class="section-heading">Our Products</h2>
       <div class="row">
         <div class="col-sm-6">
-          <img src="../../../../assets/dashboard.png" alt="mobile and web development">
+          <img [src]="env.img_product_dashboard" alt="mobile and web development">
         </div>
         <div class="col-sm-6 d-flex flex-column justify-content-center align-items-center text-center">
           <div class="market-me my-2">
@@ -116,8 +117,8 @@
             </p>
           </div>
           <div>
-            <button type="button" class="btn btn-outline-primary mr-2" routerLinkActive="active" routerLink="/signIn"><i class="fa fa-book"></i> Learn more</button>
-            <button type="button" class="btn btn-success px-2" routerLinkActive="active" routerLink="/signUp"><i class="fa fa-sign-in pr-1"></i> Sign up its Free</button>
+            <button type="button" class="btn btn-outline-primary mr-2" [routerLink] = "['/signIn']" fragment="benefits"><i class="fa fa-book"></i> Learn more</button>
+            <button type="button" class="btn btn-success px-2" routerLink="/signUp"><i class="fa fa-sign-in pr-1"></i> Sign up its Free</button>
           </div>
         </div>
       </div>
@@ -197,7 +198,7 @@
         </div>
 
         <div class="col-sm-6">
-          <img src="../../../../assets/senteulocation.jpg" alt="mobile and web development">
+          <img [src]="env.img_contactus_senteulocation" alt="mobile and web development">
         </div>
       </div>
     </div>

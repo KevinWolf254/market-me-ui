@@ -4,12 +4,13 @@ import { HttpClient } from '@angular/common/http';
 import { Sms, Report, CampaignRequest, CampaignReport } from '../../models/models.model';
 import { map } from 'rxjs/operators';
 import { Campaign } from '../../models/interfaces.model';
+import { environment } from './../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CampaignService {
-  private url: string = "http://localhost:8083/mmcs";
+  private url: string = environment.url;
 
   constructor(private _http: HttpClient) { }
 

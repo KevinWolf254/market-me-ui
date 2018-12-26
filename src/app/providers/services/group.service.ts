@@ -2,13 +2,15 @@ import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { Group } from '../../models/models.model';
-import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { environment } from './../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GroupService {
-  private url: string = "http://localhost:8083/mmcs";
+  // private url: string = "http://localhost:8083/mmcs";
+  private url: string = environment.url;
+  
   private header = { headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' }) };
 
   private groupSource = new BehaviorSubject<Group[]>([]);

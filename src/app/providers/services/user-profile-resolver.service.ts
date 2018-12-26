@@ -17,7 +17,7 @@ export class UserProfileResolverService implements Resolve<UserReport>{
       tap(report => {
         this._userService.profile = report;
       }),
-      catchError(err => of(new UserReport))
+      catchError(err => of(new UserReport()))
     );
   }
 

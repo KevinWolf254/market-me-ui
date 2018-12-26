@@ -4,6 +4,7 @@ import { UserService } from '../../../providers/services/user.service';
 import { UserReport } from '../../../models/models.model';
 import { ToastrService } from 'ngx-toastr';
 import { confirmPasswordValidator } from '../../../providers/validators/validators';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-profile',
@@ -15,6 +16,7 @@ export class ProfileComponent implements OnInit {
   public form: FormGroup;
   public changingPass: boolean = false;
   public profile: UserReport;
+  public env = environment;
 
   constructor(private _fb: FormBuilder, private _userService: UserService, private _notify: ToastrService) { 
     this.form = _fb.group({

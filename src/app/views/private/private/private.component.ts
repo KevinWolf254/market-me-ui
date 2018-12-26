@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../../providers/services/user.service';
 import { UserReport } from '../../../models/models.model';
 import { Role } from '../../../models/enums.model';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-private',
@@ -13,6 +14,7 @@ export class PrivateComponent implements OnInit {
   public show2: boolean = false;
 
   public profile: UserReport;
+  public env = environment;
 
   constructor(private _userService: UserService) {}
 
