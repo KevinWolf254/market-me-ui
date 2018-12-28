@@ -15,5 +15,6 @@ RUN $(npm bin)/ng build --prod
 FROM nginx:1.15.7-alpine
 
 COPY --from=builder /app/dist/* /usr/share/nginx/html/
+COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
