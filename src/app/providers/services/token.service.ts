@@ -12,18 +12,25 @@ import { environment } from './../../../environments/environment';
 export class TokenService {
   private url: string = environment.url;
 
-  private authBasicHeader = {headers: new HttpHeaders({'Content-Type':'application/x-www-form-urlencoded', 'Authorization':'Basic dGVzdDAxOnRlc3QwMQ==', 'No-Auth':'true'})};
+  private authBasicHeader = {
+    headers: new HttpHeaders({
+      "Accept": "application/json",
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': 'Basic dGVzdDAxOnRlc3QwMQ==', 
+      'No-Auth': 'true'
+    })
+  };
 
-  constructor(private _http: HttpClient, private notify: ToastrService) { }
+  constructor(private _http: HttpClient, private _alert: ToastrService) { }
 
-  public getJsonToken(email: string, password: string): Observable<Token>{
-    let authUri: string = this.url+"/oauth/token";
-    let oAuthData = "grant_type=password"+"&username="+email+"&password="+password;
+  public getJsonToken(email: string, password: string): Observable<Token> {
+    let authUri: string = this.url + "/oauth/token";
+    let oAuthData = "grant_type=password" + "&username=" + email + "&password=" + password;
     return this._http.post<Token>(authUri, oAuthData, this.authBasicHeader).pipe(
       catchError(err => {
-        err.status == 0 ? this.notify.error(err.message): this.notify.error('Email or password are incorrect');
+        err.status == 0 ? this._alert.error(err.message) : this._alert.error('Email or password are incorrect');
         return of(null);
       })
-    );  
+    );
   }
 }

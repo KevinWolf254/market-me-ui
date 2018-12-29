@@ -8,7 +8,6 @@ import { environment } from './../../../environments/environment';
   providedIn: 'root'
 })
 export class ReportService {
-  // private basicUri: string = "http://localhost:8083/mmcs";
   private url: string = environment.url;
 
   private header = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
@@ -18,7 +17,6 @@ export class ReportService {
   requestPurchasesReport(email: string, from: NgbDate, to: NgbDate) {
     let params = new ReportDates(email, new Date(from.year, from.month - 1,
       from.day), new Date(to.year, to.month - 1, to.day));
-      // return this._http.post(this.basicUri + "/reportPDF/purchase", params, this.header);
       return this._http.post(this.url + "/report/purchase", params, this.header);
   }
 

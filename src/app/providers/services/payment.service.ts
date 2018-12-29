@@ -8,7 +8,6 @@ import { environment } from './../../../environments/environment';
   providedIn: 'root'
 })
 export class PaymentService {
-  // private url: string = "http://localhost:8083/mmcs";
   private url: string = environment.url;
 
   constructor(private _http: HttpClient) { }

@@ -10,7 +10,6 @@ import { environment } from './../../../environments/environment';
 export class CountryService {
 
   private thirdPartURL: string = "https://restcountries.eu/rest/v2";
-  // private url: string = "http://localhost:8083/mmcs/secure/country"
   private url: string = environment.url;
 
   private header = { headers: new HttpHeaders({ 'Api': 'true' }) };

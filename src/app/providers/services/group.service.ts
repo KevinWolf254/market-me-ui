@@ -8,7 +8,6 @@ import { environment } from './../../../environments/environment';
   providedIn: 'root'
 })
 export class GroupService {
-  // private url: string = "http://localhost:8083/mmcs";
   private url: string = environment.url;
   
   private header = { headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' }) };

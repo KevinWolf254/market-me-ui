@@ -12,7 +12,7 @@ import { environment } from './../../../environments/environment';
 export class UserService {
   private url: string = environment.url;
 
-  private header = { headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'true' }) };
+  private header = { headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'No-Auth': 'true' }) }; 
   private authBearerheader = { headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' }) };
 
   private profileSource = new BehaviorSubject<UserReport>(new UserReport());

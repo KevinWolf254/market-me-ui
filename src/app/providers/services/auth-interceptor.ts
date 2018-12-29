@@ -9,7 +9,7 @@ import { ToastrService } from "ngx-toastr";
 export class AuthInterceptor implements HttpInterceptor {
 
     constructor(private _router: Router, private _alert: ToastrService) { }
-
+ 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         if (request.headers.get('No-Auth') == "true") {
             return next.handle(request.clone());
