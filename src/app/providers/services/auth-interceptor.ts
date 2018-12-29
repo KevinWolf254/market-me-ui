@@ -12,6 +12,7 @@ export class AuthInterceptor implements HttpInterceptor {
  
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         if (request.headers.get('No-Auth') == "true") {
+            request.headers.delete('No-Auth');
             return next.handle(request.clone());
         }
         if (request.headers.get('Api') == "true") {
