@@ -18,6 +18,7 @@ export class SignInComponent implements OnInit {
 
   public signInForm: FormGroup;
   public isSigningIn: boolean = false;
+  private user: UserReport;
 
   constructor(private _fb: FormBuilder, private _router: Router, private _notify: ToastrService,
     private _userService: UserService, private _tokenService: TokenService) {
@@ -52,7 +53,6 @@ export class SignInComponent implements OnInit {
           localStorage.setItem('accessToken', jsonToken.access_token);
           this.routeTo();
         }
-        this.isSigningIn = false;
       }
     );
   }
@@ -62,12 +62,14 @@ export class SignInComponent implements OnInit {
         let admin = profile.roles.find(role => {
           return role.role == Role.ADMIN;
         });
-        this._notify.success('Welcome: ' + profile.user.otherNames + ' ' + profile.user.surname);
+        this.user = profile;
         return !(admin == null || admin == undefined);
       })
     ).subscribe(isAdmin => {
       isAdmin ? this._router.navigate(['/bulksms/dashboard']) :
         this._router.navigate(['/bulksms/profile'])
-    });
+        this._notify.success('Welcome: ' + this.user.user.otherNames + ' ' + this.user.user.surname);
+        this.isSigningIn = false;
+      });
   }
 }

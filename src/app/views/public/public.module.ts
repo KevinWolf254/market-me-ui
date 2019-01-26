@@ -11,6 +11,7 @@ import { RecaptchaFormsModule } from 'ng-recaptcha/forms';
 import { RecaptchaModule, RECAPTCHA_SETTINGS, RecaptchaSettings } from 'ng-recaptcha';
 import { BrowserModule } from '@angular/platform-browser';
 import { SuccessSignUpComponent } from './success-sign-up/success-sign-up.component';
+import { FooterComponent } from './footer/footer.component';
 
 const routes: Routes = [
   {path:'', component:PublicComponent,
@@ -38,7 +39,7 @@ const routes: Routes = [
     PublicComponent, 
     SignInComponent, 
     HomeComponent, 
-    SignUpComponent, SuccessSignUpComponent
+    SignUpComponent, SuccessSignUpComponent, FooterComponent
   ],
   providers: [{
     provide: RECAPTCHA_SETTINGS,

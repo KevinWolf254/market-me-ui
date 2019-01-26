@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  url: "http://api.client.marketme.proaktivio.com/mmcs",
+  url: "https://api.client.marketme.proaktivio.com/api",
   img_logo: "./images/proaktiv-logo.png",
   img_solution_mobile: "./images/mobileweb.jpg",
   img_solution_cloud: "./images/cloud.jpg",

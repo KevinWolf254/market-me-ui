@@ -32,7 +32,7 @@
           <div ngbDropdown class="d-inline-block">
             <a class="nav-link btn" id="saas" ngbDropdownToggle>Our Solutions</a>
             <div ngbDropdownMenu aria-labelledby="saas">
-              <a [routerLink] = "['/home']" fragment="our-solutions" class="dropdown-item">Sms Marketing</a>
+              <a [routerLink]="['/home']" fragment="our-solutions" class="dropdown-item">Sms Marketing</a>
             </div>
           </div>
         </li>
@@ -40,12 +40,12 @@
           <div ngbDropdown class="d-inline-block">
             <a class="nav-link btn" id="products-content" ngbDropdownToggle>Our Products</a>
             <div ngbDropdownMenu aria-labelledby="products">
-              <a [routerLink] = "['/home']" fragment="products" class="dropdown-item">MarketMe App</a>
+              <a [routerLink]="['/home']" fragment="products" class="dropdown-item">MarketMe App</a>
             </div>
           </div>
         </li>
         <li class="nav-item">
-          <a class="nav-link" [routerLink] = "['/home']" fragment="about-us">About Us</a>
+          <a class="nav-link" [routerLink]="['/home']" fragment="about-us">About Us</a>
         </li>
       </ul>
       <div class="clearfix">
