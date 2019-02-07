@@ -19,7 +19,8 @@
               <li>Schedule promotions and marketing campaigns</li>
               <li>Easily manage client contacts distributed in east africa</li>
             </ul>
-            <button type="button" class="btn btn-sm btn-primary mb-2" [routerLink] = "['/signIn']" fragment="benefits"><i class="fa fa-book"></i> Learn more</button>
+            <button type="button" class="btn btn-sm btn-primary mb-2" [routerLink]="['/signIn']" fragment="benefits"><i
+                class="fa fa-book"></i> Learn more</button>
             <hr class="d-none d-sm-none">
           </div>
           <div class="col-sm-6 my-auto">
@@ -87,12 +88,57 @@
     </div>
   </div>
 </div>
+<!-- MarketMe App info -->
+<section id="info">
+  <div id="info-content">
+
+    <div class="container pb-5">
+      <h2 class="section-heading">MarketMe - Bulk SMS Solution</h2>
+      <div class="row">
+        <div class="col-sm-6">
+          <img [src]="env.img_product_dashboard" alt="MarketMe App bulk sms">
+        </div>
+        <div class="col-sm-6 d-flex flex-column justify-content-center align-items-center text-center">
+          <p>MarketMe is an SMS marketing application used to send Bulk SMS's to any network in East Africa.
+            Businesses can sign up for free online or they can have it installed on their premise infrastructure.
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Sender Id info with prices-->
+<section id="info">
+  <div id="info-content">
+
+    <div class="container pb-5">
+      <h2 class="section-heading">Sender ID</h2>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- price list per country for sms excluding tax -->
+<section id="info">
+  <div id="info-content">
+
+    <div class="container pb-5">
+      <h2 class="section-heading">SMS Prices</h2>
+
+    </div>
+
+  </div>
+</section>
 
 <!-- benefits -->
 <section id="benefits">
   <div id="benefits-content">
     <div class="container pb-5">
       <h2 class="section-heading">Benefits</h2>
+      <!-- card deck -->
       <div class="card-deck dflex flex-column flex-md-row">
         <div class="card text-center">
           <i class="fa fa-benefits fa-globe mt-2"></i>

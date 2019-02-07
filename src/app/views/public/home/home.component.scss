@@ -10,44 +10,48 @@ header.masthead {
     font-size: 1.2rem;
 }
 .section-heading{   
-    color: rgb(13, 55, 145);
-    font-size: 3rem;
-    font-weight: bold;
-    text-align: center;
-    padding-top: 3.5rem;
-}
-#products-content{
-    background-color: rgb(247, 247, 247);
-}
-.card-title{
-    color: rgb(13, 189, 57);
-    font-weight: bold;
-}
-#about-us-content{
-    background-image: url('../../../../assets/images/aboutus02.jpg');
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
-    height: 100%;
-    display: flex;
-    align-items: center;
-}
-.about-us-heading{
-    color: rgb(248, 185, 156);
+    color: rgb(5, 79, 218);
     font-size: 2rem;
     font-weight: bold;
+    text-align: center;
 }
-.about-us-caption{
-    color: rgb(226, 246, 255);
-    font-size: 1.3rem;
+#products-content{
+    padding-top: 5rem;
+    padding-bottom: 8rem;
+    background-color: rgb(247, 247, 247);
 }
-.like-us{
-    color: rgb(226, 246, 255);
-    font-size: 1.2rem;
+#partners-content{
+    padding-top: 2.5rem;
+    padding-bottom: 2.5rem;
 }
-.market-me{
-    color: rgb(6, 96, 231);
+.card-title{
+    color: rgb(0, 158, 231);
+    font-weight: bold;
 }
-#footer{
-    background-color: rgb(54, 54, 54);
+
+// 
+.size-4{
+    font-size: 3rem;
+    color: rgb(5, 79, 218);
+}
+.title{
+    font-size: 1.5rem;
+    color: rgb(128, 129, 129);
+    line-height: 1.5;
+}
+.line-shape {
+    margin-left: calc(50% - 3rem);
+    width: 5rem;
+    background-color:  rgb(194, 194, 194);
+}
+.title-product{
+    color: rgb(7, 148, 14);
+}
+.image {
+    width: 200px;
+    height: 120px;
+}
+.image img {
+    width: 100%;
+    height: auto;
 }
