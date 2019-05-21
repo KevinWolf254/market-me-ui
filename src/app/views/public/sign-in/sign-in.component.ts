@@ -8,6 +8,7 @@ import { UserReport } from '../../../models/models.model';
 import { Token } from '../../../models/interfaces.model';
 import { TokenService } from '../../../providers/services/token.service';
 import { map } from 'rxjs/operators';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-sign-in',
@@ -15,6 +16,8 @@ import { map } from 'rxjs/operators';
   styleUrls: ['./sign-in.component.scss']
 })
 export class SignInComponent implements OnInit {
+
+  public env = environment;
 
   public signInForm: FormGroup;
   public isSigningIn: boolean = false;

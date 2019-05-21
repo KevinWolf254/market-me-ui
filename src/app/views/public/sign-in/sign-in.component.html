@@ -1,5 +1,5 @@
 <!-- sign in -->
-<div class="sign-in-content d-flex">
+<header class="sign-in-content d-flex">
   <div class="container my-auto">
     <div class="card signin-card text-center shadow mb-5 rounded">
       <h4 class="card-header">
@@ -47,8 +47,9 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text" id="passwordIcon"><i class="fa fa-lock fa-lg"></i></span>
                   </div>
-                  <input type="password" [class.is-invalid]="isPasswordInvalid" class="form-control" formControlName="password"
-                    placeholder="Password" aria-label="Password" aria-describedby="passwordIcon">
+                  <input type="password" [class.is-invalid]="isPasswordInvalid" class="form-control"
+                    formControlName="password" placeholder="Password" aria-label="Password"
+                    aria-describedby="passwordIcon">
                 </div>
                 <!-- Error -->
                 <small class="form-text text-danger float-left" *ngIf="isPasswordInvalid">
@@ -87,7 +88,8 @@
       <div class="card-footer text-muted">© 2018-2019</div>
     </div>
   </div>
-</div>
+</header>
+
 <!-- MarketMe App info -->
 <section id="info">
   <div id="info-content">
@@ -250,3 +252,5 @@
     </div>
   </div>
 </section>
+<!-- footer -->
+<app-footer></app-footer>

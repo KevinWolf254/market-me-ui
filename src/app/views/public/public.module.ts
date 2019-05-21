@@ -15,14 +15,14 @@ import { FooterComponent } from './footer/footer.component';
 import { NavigationComponent } from './navigation/navigation.component';
 
 const routes: Routes = [
-  // {path:'', component:PublicComponent,
-  //   children:[
+  {path:'', component:PublicComponent,
+    children:[
       {path: 'home', component: HomeComponent},
       {path: 'signIn', component: SignInComponent},
       {path: 'signUp', component: SignUpComponent},
       { path: '**', component: HomeComponent }
-    // ]
-  // }
+    ]
+  }
 ];
 
 @NgModule({
