@@ -40,7 +40,7 @@ export class SubGroupsComponent implements OnInit {
 
   public profile: UserReport;
 
-  @ViewChild(DatatableComponent) table: DatatableComponent;
+  @ViewChild(DatatableComponent, { static : true }) table: DatatableComponent;
   customPagerIcons = {
     sortAscending: 'fa fa-sort-asc', sortDescending: 'fa fa-sort-desc', pagerLeftArrow: 'fa fa-chevron-left',
     pagerRightArrow: 'fa fa-chevron-right', pagerPrevious: 'fa fa-step-backward', pagerNext: 'fa fa-step-forward'
@@ -213,7 +213,7 @@ export class SubGroupsComponent implements OnInit {
         this.notify.error(error.error);
       }
     );
-    // this.groupContacts = [...this.groupContacts]; 
+    // this.groupContacts = [...this.groupContacts];
     // this.tempContacts = [...this.groupContacts];
   }
 }

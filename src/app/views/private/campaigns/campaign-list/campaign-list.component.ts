@@ -30,7 +30,7 @@ export class CampaignListComponent implements OnInit {
 
   public perPage: number;
   public perPageNos: number[] = [10, 25, 50, 100];
-  @ViewChild(DatatableComponent) table: DatatableComponent;
+  @ViewChild(DatatableComponent, { static: true }) table: DatatableComponent;
   public customPagerIcons = {
     sortAscending: 'fa fa-sort-asc', sortDescending: 'fa fa-sort-desc',
     pagerLeftArrow: 'fa fa-chevron-left', pagerRightArrow: 'fa fa-chevron-right',
@@ -246,6 +246,6 @@ export class CampaignListComponent implements OnInit {
     //     this.notify.error(error.error.error_description, error.error.error);
     //   }
     // );
-    // this.modalRefDel.close(); 
+    // this.modalRefDel.close();
   }
 }

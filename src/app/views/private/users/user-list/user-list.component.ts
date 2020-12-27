@@ -31,7 +31,7 @@ export class UserListComponent implements OnInit {
   public modalRef: NgbModalRef;
 
   public temp = [];
-  @ViewChild(DatatableComponent) table: DatatableComponent;
+  @ViewChild(DatatableComponent, {static: true}) table: DatatableComponent;
 
   // Custom icons for ngx-datatable
   public customPagerIcons = {
@@ -128,7 +128,7 @@ export class UserListComponent implements OnInit {
 
   public confirm() {
     this.userService.delete(this.deleteUserEmail).subscribe(
-      (response: Report) =>{             
+      (response: Report) =>{
         this.modalRef.close();
         this.users.splice(this.deleteRow, 1);
         this.users = [...this.users];
@@ -160,7 +160,7 @@ export class UserListComponent implements OnInit {
   public set pageEntries(event) {
     this.perPage = event.target.value;
   }
-  
+
   public search(event) {
     let searchParam = event.target.value.toLowerCase();
     // filter our data
