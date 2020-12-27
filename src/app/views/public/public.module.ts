@@ -1,18 +1,17 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PublicComponent } from './public/public.component';
-import { RouterModule, Routes } from '@angular/router';
-import { SignInComponent } from './sign-in/sign-in.component';
 import { HomeComponent } from './home/home.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgbDropdownModule, NgbCarouselModule } from '@ng-bootstrap/ng-bootstrap';
-import { SignUpComponent } from './sign-up/sign-up.component';
-import { RecaptchaFormsModule } from 'ng-recaptcha/forms';
-import { RecaptchaModule, RECAPTCHA_SETTINGS, RecaptchaSettings } from 'ng-recaptcha';
+import { RouterModule, Routes } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
-import { SuccessSignUpComponent } from './success-sign-up/success-sign-up.component';
+import { PublicComponent } from './public/public.component';
 import { FooterComponent } from './footer/footer.component';
+import { SignInComponent } from './sign-in/sign-in.component';
+import { SignUpComponent } from './sign-up/sign-up.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NavigationComponent } from './navigation/navigation.component';
+import { NgbDropdownModule, NgbCarouselModule } from '@ng-bootstrap/ng-bootstrap';
+import { SuccessSignUpComponent } from './success-sign-up/success-sign-up.component';
+import { RecaptchaModule, RecaptchaFormsModule, RECAPTCHA_SETTINGS, RecaptchaSettings } from 'ng-recaptcha';
 
 const routes: Routes = [
   {path:'', component:PublicComponent,
@@ -34,16 +33,16 @@ const routes: Routes = [
     NgbDropdownModule,
     NgbCarouselModule,
     RouterModule.forChild(routes),
-    RecaptchaModule.forRoot(),
+    RecaptchaModule,
     RecaptchaFormsModule
   ],
   declarations: [
-    PublicComponent, 
-    SignInComponent, 
-    HomeComponent, 
-    SignUpComponent, 
-    SuccessSignUpComponent, 
-    FooterComponent, 
+    PublicComponent,
+    SignInComponent,
+    HomeComponent,
+    SignUpComponent,
+    SuccessSignUpComponent,
+    FooterComponent,
     NavigationComponent
   ],
   providers: [{
@@ -52,5 +51,5 @@ const routes: Routes = [
       siteKey: '6LeEanUUAAAAAK6UvvKodU899gGtksDT-kCjPWHF',
     } as RecaptchaSettings,
   }]
-}) 
+})
 export class PublicModule { }

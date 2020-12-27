@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { PrivateRoutingModule } from './private-routing.module';
 import { PrivateComponent } from './private/private.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgbDropdownModule, NgbTabsetModule, NgbDatepickerModule, NgbModalModule, NgbButtonsModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdownModule, NgbDatepickerModule, NgbModalModule, NgbButtonsModule, NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ProfileComponent } from './profile/profile.component';
 import { SenderIdModule } from './sender-id/sender-id.module';
@@ -22,12 +22,12 @@ import { TopUpModule } from './top-up/top-up.module';
     NgbDatepickerModule,
     NgbButtonsModule,
     NgbModalModule,
-    NgbTabsetModule,
     UsersModule,
     CampaignsModule,
     SubscribersModule,
     TopUpModule,
-    SenderIdModule
+    SenderIdModule,
+    NgbNavModule
   ],
   declarations: [
     PrivateComponent,

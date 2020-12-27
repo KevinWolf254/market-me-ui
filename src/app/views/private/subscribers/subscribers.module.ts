@@ -4,7 +4,7 @@ import { SubCreateComponent } from './sub-create/sub-create.component';
 import { SubListComponent } from './sub-list/sub-list.component';
 import { SubGroupsComponent } from './sub-groups/sub-groups.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgbTabsetModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 @NgModule({
@@ -12,12 +12,12 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    NgbTabsetModule,
+    NgbNavModule,
     NgxDatatableModule,
   ],
   declarations: [
-    SubCreateComponent, 
-    SubListComponent, 
+    SubCreateComponent,
+    SubListComponent,
     SubGroupsComponent
   ]
 })

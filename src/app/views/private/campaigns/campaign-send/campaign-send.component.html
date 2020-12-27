@@ -1,9 +1,12 @@
 <div class="d-flex pb-2 mb-2 border-bottom">
   <h3>Marketing Campaigns</h3>
 </div>
-<ngb-tabset>
-  <ngb-tab title="Create Promotion" id="allTab">
-    <ng-template ngbTabContent>
+
+<ul ngbNav #nav="ngbNav" class="nav-tabs">
+  <li ngbNavItem>
+    <a ngbNavLink>Create Promotion</a>
+    <ng-template ngbNavContent>
+
       <div class="card border-top-0 shadow">
         <div class="card-body">
           <form [formGroup]="form" (ngSubmit)="sendSms(form.value)">
@@ -91,7 +94,7 @@
             <hr>
             <div class="clearfix mt-2">
               <!-- Submit Button -->
-              <button type="button" class="btn btn-sm btn-primary float-left px-5" type="submit" [disabled]="!form.get('message').valid || 
+              <button type="button" class="btn btn-sm btn-primary float-left px-5" type="submit" [disabled]="!form.get('message').valid ||
             selectedRecipients.length == 0 || messageLength == 0">
                 <div *ngIf="!isSendingSms">
                   <i class="fa fa-paper-plane"></i> Send Sms
@@ -119,16 +122,24 @@
           </form>
         </div>
       </div>
+
     </ng-template>
-  </ngb-tab>
-  <ngb-tab title="Create Campaign" id="scheduleTab">
-    <ng-template ngbTabContent>
+  </li>
+  <li ngbNavItem>
+    <a ngbNavLink>Create Campaign</a>
+    <ng-template ngbNavContent>
+
       <app-campaign-schedule></app-campaign-schedule>
+
     </ng-template>
-  </ngb-tab>
-  <ngb-tab title="List of Campaigns" id="manageTab">
-    <ng-template ngbTabContent>
+  </li>
+  <li ngbNavItem>
+    <a ngbNavLink>List of Campaigns</a>
+    <ng-template ngbNavContent>
+
       <app-campaign-list></app-campaign-list>
+
     </ng-template>
-  </ngb-tab>
-</ngb-tabset>
+  </li>
+</ul>
+<div [ngbNavOutlet]="nav"></div>

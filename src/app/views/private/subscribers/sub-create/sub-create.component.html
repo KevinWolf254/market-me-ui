@@ -1,10 +1,13 @@
 <div class="d-flex pb-2 mb-2 border-bottom">
   <h3>Subscribers</h3>
 </div>
-<ngb-tabset>
-  <!-- subscriber create -->
-  <ngb-tab title="Create Subscribers" id="subClientTab">
-    <ng-template ngbTabContent>
+
+<ul ngbNav #nav="ngbNav" class="nav-tabs">
+  <li ngbNavItem>
+    <!-- subscriber create -->
+    <a ngbNavLink>Create Subscribers</a>
+    <ng-template ngbNavContent>
+
       <div class="card border-top-0 shadow">
         <div class="card-body">
           <p class="bg-light p-2 rounded"><b>Add Subscriber:</b></p>
@@ -15,11 +18,12 @@
                 <div class="input-group-prepend">
                   <span class="input-group-text" id="phoneIcon"><i class="fa fa-phone"></i></span>
                 </div>
-                <input type="text" [class.is-invalid]="isCodeInvalid || isCodeValueInvalid" class="form-control form-control-sm col-sm-4"
-                  formControlName="code" placeholder="Country Code*" maxlength="4">
+                <input type="text" [class.is-invalid]="isCodeInvalid || isCodeValueInvalid"
+                  class="form-control form-control-sm col-sm-4" formControlName="code" placeholder="Country Code*"
+                  maxlength="4">
                 <input type="text" [class.is-invalid]="isPhoneNoInvalid" class="form-control form-control-sm col-sm-8"
-                  formControlName="phoneNo" placeholder="Phone Number*" aria-label="Phone number" aria-describedby="phoneIcon"
-                  maxlength="9">
+                  formControlName="phoneNo" placeholder="Phone Number*" aria-label="Phone number"
+                  aria-describedby="phoneIcon" maxlength="9">
               </div>
               <!-- code Errors -->
               <small class="form-text text-danger float-left" *ngIf="isCodeInvalid || isCodeValueInvalid">
@@ -61,13 +65,15 @@
               Here</button>
           </p>
           <div>
-            <input style="display: none" type="file" name="selectCsv" id="selectCsv" accept=".csv" #fileUpload (change)="uploadFile($event)">
+            <input style="display: none" type="file" name="selectCsv" id="selectCsv" accept=".csv" #fileUpload
+              (change)="uploadFile($event)">
           </div>
           <div class="input-group mb-0">
             <input type="text" class="form-control form-control-sm" placeholder="Choose Csv file" [value]="fileName"
               readonly>
             <div class="input-group-append">
-              <button class="btn btn-sm btn-outline-secondary" type="button" (click)="fileUpload.click()">Browse...</button>
+              <button class="btn btn-sm btn-outline-secondary" type="button"
+                (click)="fileUpload.click()">Browse...</button>
               <button type="button" class="btn btn-sm btn-primary" (click)="saveContacts()" [disabled]="!isFileChoosen">
                 <div *ngIf="!isAddingClients">
                   Upload Subscribers
@@ -95,18 +101,26 @@
           <small class="mt-0 text-mute">Browse for file to upload/add the subscribers</small>
         </div>
       </div>
+
     </ng-template>
-  </ngb-tab>
-  <!-- subscriber groups -->
-  <ngb-tab title="Create Groups" id="subGroupTab">
-    <ng-template ngbTabContent>
+  </li>
+  <li ngbNavItem>
+    <!-- subscriber groups -->
+    <a ngbNavLink>Create Groups</a>
+    <ng-template ngbNavContent>
+
       <app-sub-groups></app-sub-groups>
+
     </ng-template>
-  </ngb-tab>
-  <!-- subscriber list -->
-  <ngb-tab title="Add Subscribers to Groups" id="subListTab">
-    <ng-template ngbTabContent>
+  </li>
+  <li ngbNavItem>
+    <!-- subscriber list -->
+    <a ngbNavLink>Add Subscribers to Groups</a>
+    <ng-template ngbNavContent>
+
       <app-sub-list></app-sub-list>
+
     </ng-template>
-  </ngb-tab>
-</ngb-tabset>
+  </li>
+</ul>
+<div [ngbNavOutlet]="nav"></div>

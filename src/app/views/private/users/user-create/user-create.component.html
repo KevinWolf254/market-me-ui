@@ -1,108 +1,115 @@
 <div class="row">
     <div class="col">
-      <div class="d-flex pb-2 mb-2 border-bottom">              
+      <div class="d-flex pb-2 mb-2 border-bottom">
           <h3>Users</h3>
         </div>
     </div>
   </div>
-  <ngb-tabset>
-    <!-- Create -->
-    <ngb-tab title=" Create user" id="userTab">
-      <ng-template ngbTabContent>
+
+  <ul ngbNav #nav="ngbNav" class="nav-tabs">
+    <li ngbNavItem>
+      <a ngbNavLink>Create user</a>
+      <ng-template ngbNavContent>
+
+
         <div class="card border-top-0 shadow">
-            <div class="card-body">
-                <h6 class="mb-4 bg-light p-2 rounded">User Details</h6>
-                <form [formGroup] = "userForm" (ngSubmit) = "createUser(userForm.value)">
-                    <!-- names -->
-                    <div class="input-group mb-2">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fa fa-user fa-lg"></i></span>
-                        </div>
-                        <input type="text" class="form-control form-control-sm" formControlName="surname" placeholder="Surname">
-                        <input type="text" class="form-control form-control-sm" formControlName="otherNames" placeholder="Other Names">
-                    </div>
-                    <!-- email -->
-                    <div class="input-group mb-0">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fa fa-envelope"></i></span>
-                        </div>
-                        <input type="text" class="form-control form-control-sm" formControlName="email" placeholder="Email">
-                    </div>
-                    <!-- email error msg -->
-                    <div class=" d-flex flex-row-reverse" 
-                    *ngIf="!userForm.controls['email'].valid && userForm.controls['email'].touched">
-                      <span class="text text-danger mt-0 pt-0 pr-3" style="font-size:13px">
-                          Please enter a valid email
-                      </span>
-                    </div>
-                    <!-- role -->
-                    <div class="input-group mt-2 mb-0">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fa fa-cog"></i></span>
-                        </div>
-                        <select id="role" class="form-control form-control-sm" formControlName="role">
-                            <option value="0" selected>Choose role</option>
-                            <option *ngFor="let role of roles" >{{role}}</option>
-                        </select>
-                    </div>
-                    <!-- role error msg -->
-                    <div class=" d-flex flex-row-reverse" 
-                    *ngIf="!userForm.controls['role'].valid && userForm.controls['role'].touched">
-                      <span class="text text-danger mt-0 pt-0 pr-3" style="font-size:13px">
-                          Please choose a user role
-                      </span>
-                    </div>
-                    <!-- default password -->
-                    <div class="input-group mt-2 mb-0">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fa fa-lock fa-lg px-0"></i></span>
-                        </div>
-                        <input type="text" class="form-control form-control-sm" formControlName="defaultPass" placeholder="Password">
-                    </div>
-                    <small class="form-text text-muted">
-                        NB: Users must change their password after their first sign in
-                    </small>
-                    <!-- default password error -->
-                    <div class=" d-flex flex-row-reverse" 
-                    *ngIf="!userForm.controls['defaultPass'].valid && userForm.controls['defaultPass'].touched && !userForm.controls['defaultPass'].hasError('minlength')">
-                      <span class="text text-danger mt-0 pt-0 pr-3" style="font-size:13px">
-                          Please enter a default password
-                      </span>
-                    </div><!-- new Password length error msg -->
-                    <div class=" d-flex flex-row-reverse" 
-                    *ngIf="userForm.controls['defaultPass'].hasError('minlength')">
-                      <span class="text text-danger mt-0 pt-0 pr-3" style="font-size:13px">
-                          Please enter a minimum of 4 characters
-                      </span>
-                    </div>
-                    <button class="btn btn-primary btn-sm btn-block my-4 px-4" [disabled]="!userForm.valid" type="submit">
-                        <div *ngIf="!isCreating">
-                            Create User
-                        </div>
-                        <div *ngIf="isCreating" class="sk-circle my-0 py-0">
-                            <div class="sk-circle1 sk-child"></div>
-                            <div class="sk-circle2 sk-child"></div>
-                            <div class="sk-circle3 sk-child"></div>
-                            <div class="sk-circle4 sk-child"></div>
-                            <div class="sk-circle5 sk-child"></div>
-                            <div class="sk-circle6 sk-child"></div>
-                            <div class="sk-circle7 sk-child"></div>
-                            <div class="sk-circle8 sk-child"></div>
-                            <div class="sk-circle9 sk-child"></div>
-                            <div class="sk-circle10 sk-child"></div>
-                            <div class="sk-circle11 sk-child"></div>
-                            <div class="sk-circle12 sk-child"></div>
-                        </div>
-                    </button>
-                </form> 
-            </div>
-        </div>                  
+          <div class="card-body">
+              <h6 class="mb-4 bg-light p-2 rounded">User Details</h6>
+              <form [formGroup] = "userForm" (ngSubmit) = "createUser(userForm.value)">
+                  <!-- names -->
+                  <div class="input-group mb-2">
+                      <div class="input-group-prepend">
+                          <span class="input-group-text"><i class="fa fa-user fa-lg"></i></span>
+                      </div>
+                      <input type="text" class="form-control form-control-sm" formControlName="surname" placeholder="Surname">
+                      <input type="text" class="form-control form-control-sm" formControlName="otherNames" placeholder="Other Names">
+                  </div>
+                  <!-- email -->
+                  <div class="input-group mb-0">
+                      <div class="input-group-prepend">
+                          <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+                      </div>
+                      <input type="text" class="form-control form-control-sm" formControlName="email" placeholder="Email">
+                  </div>
+                  <!-- email error msg -->
+                  <div class=" d-flex flex-row-reverse"
+                  *ngIf="!userForm.controls['email'].valid && userForm.controls['email'].touched">
+                    <span class="text text-danger mt-0 pt-0 pr-3" style="font-size:13px">
+                        Please enter a valid email
+                    </span>
+                  </div>
+                  <!-- role -->
+                  <div class="input-group mt-2 mb-0">
+                      <div class="input-group-prepend">
+                          <span class="input-group-text"><i class="fa fa-cog"></i></span>
+                      </div>
+                      <select id="role" class="form-control form-control-sm" formControlName="role">
+                          <option value="0" selected>Choose role</option>
+                          <option *ngFor="let role of roles" >{{role}}</option>
+                      </select>
+                  </div>
+                  <!-- role error msg -->
+                  <div class=" d-flex flex-row-reverse"
+                  *ngIf="!userForm.controls['role'].valid && userForm.controls['role'].touched">
+                    <span class="text text-danger mt-0 pt-0 pr-3" style="font-size:13px">
+                        Please choose a user role
+                    </span>
+                  </div>
+                  <!-- default password -->
+                  <div class="input-group mt-2 mb-0">
+                      <div class="input-group-prepend">
+                          <span class="input-group-text"><i class="fa fa-lock fa-lg px-0"></i></span>
+                      </div>
+                      <input type="text" class="form-control form-control-sm" formControlName="defaultPass" placeholder="Password">
+                  </div>
+                  <small class="form-text text-muted">
+                      NB: Users must change their password after their first sign in
+                  </small>
+                  <!-- default password error -->
+                  <div class=" d-flex flex-row-reverse"
+                  *ngIf="!userForm.controls['defaultPass'].valid && userForm.controls['defaultPass'].touched && !userForm.controls['defaultPass'].hasError('minlength')">
+                    <span class="text text-danger mt-0 pt-0 pr-3" style="font-size:13px">
+                        Please enter a default password
+                    </span>
+                  </div><!-- new Password length error msg -->
+                  <div class=" d-flex flex-row-reverse"
+                  *ngIf="userForm.controls['defaultPass'].hasError('minlength')">
+                    <span class="text text-danger mt-0 pt-0 pr-3" style="font-size:13px">
+                        Please enter a minimum of 4 characters
+                    </span>
+                  </div>
+                  <button class="btn btn-primary btn-sm btn-block my-4 px-4" [disabled]="!userForm.valid" type="submit">
+                      <div *ngIf="!isCreating">
+                          Create User
+                      </div>
+                      <div *ngIf="isCreating" class="sk-circle my-0 py-0">
+                          <div class="sk-circle1 sk-child"></div>
+                          <div class="sk-circle2 sk-child"></div>
+                          <div class="sk-circle3 sk-child"></div>
+                          <div class="sk-circle4 sk-child"></div>
+                          <div class="sk-circle5 sk-child"></div>
+                          <div class="sk-circle6 sk-child"></div>
+                          <div class="sk-circle7 sk-child"></div>
+                          <div class="sk-circle8 sk-child"></div>
+                          <div class="sk-circle9 sk-child"></div>
+                          <div class="sk-circle10 sk-child"></div>
+                          <div class="sk-circle11 sk-child"></div>
+                          <div class="sk-circle12 sk-child"></div>
+                      </div>
+                  </button>
+              </form>
+          </div>
+      </div>
+
       </ng-template>
-    </ngb-tab>
-    <!-- Manage -->
-    <ngb-tab title=" List of users" id="manageUserTab">
-      <ng-template ngbTabContent>
+    </li>
+    <li ngbNavItem>
+      <a ngbNavLink>List of users</a>
+      <ng-template ngbNavContent>
+
         <app-user-list></app-user-list>
+
       </ng-template>
-    </ngb-tab>
-  </ngb-tabset>
+    </li>
+  </ul>
+  <div [ngbNavOutlet]="nav"></div>

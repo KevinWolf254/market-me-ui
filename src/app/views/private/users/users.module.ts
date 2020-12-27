@@ -2,20 +2,20 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UserCreateComponent } from './user-create/user-create.component';
 import { UserListComponent } from './user-list/user-list.component';
-import { NgbTabsetModule } from '@ng-bootstrap/ng-bootstrap';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   imports: [
     CommonModule,
-    NgbTabsetModule,
     FormsModule,
-    ReactiveFormsModule,    
-    NgxDatatableModule
+    ReactiveFormsModule,
+    NgxDatatableModule,
+    NgbNavModule
   ],
   declarations: [
-    UserCreateComponent, 
+    UserCreateComponent,
     UserListComponent
   ]
 })

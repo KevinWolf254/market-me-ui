@@ -1,9 +1,14 @@
 <div class="d-flex pb-2 mb-2 border-bottom">
   <h3>Top Up</h3>
 </div>
-<ngb-tabset>
-  <ngb-tab title="By Mpesa" id="mpesaTab">
-    <ng-template ngbTabContent>
+
+<ul ngbNav #nav="ngbNav" class="nav-tabs">
+  <li ngbNavItem>
+    <a ngbNavLink>By Mpesa</a>
+    <ng-template ngbNavContent>
+
+
+
       <div class="row mx-2">
         <!-- Instructions -->
         <div class="col-xl-3 card bg-light mt-2">
@@ -157,11 +162,18 @@
           </div>
         </div>
       </div>
+
     </ng-template>
-  </ngb-tab>
-  <ngb-tab title="By Pay Pal" id="payPalTab">
-    <ng-template ngbTabContent>
+  </li>
+  <li ngbNavItem>
+    <a ngbNavLink>By Pay Pal</a>
+    <ng-template ngbNavContent>
+
+
       <app-pay-pal></app-pay-pal>
+
+
     </ng-template>
-  </ngb-tab>
-</ngb-tabset>
+  </li>
+</ul>
+<div [ngbNavOutlet]="nav"></div>
