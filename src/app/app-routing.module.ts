@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 const routes: Routes = [
-  {path:'public', loadChildren: './views/public/public.module#PublicModule'},
-  {path:'private', loadChildren: './views/private/private.module#PrivateModule'}
+  {path:'public', loadChildren: () => import('./views/public/public.module').then(m => m.PublicModule)},
+  {path:'private', loadChildren: () => import('./views/private/private.module').then(m => m.PrivateModule)}
 ];
 
 @NgModule({
