@@ -29,7 +29,7 @@
             ],
             "scripts": [
               "node_modules/chart.js/dist/Chart.js",
-              "node_modules/hammerjs/hammer.min.js" 
+              "node_modules/hammerjs/hammer.min.js"
             ]
           },
           "configurations": {
@@ -55,8 +55,8 @@
                   "with": "src/environments/environment.prod.ts"
                 },
                 {
-                    "replace": "src/index.html",
-                    "with": "src/index.prod.html"
+                  "replace": "src/index.html",
+                  "with": "src/index.prod.html"
                 }
               ]
             }
@@ -149,5 +149,8 @@
     "@schematics/angular:directive": {
       "prefix": "app"
     }
+  },
+  "cli": {
+    "analytics": "ec0c30d4-d865-4471-b77d-2a21060765c0"
   }
 }
